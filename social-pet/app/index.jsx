@@ -1,4 +1,6 @@
 import { Text, View } from "react-native";
+import { useFonts } from "expo-font";
+import { Link } from "expo-router";
 
 export default function Index() {
   return (
@@ -9,9 +11,9 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.
-         teşekkür ederim ismoş 
-      </Text>
+      <Link href="/login">
+        <Text>Go To Login Screen</Text>
+      </Link>
     </View>
   );
 }
