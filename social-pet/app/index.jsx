@@ -1,8 +1,28 @@
 import { Text, View } from "react-native";
 import { useFonts } from "expo-font";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
+import { useEffect } from "react";
+import { useRootNavigationState } from "expo-router";
+import { useUser } from "@clerk/clerk-expo";
+
 
 export default function Index() {
+
+  const {user}=useUser();
+  
+
+const rootNavigationState = useRootNavigationState();
+
+useEffect(() => {
+  CheckNavLoded();
+}, []);
+
+
+const CheckNavLoded = () => {
+  if(!rootNavigationState.key)
+    return null;
+};
+
   return (
     <View
       style={{
@@ -11,9 +31,11 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Link href="/login">
-        <Text>Go To Login Screen</Text>
-      </Link>
+      {user ?
+        <Redirect href={'/(tabs)/home'} />
+           
+        :<Redirect href={'/login'}/>
+      }
     </View>
   );
 }
