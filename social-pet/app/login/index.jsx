@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Alert } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
 import { Pressable } from "react-native";
