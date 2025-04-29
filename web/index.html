@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Animal - Evcil Hayvanlarınız İçin Sosyal Platform</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            color: #FF6B35 !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #FF6B35;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .navbar-brand:hover i {
+            transform: rotate(15deg);
+        }
+
+        .nav-link {
+            color: #333 !important;
+            margin: 0 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-separator {
+            color: #FF6B35;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #FF6B35;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: #FF6B35 !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: #FF6B35;
+            border-color: #FF6B35;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #e55a2b;
+            border-color: #e55a2b;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-lg {
+            transition: all 0.3s ease;
+        }
+
+        .btn-lg:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-lg:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary:focus, 
+        .btn-primary:active, 
+        .btn-primary:focus-visible {
+            background-color: #e55a2b; /* Koyu turuncu */
+            border-color: #e55a2b; /* Koyu turuncu */
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.5); /* Hafif turuncu bir gölge */
+            outline: none;
+        }
+
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/kedikopek.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            color: white; /* #FFFFFF */
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4); /* Hafif gölge */
+            margin-bottom: 3rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: rgb(255, 107, 53); /* Turuncu */
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('images/david.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 50px 0;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(211, 255, 53, 0.182);
+            z-index: 1;
+        }
+
+        .footer .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            background-color: rgba(255, 255, 255, 0.603);
+            border: none;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: #292929; /* Açık gri */
+        }
+
+        .social-icons a {
+            color: white; /* #FFFFFF */
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #FF6B35; /* Turuncu */
+        }
+        .about {
+            background-color: #FF6B35;
+            color: white;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-paw"></i>
+                Social Animal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Özellikler</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Hakkımızda</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">İletişim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="login.html">Giriş Yap</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Evcil Hayvanlarınız İçin Sosyal Platform</h1>
+            <p class="lead mb-4">Dostunuzu daha sağlıklı, daha sosyal ve daha mutlu bir geleceğe taşıyın! Social Animal'da yeni dostluklar sizi bekliyor...</p>
+            <a href="register.html" class="btn btn-primary btn-lg">Hemen Başla</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <h2 class="text-center section-title" style="padding-bottom: 2rem;">Platform Özellikleri</h2>
+            <div class="row">
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-heartbeat feature-icon"></i><h3>Sağlık Takibi</h3><p>Aşılar, sağlık kontrolleri ve bakım takip sistemi.</p></div></div>
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-paw feature-icon"></i><h3>Eşleşme Algoritması</h3><p>Hayvanlarınız için akıllı eşleşmeler yapın.</p></div></div>
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-home feature-icon"></i><h3>Hayvan Sahiplendirme</h3><p>Sokak hayvanlarına sıcak yuva bulun.</p></div></div>
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-users feature-icon"></i><h3>Forum & Topluluk</h3><p>Bilgi alışverişi ve topluluk desteği.</p></div></div>
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-bell feature-icon"></i><h3>Anlık Bildirimler</h3><p>Eşleşmeler ve etkinlikler hakkında bildirim alın.</p></div></div>
+                <div class="col-md-4"><div class="card feature-card text-center p-4"><i class="fas fa-robot feature-icon"></i><h3>Chatbot Destek</h3><p>Sorularınıza anında yanıt veren destek sistemi.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5" style="background-color: #fff6ec;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2><b>Hakkımızda</b></h2>
+                    <br>
+                    <p>Social Animal, evcil hayvan sahiplerinin hayatını kolaylaştırmak, onları birbirine bağlamak ve sahipsiz hayvanlara sıcak yuvalar bulmak amacıyla kurulmuş bir sosyal platformdur.
+
+                        Burada evcil dostunuz için en uygun eşleşmeleri bulabilir, sahiplendirme ilanlarına göz atabilir, benzer ilgi alanlarına sahip diğer hayvan severlerle tanışabilirsiniz. Aynı zamanda veterinerlik, bakım ipuçları ve sahiplenme süreçleri hakkında güncel bilgilere kolayca ulaşabilirsiniz.
+                        
+                        Social Animal, hem evcil hayvan sahipleri hem de yeni bir dost arayanlar için güvenli ve samimi bir ortam sunar. Amacımız, yalnızca dostlarımıza değil, onların sahiplerine de güçlü bir topluluk duygusu kazandırmak.
+                        
+                        İster bir yavru kedi sahiplendirmek isteyin, ister köpeğiniz için arkadaş arıyor olun; Social Animal, siz ve evcil dostunuz için doğru yer.
+                        
+                        Hep birlikte, onların hayatlarını daha mutlu ve dolu dolu yaşamasını sağlayabiliriz. </p>
+                </div>
+                <div class="col-md-6">
+                    <img src="images/2kopek.jpg" alt="About Us" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>İletişim Bilgileri</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Adres: İstanbul, Türkiye</p>
+                    <p><i class="fas fa-phone"></i> Telefon: +90 537 041 9652</p>
+                    <p><i class="fas fa-envelope"></i> E-posta: sersoysem@gmail.com</p>
+                    <div class="social-icons mt-4">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h3>Bize Ulaşın</h3>
+                    <form class="contact-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Adınız">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="E-posta Adresiniz">
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Konu">
+                        <textarea class="form-control" rows="4" placeholder="Mesajınız"></textarea>
+                        <button type="submit" class="btn btn-primary">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html> 

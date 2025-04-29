@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evcil Hayvan Profilini Oluştur</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #FF6B35;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .left {
+      background: #FAF3EB;
+      flex: 1 1 300px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FF6B35;
+      text-align: center;
+    }
+
+    .left img {
+      width: 220px;
+      margin-bottom: 20px;
+    }
+
+    .right {
+      flex: 2 1 600px;
+      padding: 40px 32px;
+    }
+
+    h1 {
+      color: #FF6B35;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #4CAF50;
+      font-weight: 500;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #ccc;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .form-row .form-group {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .interest {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #4CAF50;
+      background: #FFF3E6;
+      color: #4CAF50;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .interest:hover, .interest.selected {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .photo-upload-section {
+      margin-top: 32px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 110px);
+      gap: 18px;
+      justify-content: start;
+    }
+
+    .photo-slot {
+      width: 110px;
+      height: 110px;
+      background: #FFF3E6;
+      border: 2px dashed #4CAF50;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border 0.2s, background 0.2s;
+    }
+
+    .photo-slot:hover {
+      border: 2px solid #FF6B35;
+      background: #FFE3D1;
+    }
+
+    .photo-slot input[type="file"] {
+      display: none;
+    }
+
+    .photo-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .add-photo-btn {
+      color: #FF6B35;
+      font-size: 2.2rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .add-photo-btn:hover {
+      color: #4CAF50;
+    }
+
+    .remove-photo-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(255,255,255,0.85);
+      border: none;
+      border-radius: 50%;
+      color: #FF6B35;
+      font-size: 1.2rem;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .remove-photo-btn:hover {
+      background: #FF6B35;
+      color: #fff;
+    }
+
+    .photo-info {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+
+    .submit-btn {
+      margin-top: 24px;
+      background: #FF6B35;
+      color: white;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #4CAF50;
+    }
+
+    @media(max-width: 1100px) {
+      .container {
+        flex-direction: column;
+        max-width: 98vw;
+      }
+      .right {
+        padding: 32px 8px;
+      }
+      .photo-grid {
+        grid-template-columns: repeat(2, 110px);
+      }
+    }
+
+    @media(max-width: 700px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      .form-row .form-group {
+        width: 100%;
+        margin-bottom: 12px;
+      }
+      #petAge-label {
+        display: inline-block;
+        width: calc(100% - 10px);
+        }
+
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="left">
+      <img src="images/deneme.png" alt="Hayvan illüstrasyonu" />
+      <h2>Evcil Hayvan Profilini Oluştur</h2>
+    </div>
+    <div class="right">
+      <h1>Evcil Hayvan Profilini Oluştur</h1>
+
+      <div class="form-group">
+        <label for="petName">Adı</label>
+        <input type="text" id="petName" placeholder="Dostunuzun adı"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="petType">Türü</label>
+          <select id="petType">
+            <option>Seçiniz</option>
+            <option>Kedi</option>
+            <option>Köpek</option>
+            <option>Kuş</option>
+            <option>Kemirgen</option>
+            <option>Diğer</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="petBreed">Cinsi</label>
+          <input type="text" id="petBreed" placeholder="Cinsi"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+            <label for="petAge" id="petAge-label">Yaşı</label>
+            <input type="number" id="petAge" placeholder="Yaş"/>
+        </div>
+
+        <div class="form-group">
+          <label for="petGender">Cinsiyeti</label>
+          <select id="petGender">
+            <option>Seçiniz</option>
+            <option>Erkek</option>
+            <option>Dişi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="petDesc">Açıklama</label>
+        <textarea id="petDesc" rows="3" placeholder="Kısa bir açıklama..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>İlgi Alanları</label>
+        <div class="interests">
+          <span class="interest">Top</span>
+          <span class="interest">Tüy Oyuncağı</span>
+          <span class="interest">Koşmak</span>
+          <span class="interest">Kucak</span>
+          <span class="interest">Yüzmek</span>
+          <span class="interest">Kedi Otu</span>
+        </div>
+      </div>
+
+      <div class="photo-upload-section">
+        <label style="color:#FF6B35;font-weight:600;">Profil Fotoğrafları</label>
+        <div class="photo-grid" id="photoGrid">
+          <label class="photo-slot">
+            <input type="file" accept="image/*" onchange="handlePhoto(event,0)">
+            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
+          </label>
+          <label class="photo-slot">
+            <input type="file" accept="image/*" onchange="handlePhoto(event,1)">
+            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
+          </label>
+          <label class="photo-slot">
+            <input type="file" accept="image/*" onchange="handlePhoto(event,2)">
+            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
+          </label>
+          <label class="photo-slot">
+            <input type="file" accept="image/*" onchange="handlePhoto(event,3)">
+            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
+          </label>
+        </div>
+        <p class="photo-info">En az 1, en fazla 4 fotoğraf yükleyin.</p>
+      </div>
+
+      <button class="submit-btn">Devam</button>
+    </div>
+  </div>
+
+  <script>
+    // Fotoğraf yükleme ve gösterme
+    const photoGrid = document.getElementById('photoGrid');
+    function handlePhoto(event, idx) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const slot = photoGrid.children[idx];
+        let img = slot.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          slot.appendChild(img);
+          slot.querySelector('.add-photo-btn').style.display = 'none';
+        }
+        img.src = e.target.result;
+        // Silme butonunu ekle
+        let removeBtn = slot.querySelector('.remove-photo-btn');
+        if (!removeBtn) {
+          removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-photo-btn';
+          removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+          removeBtn.onclick = function(ev) {
+            ev.stopPropagation();
+            img.remove();
+            removeBtn.remove();
+            slot.querySelector('.add-photo-btn').style.display = '';
+            slot.querySelector('input[type="file"]').value = '';
+          };
+          slot.appendChild(removeBtn);
+        }
+        removeBtn.style.display = '';
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+</body>
+</html>
