@@ -4,7 +4,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { db } from './../../config/FireBaseConfig'
 import Colors from './../../constants/Colors'
 
-export default function Category({Category}) {
+export default function Category({category}) {
   const [CategoryList, setCategoryList] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Dogs')
 
@@ -47,7 +47,7 @@ export default function Category({Category}) {
           <TouchableOpacity
             onPress={() => {
               setSelectedCategory(item.name);
-              Category(item.name)
+              category(item.name)
 
             }}
             style={styles.categoryItem}
@@ -73,13 +73,13 @@ export default function Category({Category}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: 'rgb(232, 178, 14)',
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: Colors.PRIMARY,
+    borderColor: 'rgb(220, 169, 15)',
     marginBottom: 5,
     width: 70,
     height: 70,
