@@ -4,42 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Evcil Hayvan Profilini Oluştur</title>
+  <link rel="icon" type="image/x-icon" href="images/turuncu-pati.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: #FF6B35;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: url('images/agac2.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
     .container {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-wrap: wrap;
       max-width: 1200px;
       margin: 40px auto;
-      background: white;
+      background: rgba(255, 255, 255, 0.762);
       border-radius: 16px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
       overflow: hidden;
     }
 
     .left {
-      background: #FAF3EB;
+      background: rgba(221, 134, 103, 0.215);
       flex: 1 1 300px;
       padding: 32px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #FF6B35;
+      color: white;
       text-align: center;
+      position: relative;
     }
 
-    .left img {
+    .left img.pet-illustration {
       width: 220px;
       margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
     }
+
+    .left img.design-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 1;
+      opacity: 0.8;
+    }
+
+    .left h2 {
+      position: relative;
+      z-index: 2;
+    }
+    .top-offset {
+      top: calc(50% - 400px) !important; /* 125px yukarı kaydır */
+    }
+
 
     .right {
       flex: 2 1 600px;
@@ -59,7 +94,7 @@
     label {
       display: block;
       margin-bottom: 6px;
-      color: #4CAF50;
+      color: #FF6B35;
       font-weight: 500;
     }
 
@@ -80,11 +115,13 @@
     .form-row {
       display: flex;
       gap: 16px;
+      margin-bottom: 16px;
     }
 
     .form-row .form-group {
       flex: 1 1 0;
       min-width: 0;
+      margin-bottom: 0;
     }
 
     .interests {
@@ -97,16 +134,49 @@
     .interest {
       padding: 6px 12px;
       border-radius: 20px;
-      border: 1px solid #4CAF50;
+      border: 1px solid #FF6B35;
       background: #FFF3E6;
-      color: #4CAF50;
+      color: #FF6B35;
       font-size: 0.9rem;
       cursor: pointer;
+      user-select: none;
     }
 
     .interest:hover, .interest.selected {
       background: #4CAF50;
+      border-color: rgb(77, 173, 80);
       color: white;
+    }
+
+    .custom-interest {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .custom-interest input {
+      flex: 1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid #FF6B35;
+      font-size: 0.9rem;
+    }
+
+    .custom-interest button {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid #FF6B35;
+      background: #FF6B35;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .custom-interest button:hover {
+      background: #3d8b40;
+      border-color: rgb(77, 173, 80);
     }
 
     .photo-upload-section {
@@ -124,7 +194,7 @@
       width: 110px;
       height: 110px;
       background: #FFF3E6;
-      border: 2px dashed #4CAF50;
+      border: 2px dashed #FF6B35;
       border-radius: 16px;
       display: flex;
       align-items: center;
@@ -229,11 +299,11 @@
     @media(max-width: 700px) {
       .form-row {
         flex-direction: column;
-        gap: 0;
+        gap: 16px;
       }
       .form-row .form-group {
         width: 100%;
-        margin-bottom: 12px;
+        margin-bottom: 0;
       }
       #petAge-label {
         display: inline-block;
@@ -241,46 +311,133 @@
         }
 
     }
+
+    .custom-breed-input {
+      display: none;
+      margin-top: 8px;
+    }
+
+    .custom-breed-input input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #FF6B35;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .custom-breed-input input:focus {
+      border-color: #FF6B35;
+      outline: none;
+    }
+
+    .file-upload-section {
+      margin-top: 24px;
+    }
+
+    .file-upload-group {
+      margin-bottom: 16px;
+    }
+
+    .file-upload-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #FF6B35;
+      font-weight: 500;
+    }
+
+    .file-upload-box {
+      border: 2px dashed #FF6B35;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #FFF3E6;
+    }
+
+    .file-upload-box:hover {
+      background: #FFE3D1;
+    }
+
+    .file-upload-box input[type="file"] {
+      display: none;
+    }
+
+    .file-upload-icon {
+      color: #FF6B35;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .file-upload-text {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .file-name {
+      margin-top: 8px;
+      color: #FF6B35;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .file-upload-box.has-file {
+      border-style: solid;
+    }
+
+    .file-upload-box.has-file .file-name {
+      display: block;
+    }
+
+    .file-upload-box.has-file .file-upload-text {
+      display: none;
+    }
   </style>
 </head>
 <body>
-
   <div class="container">
     <div class="left">
-      <img src="images/deneme.png" alt="Hayvan illüstrasyonu" />
-      <h2>Evcil Hayvan Profilini Oluştur</h2>
+      <img src="images/tasarım1.png" alt="Tasarım" class="design-overlay top-offset" />
+
+      <img src="images/deneme2.png" alt="Hayvan illüstrasyonu" class="pet-illustration" style="width: 100%; padding-top: 50px;"/>
     </div>
     <div class="right">
       <h1>Evcil Hayvan Profilini Oluştur</h1>
 
       <div class="form-group">
         <label for="petName">Adı</label>
-        <input type="text" id="petName" placeholder="Dostunuzun adı"/>
+        <input type="text" id="petName" placeholder="Dostunuzun adı" style="width: 97%;"/>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label for="petType">Türü</label>
-          <select id="petType">
-            <option>Seçiniz</option>
-            <option>Kedi</option>
-            <option>Köpek</option>
-            <option>Kuş</option>
-            <option>Kemirgen</option>
-            <option>Diğer</option>
+          <select id="petType" onchange="updateBreeds()">
+            <option value="">Seçiniz</option>
+            <option value="Kedi">Kedi</option>
+            <option value="Köpek">Köpek</option>
+            <option value="Kuş">Kuş</option>
+            <option value="Kemirgen">Kemirgen</option>
+            <option value="Diğer">Diğer</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="petBreed">Cinsi</label>
-          <input type="text" id="petBreed" placeholder="Cinsi"/>
+          <select id="petBreed" onchange="handleBreedChange()" disabled>
+            <option value="">Önce türü seçin</option>
+          </select>
+          <div id="customBreedInput" class="custom-breed-input">
+            <input type="text" id="otherBreed" placeholder="Cinsini yazın..." style="width: 94%;">
+          </div>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
             <label for="petAge" id="petAge-label">Yaşı</label>
-            <input type="number" id="petAge" placeholder="Yaş"/>
+            <input type="number" id="petAge" placeholder="Yaş" style="width: 94%;"/>
         </div>
 
         <div class="form-group">
@@ -294,19 +451,65 @@
       </div>
 
       <div class="form-group">
+        <label for="sterilizationStatus">Kısırlaştırma Durumu</label>
+        <select id="sterilizationStatus">
+          <option value="">Seçiniz</option>
+          <option value="sterilized">Kısırlaştırıldı</option>
+          <option value="not_sterilized">Kısırlaştırılmadı</option>
+          <option value="unknown">Bilinmiyor</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label for="petDesc">Açıklama</label>
-        <textarea id="petDesc" rows="3" placeholder="Kısa bir açıklama..."></textarea>
+        <textarea id="petDesc" rows="3" placeholder="Kısa bir açıklama..." style="font-family: inherit; width: 97%;"></textarea>
+      </div>
+
+      <div class="file-upload-section">
+        <div class="file-upload-group">
+          <label class="file-upload-label">Aşı Karnesi</label>
+          <label class="file-upload-box" id="vaccinationCardBox">
+            <input type="file" id="vaccinationCard" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vaccinationCardBox')">
+            <div class="file-upload-icon">
+              <i class="fas fa-file-medical"></i>
+            </div>
+            <div class="file-upload-text">
+              Aşı karnesini yüklemek için tıklayın<br>
+              <small>(PDF, JPG, PNG)</small>
+            </div>
+            <div class="file-name"></div>
+          </label>
+        </div>
+
+        <div class="file-upload-group">
+          <label class="file-upload-label">Veteriner Raporu</label>
+          <label class="file-upload-box" id="vetReportBox">
+            <input type="file" id="vetReport" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vetReportBox')">
+            <div class="file-upload-icon">
+              <i class="fas fa-file-medical-alt"></i>
+            </div>
+            <div class="file-upload-text">
+              Veteriner raporunu yüklemek için tıklayın<br>
+              <small>(PDF, JPG, PNG)</small>
+            </div>
+            <div class="file-name"></div>
+          </label>
+        </div>
       </div>
 
       <div class="form-group">
         <label>İlgi Alanları</label>
         <div class="interests">
-          <span class="interest">Top</span>
-          <span class="interest">Tüy Oyuncağı</span>
-          <span class="interest">Koşmak</span>
-          <span class="interest">Kucak</span>
-          <span class="interest">Yüzmek</span>
-          <span class="interest">Kedi Otu</span>
+          <span class="interest" onclick="toggleInterest(this)">Top</span>
+          <span class="interest" onclick="toggleInterest(this)">Tüy Oyuncağı</span>
+          <span class="interest" onclick="toggleInterest(this)">Koşmak</span>
+          <span class="interest" onclick="toggleInterest(this)">Kucak</span>
+          <span class="interest" onclick="toggleInterest(this)">Yüzmek</span>
+          <span class="interest" onclick="toggleInterest(this)">Kedi Otu</span>
+        </div>
+        <div class="custom-interest">
+          <input type="text" id="newInterest" placeholder="Yeni ilgi alanı ekle...">
+          <button onclick="addCustomInterest()">Ekle</button>
         </div>
       </div>
 
@@ -340,6 +543,95 @@
   <script>
     // Fotoğraf yükleme ve gösterme
     const photoGrid = document.getElementById('photoGrid');
+
+    // Tür ve cins ilişkisi
+    const breedOptions = {
+      'Kedi': [
+        'British Shorthair',
+        'Scottish Fold',
+        'İran Kedisi',
+        'Van Kedisi',
+        'Maine Coon',
+        'Siyam',
+        'Bengal',
+        'Sphynx',
+        'Ragdoll',
+        'Diğer'
+      ],
+      'Köpek': [
+        'Golden Retriever',
+        'Labrador',
+        'Pomeranian',
+        'Poodle',
+        'Chihuahua',
+        'Beagle',
+        'Cocker Spaniel',
+        'Doberman',
+          'Shih Tzu',
+        'Diğer'
+      ],
+      'Kuş': [
+        'Muhabbet Kuşu',
+        'Sultan Papağanı',
+        'Kanarya',
+        'Cennet Papağanı',
+        'Zebra İspinozu',
+        'Macaw',
+        'Afrika Gri Papağanı',
+        'Diğer'
+      ],
+      'Kemirgen': [
+        'Syrian Hamster',
+        'Winter White',
+        'Roborovski',
+        'Campbell Dwarf',
+        'Chinese Hamster',
+        'Diğer'
+      ],
+      'Diğer': ['Belirtilmedi']
+    };
+
+    function updateBreeds() {
+      const petType = document.getElementById('petType').value;
+      const breedSelect = document.getElementById('petBreed');
+      const customBreedInput = document.getElementById('customBreedInput');
+      
+      // Önceki seçenekleri temizle
+      breedSelect.innerHTML = '';
+      customBreedInput.style.display = 'none';
+      
+      if (petType && breedOptions[petType]) {
+        // Cins seçimini aktif et
+        breedSelect.disabled = false;
+        
+        // Yeni seçenekleri ekle
+        breedOptions[petType].forEach(breed => {
+          const option = document.createElement('option');
+          option.value = breed;
+          option.textContent = breed;
+          breedSelect.appendChild(option);
+        });
+      } else {
+        // Tür seçilmediğinde veya geçersiz tür seçildiğinde
+        breedSelect.disabled = true;
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'Önce türü seçin';
+        breedSelect.appendChild(option);
+      }
+    }
+
+    function handleBreedChange() {
+      const breedSelect = document.getElementById('petBreed');
+      const customBreedInput = document.getElementById('customBreedInput');
+      
+      if (breedSelect.value === 'Diğer') {
+        customBreedInput.style.display = 'block';
+      } else {
+        customBreedInput.style.display = 'none';
+      }
+    }
+
     function handlePhoto(event, idx) {
       const file = event.target.files[0];
       if (!file) return;
@@ -371,6 +663,51 @@
         removeBtn.style.display = '';
       };
       reader.readAsDataURL(file);
+    }
+  </script>
+
+  <script>
+    // İlgi alanı seçme fonksiyonu
+    function toggleInterest(element) {
+      element.classList.toggle('selected');
+    }
+
+    // Özel ilgi alanı ekleme fonksiyonu
+    function addCustomInterest() {
+      const input = document.getElementById('newInterest');
+      const value = input.value.trim();
+      
+      if (value) {
+        const interests = document.querySelector('.interests');
+        const newInterest = document.createElement('span');
+        newInterest.className = 'interest';
+        newInterest.textContent = value;
+        newInterest.onclick = function() { toggleInterest(this); };
+        interests.appendChild(newInterest);
+        input.value = '';
+      }
+    }
+
+    // Enter tuşu ile özel ilgi alanı ekleme
+    document.getElementById('newInterest').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        addCustomInterest();
+      }
+    });
+  </script>
+
+  <script>
+    function handleFileUpload(input, boxId) {
+      const box = document.getElementById(boxId);
+      const fileName = input.files[0]?.name;
+      
+      if (fileName) {
+        box.classList.add('has-file');
+        box.querySelector('.file-name').textContent = fileName;
+      } else {
+        box.classList.remove('has-file');
+        box.querySelector('.file-name').textContent = '';
+      }
     }
   </script>
 
