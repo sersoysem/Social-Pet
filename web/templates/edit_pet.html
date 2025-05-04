@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pet Bilgilerini Düzenle</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h2 class="mb-4">🐾 Pet Bilgilerini Düzenle</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">Pet İsmi</label>
+        <input type="text" class="form-control" name="name" value="{{ pet.name }}" required>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Pet Yaşı</label>
+        <input type="text" class="form-control" name="age" value="{{ pet.age }}" required>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Pet Adres'i</label>
+        <input type="text" class="form-control" name="address" value="{{ pet.address }}" required>
+      </div>
+      
+      <div class="mb-3">
+        <div class="form-group">
+          <label for="petGender">Cinsiyeti</label>
+          <select id="petGender" name="petGender" class="form-control" required>
+            <option value="Erkek" {% if pet.sex == "Erkek" %}selected{% endif %}>Erkek</option>
+            <option value="Dişi" {% if pet.sex == "Dişi" %}selected{% endif %}>Dişi</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Açıklama (Bio)</label>
+        <textarea class="form-control" name="bio" rows="3">{{ pet.bio }}</textarea>
+      </div>
+
+      <div style="display: flex; gap: 40px; align-items: center; margin-bottom: 30px;">
+        <!-- Eski Görsel -->
+        <div style="text-align: center;">
+          <p><strong>Mevcut Görsel</strong></p>
+          <img src="{{ pet.imageUrl }}" alt="Eski Görsel" width="180" style="border-radius: 12px; border: 2px solid #ccc;">
+        </div>
+    
+        <!-- Ok işareti -->
+        <div style="font-size: 30px;">➡️</div>
+    
+        <!-- Yeni Görsel -->
+        <div style="text-align: center;">
+          <p><strong>Yeni Görsel</strong></p>
+          <input type="file" name="new_photo" accept="image/*" onchange="previewImage(event)">
+          <br>
+          <img id="preview" src="#" alt="Yeni Görsel Önizleme" style="display:none; width: 180px; margin-top: 10px; border-radius: 12px; border: 2px solid #ccc;">
+        </div>
+      </div>
+
+      <!-- Butonlar -->
+      <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; margin-bottom: 50px;">Güncelle</button>
+      <a href="/my-pets/" style="margin-left: 20px; color: #ff4444; text-decoration: none;">İptal</a>
+
+    </form>
+  </div>
+
+  <script>
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const preview = document.getElementById("preview");
+      preview.src = reader.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+  </script>
+    
+</body>
+</html>

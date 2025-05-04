@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evcil Hayvanlarım</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .user-info img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #ff6b35;
+      object-fit: cover;
+    }
+    .user-details h2 {
+      margin: 0;
+      color: #333;
+    }
+    .user-details small {
+      color: #666;
+    }
+
+    .pet-card {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: #fff5ed;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+      box-shadow: 0 5px 15px rgba(255,107,53,0.1);
+    }
+    .pet-card img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #ff6b35;
+    }
+    .pet-details {
+      flex: 1;
+    }
+    .pet-details h3 {
+      margin: 0 0 8px;
+      color: #444;
+      font-size: 1.2rem;
+    }
+    .pet-details p {
+      margin: 3px 0;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .bottom-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    .btn-orange {
+      background-color: #ff6b35;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+      transition: 0.3s;
+    }
+    .btn-orange:hover {
+      background-color: #e35a27;
+    }
+
+    .btn-profile {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+    }
+    .btn-profile:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    {% if pets %}
+      <!-- Kullanıcı Bilgileri -->
+      <div class="user-info">
+        <img src="{{ pets.0.pp }}" alt="Profil Foto">
+        <div class="user-details">
+          <h2>{{ pets.0.uname }}</h2>
+          <small>{{ pets.0.email }}</small><br>
+          <small><i class="fas fa-map-marker-alt"></i> {{ pets.0.address }}</small>
+          <br><br>
+          <a href="/edit-profile/" class="btn-profile">
+            <i class="fas fa-user-edit"></i> Profilimi Düzenle
+          </a>
+        </div>
+      </div>
+      
+
+      <!-- Kullanıcının Hayvanları -->
+      <h2 style="color:#ff6b35;">Evcil Hayvanlarım</h2>
+      {% for pet in pets %}
+      <div class="pet-card">
+        <img src="{{ pet.imageUrl }}" alt="{{ pet.name }}">
+        <div class="pet-details">
+          <h3>{{ pet.name }} <small style="color:#999;">({{ pet.category }})</small></h3>
+          <p><strong>Cins:</strong> {{ pet.breed }}</p>
+          <p><strong>Yaş:</strong> {{ pet.age }} yıl | <strong>Kilo:</strong> {{ pet.weight }} kg | <strong>Cinsiyet:</strong> {{ pet.sex }}</p>
+          <p><strong>Hakkında:</strong> {{ pet.bio }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>Henüz evcil hayvan eklemediniz.</p>
+    {% endif %}
+
+    <!-- Alt Butonlar -->
+    <div class="bottom-buttons">
+      <a href="/home/" class="btn-orange"><i class="fas fa-arrow-left"></i> Geri Dön</a>
+      <div>
+        <a href="/pet-profile/" class="btn-orange">+ Yeni Pet Ekle</a>
+        <a href="/my-pets/" class="btn-orange" style="margin-left: 10px;"><i class="fas fa-edit"></i> Petleri Düzenle</a>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+</html>

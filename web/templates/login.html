@@ -207,9 +207,24 @@ body, .page-wrapper {
     <div class="page-wrapper">
       <div class="login-container">
         <div class="login-header">
-          <img src="images/tasarım1.png" alt="logo" class="logo">
+          <img src="/static/images/tasarim.png" alt="logo" class="logo">
         </div>
-        <form action="/login" method="POST">
+        {% if messages %}
+          <div id="toast" style="background:#FF6B35;color:white;padding:10px;border-radius:5px;margin-bottom:10px;">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          </div>
+          <script>
+            setTimeout(() => {
+              const toast = document.getElementById('toast');
+              if (toast) toast.style.display = 'none';
+            }, 3000); // 3 saniye sonra kaybolur
+          </script>
+        {% endif %}
+
+        <form action="/api/login/submit/" method="POST">
+          {% csrf_token %}        
           <div class="form-group">
             <label for="email">E-posta</label>
             <input type="email" id="email" name="email" required placeholder="E-posta adresinizi girin">
@@ -220,19 +235,21 @@ body, .page-wrapper {
           </div>
           <button type="submit" class="login-button">Giriş Yap</button>
         </form>
-        <button class="google-button">
+        
+        <button id="google-signin" class="google-button">
           <img src="https://www.google.com/favicon.ico" alt="Google">
           Google ile devam et
         </button>
+        
         <div class="register-link">
           <p>Hesabınız yok mu?</p>
-          <a href="register.html">Hesap oluştur</a>
+          <a href="/register/">Hesap oluştur</a>
         </div>
       </div>
   
       <div class="video-side">
         <video autoplay muted loop playsinline>
-          <source src="images/222838.mp4" type="video/mp4">
+          <source src="/static/images/222838.mp4" type="video/mp4">
           Tarayıcınız video etiketini desteklemiyor.
         </video>
       </div>

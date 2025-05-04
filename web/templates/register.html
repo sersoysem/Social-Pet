@@ -215,10 +215,11 @@
   <div class="page-wrapper">
     <div class="register-container">
       <div class="register-header">
-        <img src="images/tasarım1.png" alt="logo" class="logo">
+        <img src="/static/images/tasarim.png" alt="logo" class="logo">
       </div>
 
-      <form action="/register" method="POST">
+      <form action="/register/submit/" method="POST">
+        {% csrf_token %}
         <div class="form-row">
           <div class="form-group form-col">
             <label for="name">Ad Soyad</label>
@@ -258,10 +259,40 @@
 
     <div class="video-side">
       <video autoplay muted loop playsinline>
-        <source src="images/241180.mp4" type="video/mp4">
+        <source src="/static/images/241180.mp4" type="video/mp4">
         Tarayıcınız video etiketini desteklemiyor.
       </video>
     </div>
   </div>
 </body>
 </html>
+
+
+<script>
+  // CSRF token'ı çerezlerden al
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // ismi eşleşiyorsa
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+
+  // input oluşturup forma CSRF token'ı ekle
+  const form = document.querySelector('form');
+  const input = document.createElement('input');
+  input.setAttribute('type', 'hidden');
+  input.setAttribute('name', 'csrfmiddlewaretoken');
+  input.setAttribute('value', csrftoken);
+  form.appendChild(input);
+</script>

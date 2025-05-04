@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Profilimi Düzenle</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #ff6b35;
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      background-color: #ff6b35;
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #e65b2a;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #777;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Profilimi Düzenle</h2>
+    <form method="POST" action="/edit-profile/">
+      {% csrf_token %}
+      <label for="uname">Ad Soyad</label>
+      <input type="text" name="uname" id="uname" value="{{ uname }}" required>
+
+      <label for="email">E-posta</label>
+      <input type="email" name="email" id="email" value="{{ email }}" required>
+
+      <label for="pp">Profil Fotoğrafı URL</label>
+      <input type="text" name="pp" id="pp" value="{{ pp }}" required>
+
+      <button type="submit">Güncelle</button>
+    </form>
+
+    <a href="/dashboard/" class="back-link"><i class="fas fa-arrow-left"></i> Geri Dön</a>
+  </div>
+</body>
+</html>

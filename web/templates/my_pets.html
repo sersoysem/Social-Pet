@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Hayvanlarım - SocialPet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      color: #FF6B35;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .pet-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      transition: transform 0.2s ease;
+    }
+
+    .pet-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .pet-img {
+      border-radius: 12px;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .pet-info {
+      flex: 1;
+    }
+
+    .pet-info p {
+      margin: 6px 0;
+      color: #444;
+    }
+
+    .pet-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-edit {
+      background-color: #00BFA6;
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background-color: #009e8a;
+    }
+
+    .btn-delete {
+      background-color: #FF4444;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1><i class="fas fa-paw"></i> Hayvanlarım</h1>
+
+  {% for pet in pets %}
+    <div class="pet-card">
+      <img src="{{ pet.imageUrl }}" alt="Foto" class="pet-img">
+      <div class="pet-info">
+        <h3>{{ pet.name }}</h3>
+        <p><strong>Tür:</strong> {{ pet.category }}</p>
+        <p><strong>Cins:</strong> {{ pet.breed }}</p>
+        <p><strong>Yaş:</strong> {{ pet.age }}</p>
+        <p><strong>Aile:</strong> {{ pet.uname }} | {{ pet.email }}</p>
+      </div>
+      <div class="pet-actions">
+        <a href="/edit-pet/{{ pet.id }}" class="btn btn-edit"><i class="fas fa-edit"></i> Düzenle</a>
+        <form action="/delete-pet/" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="pet_id" value="{{ pet.doc_id }}">
+          <button type="submit" class="btn btn-delete"><i class="fas fa-trash"></i> Sil</button>
+        </form>
+      </div>
+    </div>
+  {% empty %}
+    <p style="text-align:center; color: #888; font-size: 1.1rem;">Henüz hiç hayvan eklemediniz.</p>
+  {% endfor %}
+
+  <!-- Yeni Pet Ekle Butonu -->
+  <div style="text-align: center; margin-top: 40px;">
+    <a href="/pet-profile/" style="background-color: #27AE60; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.15); transition: 0.3s;">
+      + Yeni Pet Ekle
+    </a>
+  </div>
+
+  <!-- Geri Dön Butonu -->
+  <div style="position: absolute; top: 20px; left: 20px;">
+    <a href="/dashboard/" style="background-color: #FF6B35; color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: background-color 0.3s;">
+      ← Geri Dön
+    </a>
+  </div>
+
+
+</body>
+</html>

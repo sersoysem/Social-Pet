@@ -15,7 +15,7 @@
       position: relative;
       min-height: 100vh;
       overflow-x: hidden;
-      background-image: url('images/agac2.png');
+      background-image: url('/static/images/agac2.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -398,34 +398,39 @@
 <body>
   <div class="container">
     <div class="left">
-      <img src="images/tasarım1.png" alt="Tasarım" class="design-overlay top-offset" />
+      <img src="/static/images/tasarım1.png" alt="Tasarım" class="design-overlay top-offset" />
 
-      <img src="images/deneme2.png" alt="Hayvan illüstrasyonu" class="pet-illustration" style="width: 100%; padding-top: 50px;"/>
+      <img src="/static/images/deneme2.png" alt="Hayvan illüstrasyonu" class="pet-illustration" style="width: 100%; padding-top: 50px;"/>
     </div>
     <div class="right">
       <h1>Evcil Hayvan Profilini Oluştur</h1>
-
+    <form action="/add-pet/" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <!-- Adı -->
       <div class="form-group">
         <label for="petName">Adı</label>
-        <input type="text" id="petName" placeholder="Dostunuzun adı" style="width: 97%;"/>
+        <input type="text" name="petName" id="petName" placeholder="Dostunuzun adı" style="width: 97%;"/>
       </div>
 
       <div class="form-row">
+        <!-- Tür -->
         <div class="form-group">
           <label for="petType">Türü</label>
-          <select id="petType" onchange="updateBreeds()">
+          <select id="petType" name="petType" onchange="updateBreeds()">
             <option value="">Seçiniz</option>
-            <option value="Kedi">Kedi</option>
-            <option value="Köpek">Köpek</option>
-            <option value="Kuş">Kuş</option>
-            <option value="Kemirgen">Kemirgen</option>
-            <option value="Diğer">Diğer</option>
+            <option value="Cats">Kedi</option>
+            <option value="Dogs">Köpek</option>
+            <option value="Birds">Kuş</option>
+            <option value="Hamsters">Kemirgen</option>
+            <option value="Others">Diğer</option>
           </select>
         </div>
 
+        <!-- Cins -->
         <div class="form-group">
           <label for="petBreed">Cinsi</label>
-          <select id="petBreed" onchange="handleBreedChange()" disabled>
+          <select id="petBreed" name="petBreed" onchange="handleBreedChange()" disabled>
             <option value="">Önce türü seçin</option>
           </select>
           <div id="customBreedInput" class="custom-breed-input">
@@ -434,15 +439,17 @@
         </div>
       </div>
 
+      <!-- Yaş -->
       <div class="form-row">
         <div class="form-group">
             <label for="petAge" id="petAge-label">Yaşı</label>
-            <input type="number" id="petAge" placeholder="Yaş" style="width: 94%;"/>
+            <input type="number" name="petAge" id="petAge" placeholder="Yaş" style="width: 94%;"/>
         </div>
 
+        <!-- Cinsiyet -->
         <div class="form-group">
           <label for="petGender">Cinsiyeti</label>
-          <select id="petGender">
+          <select id="petGender" name="petGender">
             <option>Seçiniz</option>
             <option>Erkek</option>
             <option>Dişi</option>
@@ -450,9 +457,10 @@
         </div>
       </div>
 
+      <!-- Kısırlaştırma -->
       <div class="form-group">
         <label for="sterilizationStatus">Kısırlaştırma Durumu</label>
-        <select id="sterilizationStatus">
+        <select id="sterilizationStatus" name="sterilizationStatus">
           <option value="">Seçiniz</option>
           <option value="sterilized">Kısırlaştırıldı</option>
           <option value="not_sterilized">Kısırlaştırılmadı</option>
@@ -460,16 +468,25 @@
         </select>
       </div>
 
+      <!-- Açıklama -->
       <div class="form-group">
         <label for="petDesc">Açıklama</label>
-        <textarea id="petDesc" rows="3" placeholder="Kısa bir açıklama..." style="font-family: inherit; width: 97%;"></textarea>
+        <textarea id="petDesc" name="petDesc" rows="3" placeholder="Kısa bir açıklama..." style="font-family: inherit; width: 97%;"></textarea>
       </div>
 
+      <!-- Adres -->
+      <div class="form-group">
+        <label for="petAddress">Adres</label>
+        <textarea id="petAddress" name="petAddress" rows="2" placeholder="Evcil hayvanın konumunu belirtin..." style="font-family: inherit; width: 97%;"></textarea>
+      </div>
+      
+
+      <!-- Aşı Karnesi -->
       <div class="file-upload-section">
         <div class="file-upload-group">
           <label class="file-upload-label">Aşı Karnesi</label>
           <label class="file-upload-box" id="vaccinationCardBox">
-            <input type="file" id="vaccinationCard" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vaccinationCardBox')">
+            <input type="file" id="vaccinationCard" name="vaccination_card" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vaccinationCardBox')">
             <div class="file-upload-icon">
               <i class="fas fa-file-medical"></i>
             </div>
@@ -481,10 +498,11 @@
           </label>
         </div>
 
+        <!-- Veteriner Raporu -->
         <div class="file-upload-group">
           <label class="file-upload-label">Veteriner Raporu</label>
           <label class="file-upload-box" id="vetReportBox">
-            <input type="file" id="vetReport" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vetReportBox')">
+            <input type="file" id="vetReport" name="vet_report" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vetReportBox')">
             <div class="file-upload-icon">
               <i class="fas fa-file-medical-alt"></i>
             </div>
@@ -497,6 +515,7 @@
         </div>
       </div>
 
+      <!-- İlgi Alanları -->
       <div class="form-group">
         <label>İlgi Alanları</label>
         <div class="interests">
@@ -509,34 +528,40 @@
         </div>
         <div class="custom-interest">
           <input type="text" id="newInterest" placeholder="Yeni ilgi alanı ekle...">
-          <button onclick="addCustomInterest()">Ekle</button>
+          <button type="button" onclick="addCustomInterest()">Ekle</button>
         </div>
+
+        <!-- Gizli alan -->
+        <input type="hidden" name="ownerEmail" value="{{ user_email }}">
+        <input type="hidden" name="interests" id="interestsInput">
       </div>
 
+      <!-- Fotoğraf Ekleme -->
       <div class="photo-upload-section">
         <label style="color:#FF6B35;font-weight:600;">Profil Fotoğrafları</label>
         <div class="photo-grid" id="photoGrid">
           <label class="photo-slot">
-            <input type="file" accept="image/*" onchange="handlePhoto(event,0)">
+            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,0)">
             <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
           </label>
           <label class="photo-slot">
-            <input type="file" accept="image/*" onchange="handlePhoto(event,1)">
+            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,1)">
             <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
           </label>
           <label class="photo-slot">
-            <input type="file" accept="image/*" onchange="handlePhoto(event,2)">
+            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,2)">
             <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
           </label>
           <label class="photo-slot">
-            <input type="file" accept="image/*" onchange="handlePhoto(event,3)">
+            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,3)">
             <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
           </label>
         </div>
         <p class="photo-info">En az 1, en fazla 4 fotoğraf yükleyin.</p>
       </div>
 
-      <button class="submit-btn">Devam</button>
+      <button type="submit" class="submit-btn">Devam</button>
+</form>
     </div>
   </div>
 
@@ -546,7 +571,7 @@
 
     // Tür ve cins ilişkisi
     const breedOptions = {
-      'Kedi': [
+      'Cats': [
         'British Shorthair',
         'Scottish Fold',
         'İran Kedisi',
@@ -558,7 +583,7 @@
         'Ragdoll',
         'Diğer'
       ],
-      'Köpek': [
+      'Dogs': [
         'Golden Retriever',
         'Labrador',
         'Pomeranian',
@@ -570,7 +595,7 @@
           'Shih Tzu',
         'Diğer'
       ],
-      'Kuş': [
+      'Birds': [
         'Muhabbet Kuşu',
         'Sultan Papağanı',
         'Kanarya',
@@ -580,7 +605,7 @@
         'Afrika Gri Papağanı',
         'Diğer'
       ],
-      'Kemirgen': [
+      'Hamsters': [
         'Syrian Hamster',
         'Winter White',
         'Roborovski',
@@ -588,7 +613,7 @@
         'Chinese Hamster',
         'Diğer'
       ],
-      'Diğer': ['Belirtilmedi']
+      'Others': ['Belirtilmedi']
     };
 
     function updateBreeds() {
@@ -709,6 +734,13 @@
         box.querySelector('.file-name').textContent = '';
       }
     }
+  </script>
+
+  <script>
+    document.querySelector('form').addEventListener('submit', function (e) {
+      const selected = Array.from(document.querySelectorAll('.interest.selected')).map(el => el.textContent);
+      document.getElementById('interestsInput').value = JSON.stringify(selected);
+    });
   </script>
 
 </body>
