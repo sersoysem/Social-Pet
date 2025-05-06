@@ -4,14 +4,16 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MarkFav from '../MarkFav';
 
 export default function PetInfo({pet}) {
+  console.log('📷 Görsel URL:', pet.imageUrl);
   return (
     <View>
       <Image source={{uri:pet.imageUrl}} 
       style={{
         width:'100%', 
         height:400, 
-        objectFit:'cover'
+        
         }}
+        resizeMode="cover" 
         />
         <View style={{
             padding:20,

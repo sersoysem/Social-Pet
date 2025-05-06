@@ -32,7 +32,7 @@ export default function PetSubInfo({pet}) {
          <PetSubInfoCard 
          icon={require('../../assets/images/sex.png')} 
          title='Cinsiyet' 
-         value={pet?.sex}
+         value={pet?.sex === 'Male' ? 'Erkek' : pet?.sex === 'Female' ? 'Dişi' : 'Diğer'}
          />
          
          <PetSubInfoCard 

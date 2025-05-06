@@ -7,13 +7,16 @@ import MarkFav from '../MarkFav';
 export default function PetListItem({pet}) {
 
     const router = useRouter();
-
+    console.log(pet.imageUrl)
   return (
     <TouchableOpacity  
     
     onPress={() => router.push({
         pathname: '/pet-details',
-        params:pet
+        params: {
+            pet: encodeURIComponent(JSON.stringify(pet)) 
+        }
+      
     })}
     
     style={{
