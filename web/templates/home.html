@@ -6,10 +6,340 @@
     <title>{% block title %}Social Pet{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-left .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            gap: 10px;
+        }
+
+        .nav-left .logo i {
+            font-size: 2rem;
+            color: #FF6B35;
+        }
+
+        .nav-left .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-item .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .nav-item .nav-link:hover {
+            color: #FF6B35;
+        }
+
+        .nav-item .profile-pic {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+            color: #FF6B35;
+        }
+
+        .dropdown-content a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-content a.logout {
+            color: #dc3545;
+        }
+
+        .dropdown-content a.logout:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Container Layout */
+        .container {
+            display: flex;
+            margin-top: 72px; /* Navbar height */
+            min-height: calc(100vh - 72px);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            padding: 2rem;
+            position: fixed;
+            left: 0;
+            top: 72px;
+            bottom: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .menu-section h3 {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.75rem;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .menu-list a:hover {
+            background-color: #f8f9fa;
+            color: #FF6B35;
+        }
+
+        .menu-list i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Tinder Card Styles */
+        .card-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: grab;
+            transition: transform 0.3s ease;
+        }
+
+        .card img {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            padding: 20px;
+            background: white;
+        }
+
+        .card-info h2 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .card-info p {
+            margin: 8px 0;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .card-info strong {
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-button:hover {
+            transform: scale(1.1);
+        }
+
+        .action-button i {
+            font-size: 24px;
+        }
+
+        .dislike-btn i {
+            color: #FF6B35;
+        }
+
+        .like-btn i {
+            color: #4CAF50;
+        }
+
+        .card.removing {
+            transition: transform 0.5s ease;
+        }
+
+        .card.like {
+            transform: translateX(150%) rotate(30deg);
+        }
+
+        .card.dislike {
+            transform: translateX(-150%) rotate(-30deg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .main-content {
+                margin-left: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .nav-right span {
+                display: none;
+            }
+            
+            .nav-right {
+                gap: 1rem;
+            }
+        } 
+    </style>
+
     {% block styles %}{% endblock %}
 </head>
 <body>
+    {% if pets %}
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-left">
@@ -31,14 +361,26 @@
                     <span>Veteriner</span>
                 </a>
             </div>
-            <div class="nav-item">
-                <a href="/profile" class="nav-link">
-                    <img src="images/deneme2.png" alt="Profil" class="profile-pic">
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link" onclick="toggleDropdown(event)">
+                    <img src="{{ pets.0.pp }}" alt="Profil" class="profile-pic">
                     <span>Profil</span>
                 </a>
+                <div class="dropdown-content" id="profileDropdown">
+                    <a href="/dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="/api/logout/" class="logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Çıkış Yap
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
+    {% endif %}
+
 
     <!-- Main Content -->
     <div class="container">
@@ -77,8 +419,156 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
-            {% block content %}{% endblock %}
+            <div class="card-container">
+                <!-- Cards will be dynamically added here -->
+            </div>
+            <div class="card-actions">
+                <button class="action-button dislike-btn" onclick="dislikeCard()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="action-button like-btn" onclick="likeCard()">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
         </main>
     </div>
+
+    <script>
+        // Dropdown menü için tıklama fonksiyonu
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Sayfa herhangi bir yerine tıklandığında dropdown'ı kapat
+        window.onclick = function(event) {
+            if (!event.target.matches('.nav-link') && !event.target.matches('.profile-pic') && !event.target.matches('.nav-link span')) {
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Backend'den gelen verileri kullan
+        let pets = {{ pets|safe }};
+        let currentIndex = 0;
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+
+        function createCard(pet) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${pet.imageUrl}" alt="${pet.name}">
+                <div class="card-info">
+                    <h2>${pet.name}</h2>
+                    <p><strong>Tür:</strong> ${pet.category}</p>
+                    <p><strong>Cins:</strong> ${pet.breed}</p>
+                    <p><strong>Yaş:</strong> ${pet.age}</p>
+                    <p><strong>Aile:</strong> ${pet.uname} | ${pet.email}</p>
+                </div>
+            `;
+            return card;
+        }
+
+        function initializeCards() {
+            const container = document.querySelector('.card-container');
+            container.innerHTML = '';
+            
+            if (currentIndex < pets.length) {
+                const card = createCard(pets[currentIndex]);
+                container.appendChild(card);
+                setupCardDrag(card);
+            }
+        }
+
+        function setupCardDrag(card) {
+            card.addEventListener('mousedown', startDragging);
+            card.addEventListener('mousemove', drag);
+            card.addEventListener('mouseup', endDragging);
+            card.addEventListener('mouseleave', endDragging);
+            
+            // Touch events for mobile
+            card.addEventListener('touchstart', startDragging);
+            card.addEventListener('touchmove', drag);
+            card.addEventListener('touchend', endDragging);
+        }
+
+        function startDragging(e) {
+            isDragging = true;
+            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            const card = e.target.closest('.card');
+            card.style.transition = 'none';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const card = e.target.closest('.card');
+            currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const rotation = diff * 0.1;
+            card.style.transform = `translateX(${diff}px) rotate(${rotation}deg)`;
+        }
+
+        function endDragging(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const card = e.target.closest('.card');
+            const diff = currentX - startX;
+            
+            if (Math.abs(diff) > 100) {
+                if (diff > 0) {
+                    likeCard();
+                } else {
+                    dislikeCard();
+                }
+            } else {
+                card.style.transition = 'transform 0.3s ease';
+                card.style.transform = 'translateX(0) rotate(0)';
+            }
+        }
+
+        function likeCard() {
+            const card = document.querySelector('.card');
+            if (!card) return;
+            
+            card.classList.add('like', 'removing');
+            setTimeout(() => {
+                card.remove();
+                currentIndex++;
+                if (currentIndex < pets.length) {
+                    const newCard = createCard(pets[currentIndex]);
+                    document.querySelector('.card-container').appendChild(newCard);
+                    setupCardDrag(newCard);
+                }
+            }, 500);
+        }
+
+        function dislikeCard() {
+            const card = document.querySelector('.card');
+            if (!card) return;
+            
+            card.classList.add('dislike', 'removing');
+            setTimeout(() => {
+                card.remove();
+                currentIndex++;
+                if (currentIndex < pets.length) {
+                    const newCard = createCard(pets[currentIndex]);
+                    document.querySelector('.card-container').appendChild(newCard);
+                    setupCardDrag(newCard);
+                }
+            }, 500);
+        }
+
+        // Sayfa yüklendiğinde verileri çek
+        document.addEventListener('DOMContentLoaded', initializeCards);
+    </script>
 </body>
 </html> 

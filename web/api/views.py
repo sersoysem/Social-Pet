@@ -4,7 +4,38 @@ def register_page(request):
 
 def home_view(request):
     email = request.session.get("user_email", "Giriş yapılmamış")
-    return render(request, "home.html", {"email": email})
+    name = request.session.get("user_name", "")
+    
+    # Kullanıcının ilk pet'inden profil resmini al
+    user_pets = db.collection("Pets").where("email", "==", email).limit(1).get()
+    user_pp = f"https://i.pravatar.cc/150?u={email}"  # Varsayılan profil resmi
+    
+    for doc in user_pets:
+        pet_data = doc.to_dict()
+        if pet_data.get("pp"):
+            user_pp = pet_data["pp"]
+        break
+    
+    # Tüm petleri çek
+    pets_query = db.collection("Pets").get()
+    pets = []
+    
+    for doc in pets_query:
+        data = doc.to_dict()
+        data["doc_id"] = doc.id
+        
+        # Datetime nesnesini string'e çevir
+        if "createdAt" in data:
+            data["createdAt"] = data["createdAt"].isoformat()
+            
+        pets.append(data)
+    
+    return render(request, "home.html", {
+        "email": email,
+        "name": name,
+        "user_pp": user_pp,
+        "pets": pets
+    })
 
 # Kullanıcı Çıkış İşlemleri
 def logout_user(request):
