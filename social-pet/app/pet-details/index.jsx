@@ -49,14 +49,15 @@ export default function PetDetails() {
         
         const q=query(collection(db,'Chat'),where('id','in',[docId1,docId2]));
         const querySnapshot=await getDocs(q);
-        querySnapshot.forEach((doc)=>{
+
+        querySnapshot.forEach(doc=>{
             console.log(doc.data());
             router.push({
                 pathname:'/chat',
                 params:{id:doc.id}
             })
         })
-        if(querySnapshot.docs.length==0){
+        if(querySnapshot.docs?.length==0){
             await setDoc(doc(db,'Chat',docId1),{
                 id:docId1,
                 users:[{
@@ -68,7 +69,10 @@ export default function PetDetails() {
                     name:pet?.uname,
                     imageUrl:pet?.pp,
                     
-                }]
+                }
+            ],
+            userIds:[user?.primaryEmailAddress?.emailAddress,pet?.email]
+
     });
     router.push({
         pathname:'/chat',
