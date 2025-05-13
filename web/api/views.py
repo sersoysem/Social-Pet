@@ -72,6 +72,8 @@ import uuid
 from django.contrib import messages
 
 
+
+
 def register_user(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -183,7 +185,7 @@ def add_pet(request):
 
         #ekstra bilgiler
         sterilization = request.POST.get("sterilizationStatus")
-        bio = request.POST.get("petDesc")
+        about = request.POST.get("petDesc")
         interests_raw = request.POST.get("interests")
 
         # Kullanıcı bilgileri
@@ -214,7 +216,7 @@ def add_pet(request):
             "breed": breed,
             "category": pet_type,
             "imageUrl": image_url,
-            "bio": bio,
+            "about": about,
             "address": address,
             "sterilization": sterilization,
             "interests": interests,
@@ -310,7 +312,7 @@ def edit_pet_view(request, pet_id):
         new_age = request.POST.get("age")
         new_adr = request.POST.get("address")
         new_sex = request.POST.get("petGender")
-        new_bio = request.POST.get("bio")
+        new_about = request.POST.get("about")
         new_photo = request.FILES.get("new_photo")
 
         update_data = {
@@ -318,7 +320,7 @@ def edit_pet_view(request, pet_id):
             "age": new_age,
             "address": new_adr,
             "sex": new_sex,
-            "bio": new_bio,
+            "about": new_about,
         }
 
         if new_photo:
@@ -374,3 +376,12 @@ def edit_profile_view(request):
         })
 
     return redirect('/dashboard/')
+
+
+
+
+
+
+
+
+

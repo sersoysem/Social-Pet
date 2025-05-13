@@ -125,11 +125,11 @@
         }
 
         .dropdown-content a.logout {
-            color: #dc3545;
+            color: #ff0000;
         }
 
         .dropdown-content a.logout:hover {
-            background-color: #dc3545;
+            background-color: #FF6B35;
             color: white;
         }
 
@@ -334,17 +334,56 @@
             .nav-right {
                 gap: 1rem;
             }
-        } 
+        }
+
+        /* Add custom icon styles */
+        .custom-hamster-icon {
+            width: 20px;
+            height: 20px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/8545/8545387.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .menu-list a:hover .custom-hamster-icon {
+            filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(346deg) brightness(118%) contrast(119%);
+        }
+
+        .menu-list a.active, .menu-list a:active {
+            background-color: #ffe5d0;
+            color: #FF6B35;
+            font-weight: bold;
+        }
+        .hamster-icon-normal {
+            display: inline-block;
+        }
+        .hamster-icon-hover {
+            display: none;
+        }
+        .menu-list a.active .hamster-icon-normal,
+        .menu-list a:hover .hamster-icon-normal {
+            display: none;
+        }
+        .menu-list a.active .hamster-icon-hover,
+        .menu-list a:hover .hamster-icon-hover {
+            display: inline-block;
+        }
+
     </style>
+    {% load static %}
 
     {% block styles %}{% endblock %}
 </head>
 <body>
-    {% if pets %}
+
     <!-- Navbar -->
+    {% block navbar %}
     <nav class="navbar">
         <div class="nav-left">
-            <a href="/" class="logo">
+            <a href="/home" class="logo">
                 <i class="fas fa-paw"></i>
                 <span>Social Pet</span>
             </a>
@@ -352,8 +391,8 @@
         <div class="nav-right">
             <div class="nav-item">
                 <a href="/matches" class="nav-link">
-                    <i class="fas fa-paw"></i>
-                    <span>Eşleşmeler</span>
+                    <i class="fas fa-comments"></i>
+                    <span>Mesajlar</span>
                 </a>
             </div>
             <div class="nav-item">
@@ -364,13 +403,14 @@
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link" onclick="toggleDropdown(event)">
-                    <img src="{{ pets.0.pp }}" alt="Profil" class="profile-pic">
-                    <span>Profil</span>
+                    <img src="{{ user_pp }}" alt="Profil" class="profile-pic">
+                    <span>{{ name }}</span>
+
                 </a>
                 <div class="dropdown-content" id="profileDropdown">
                     <a href="/dashboard">
                         <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
+                        Bilgilerim
                     </a>
                     <a href="/api/logout/" class="logout">
                         <i class="fas fa-sign-out-alt"></i>
@@ -382,21 +422,27 @@
             </div>
         </div>
     </nav>
-    {% endif %}
+    {% endblock %}
 
 
     <!-- Main Content -->
     <div class="container">
         <!-- Aside Menu -->
+        {% block sidebar %}
         <aside class="sidebar">
             <div class="menu-section">
                 <h3>Kategoriler</h3>
                 <ul class="menu-list">
-                    <li><a href="/category/dogs"><i class="fas fa-dog"></i> Köpekler</a></li>
-                    <li><a href="/category/cats"><i class="fas fa-cat"></i> Kediler</a></li>
-                    <li><a href="/category/birds"><i class="fas fa-dove"></i> Kuşlar</a></li>
-                    <li><a href="/category/fish"><i class="fas fa-fish"></i> Balıklar</a></li>
-                    <li><a href="/category/other"><i class="fas fa-paw"></i> Diğer</a></li>
+                    <li><a href="{% url 'dogs' %}" class="{% if request.resolver_match.url_name == 'dogs' %}active{% endif %}"><i class="fas fa-dog"></i> Köpekler</a></li>
+                    <li><a href="{% url 'cats' %}" class="{% if request.resolver_match.url_name == 'cats' %}active{% endif %}"><i class="fas fa-cat"></i> Kediler</a></li>
+                    <li><a href="{% url 'birds' %}" class="{% if request.resolver_match.url_name == 'birds' %}active{% endif %}"><i class="fas fa-dove"></i> Kuşlar</a></li>
+                    <li><a href="{% url 'fishes' %}" class="{% if request.resolver_match.url_name == 'fishes' %}active{% endif %}"><i class="fas fa-fish"></i> Balıklar</a></li>
+                    <li><a href="{% url 'hamsters' %}" class="{% if request.resolver_match.url_name == 'hamsters' %}active{% endif %}">
+                        <img src="{% static 'images/hamster.png' %}" class="hamster-icon-normal" alt="Hamster" style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
+                        <img src="{% static 'images/hamster-hover.png' %}" class="hamster-icon-hover" alt="Hamster Hover" style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
+                        Hamsterlar
+                    </a></li>
+                    <li><a href="{% url 'others' %}" class="{% if request.resolver_match.url_name == 'others' %}active{% endif %}"><i class="fas fa-paw"></i> Diğer</a></li>
                 </ul>
             </div>
 
@@ -419,9 +465,12 @@
                 </ul>
             </div>
         </aside>
+        {% endblock %}
 
         <!-- Main Content Area -->
         <main class="main-content">
+            {% block main_content %}
+            <!-- Varsayılan ana içerik (kartlar vs.) -->
             <div class="card-container">
                 <!-- Cards will be dynamically added here -->
             </div>
@@ -433,29 +482,13 @@
                     <i class="fas fa-heart"></i>
                 </button>
             </div>
+            {% endblock %}
         </main>
     </div>
 
+    {% block scripts %}
+   
     <script>
-        // Dropdown menü için tıklama fonksiyonu
-        function toggleDropdown(event) {
-            event.preventDefault();
-            const dropdown = document.getElementById('profileDropdown');
-            dropdown.classList.toggle('show');
-        }
-
-        // Sayfa herhangi bir yerine tıklandığında dropdown'ı kapat
-        window.onclick = function(event) {
-            if (!event.target.matches('.nav-link') && !event.target.matches('.profile-pic') && !event.target.matches('.nav-link span')) {
-                const dropdowns = document.getElementsByClassName('dropdown-content');
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
 
         // Backend'den gelen verileri kullan
         let pets = {{ pets|safe }};
@@ -573,5 +606,7 @@
         // Sayfa yüklendiğinde verileri çek
         document.addEventListener('DOMContentLoaded', initializeCards);
     </script>
+     <script src="{% static 'js/global.js' %}"></script>
+    {% endblock %}
 </body>
 </html> 

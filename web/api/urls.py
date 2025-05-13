@@ -3,6 +3,10 @@ from .views import register_user, login_user, logout_user, login_page
 from django.views.decorators.csrf import csrf_exempt
 from .views import register_page, register_user, login_user, logout_user, edit_pet_view
 from django.shortcuts import render
+from . import views
+
+
+
 
 urlpatterns = [
     path('register/', register_page),        # GET: formu gösterir
@@ -10,5 +14,5 @@ urlpatterns = [
     path('login/', login_page),
     path('login/submit/', login_user),
     path('logout/', logout_user),
-    path('edit-pet/<str:pet_id>/', edit_pet_view, name='edit_pet'),
+    path('edit-pet/<str:pet_id>/', edit_pet_view, name='edit_pet')
 ]

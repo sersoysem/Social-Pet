@@ -1,0 +1,608 @@
+{% extends "home.html" %}
+{% block title %}Köpekler | Social Pet{% endblock %}
+
+{% block main_content %}
+
+<style>
+.card-grid {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.card-grid h1 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.dog-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.dog-card {
+    width: 32%;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 25px;
+}
+
+.dog-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.dog-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.dog-card h3 {
+    margin-top: 12px;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.dog-card .breed {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.badge-age {
+    background-color: #f8e71c;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.sex-label {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.sex-label.female {
+    color: #d63384;
+}
+
+.sex-label.male {
+    color: #007bff;
+}
+
+.sex-label i {
+    margin-right: 5px;
+}
+
+.card-image-container {
+    position: relative;
+}
+
+.fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s;
+}
+
+.fav-btn i { 
+    color: #ccc;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.fav-btn.active i {
+    color: red;
+}
+
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.modal-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content-box {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.9);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 2;
+
+
+}
+
+.modal-close:hover {
+    background: #e23838;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.modal-fav-btn {
+    position: absolute;
+    top: 315px; /* Yukarı çekmek için */
+    right: -13px; /* X butonunun biraz soluna yerleştirmek için */
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.modal-fav-btn i {
+    font-size: 1.4rem;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.modal-fav-btn.active i {
+    color: red;
+}
+
+.modal-fav-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-text {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.modal-text p {
+    margin: 8px 0;
+    color: #444;
+    line-height: 1.6;
+}
+
+.modal-about {
+    position: relative;
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.modal-about.expanded {
+    max-height: none;
+}
+
+.read-more {
+    color: #FF6B35;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.add-friend-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.add-friend-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+
+.modal-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+    margin-top: 10px;
+}
+
+.modal-info-box {
+    background: #f8f8f8;
+
+    border-radius: 10px;
+    padding: 12px 10px 8px 10px;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.modal-info-box i {
+    font-size: 1.3rem;
+    color: #FF6B35;
+    margin-bottom: 4px;
+}
+
+.modal-info-label {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 2px;
+}
+.owner-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid #e4e4e4;
+    padding: 14px 18px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.owner-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.owner-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 14px;
+    border: 2px solid #FF6B35;
+    transition: transform 0.3s ease;
+}
+
+.owner-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.owner-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #222;
+}
+
+.owner-role {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+.owner-message-btn {
+    background: #ff6b35;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+    transition: all 0.25s ease-in-out;
+}
+
+.owner-message-btn:hover {
+    background: #ff874f;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
+}
+
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 600px) {
+  .modal-fav-btn {
+    right: 60px;
+    top: 10px;
+  }
+}
+
+</style>
+
+<div class="card-grid">
+    <h1>Köpekler</h1>
+    <div class="dog-card-container">
+        {% for dog in dog_pets %}
+        <div class="dog-card" 
+             data-image="{{ dog.imageUrl }}"
+             data-name="{{ dog.name }}"
+             data-breed="{{ dog.breed }}"
+             data-age="{{ dog.age }}"
+             data-sex="{{ dog.sex }}"
+             data-weight="{{ dog.weight }}"
+             data-address="{{ dog.address|default:"-" }}"
+             data-email="{{ dog.email|default:"-" }}"
+             data-about="{{ dog.about}}"
+             data-uname="{{ dog.uname }}"
+             data-pp="{{ dog.pp|default:'https://i.pravatar.cc/100?u=default' }}"
+             onclick="openDogModal(this)">
+             <div style="display: none;">{{ dog.about }}</div>
+
+            <div class="card-image-container">
+                <img src="{{ dog.imageUrl }}" alt="{{ dog.name }}">
+                <button class="fav-btn" data-dog-id="{{ dog.id }}" onclick="toggleFavorite(this)">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            <h3>{{ dog.name }}</h3>
+            <div class="breed">{{ dog.breed }}</div>
+            <div class="card-info-row">
+                <span class="badge-age">{{ dog.age }} Y</span>
+                <span class="sex-label {% if dog.sex|lower == 'female' or dog.sex|lower == 'dişi' %}female{% else %}male{% endif %}">
+                    {% if dog.sex|lower == 'female' or dog.sex|lower == 'dişi' %}
+                        <i class="fas fa-venus"></i> Dişi
+                    {% else %}
+                        <i class="fas fa-mars"></i> Erkek
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal (döngü dışında, en sona ekleyin) -->
+<div id="dogModal" class="modal-backdrop">
+    <div class="modal-content-box" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div style="position: relative;">
+            <img id="modalImage" src="" alt="Pet Görseli" class="modal-img" />
+            <button class="modal-fav-btn" onclick="toggleFavorite(this, event)">
+                <i class="fas fa-heart"></i>
+            </button>
+        </div>
+        <div class="modal-text">
+            <h2 id="modalName" style=" padding-bottom:10px; margin-top: -5px;">Pet Adı</h2>
+            <div class="modal-info-row">
+                <div class="modal-info-box">
+                    <i class="fas fa-birthday-cake"></i>
+                    <span id="modalAgeBox"></span>
+                    <div class="modal-info-label">Yaş</div>
+                </div>
+                <div class="modal-info-box">
+                    <i class="fas fa-dog"></i>
+                    <span id="modalBreedBox"></span>
+                    <div class="modal-info-label">Irk</div>
+                </div>
+                <div class="modal-info-box">
+                    <i class="fas fa-venus-mars"></i>
+                    <span id="modalSexBox"></span>
+                    <div class="modal-info-label">Cinsiyet</div>
+                </div>
+                <div class="modal-info-box">
+                    <i class="fas fa-weight"></i>
+                    <span id="modalWeightBox"></span>
+                    <div class="modal-info-label">Kilo</div>
+                </div>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <strong>Hakkında:</strong>
+                <div class="modal-about">
+                    <p id="modalAbout" style="color: #555; font-size: 0.95rem;"></p>
+                </div>
+                <span class="read-more" onclick="toggleReadMore(this)">Daha fazla oku</span>
+            </div>
+            
+            
+            <!-- Sahip Bilgisi Kartı -->
+            <!-- Sahip Bilgisi Kartı -->
+            <div class="owner-card">
+                <img id="ownerAvatar" src="https://i.pravatar.cc/100?u=default" alt="Kullanıcı" class="owner-avatar">
+                <div class="owner-info">
+                    <div id="ownerName" class="owner-name">Yükleniyor...</div>
+                    <div class="owner-role">Ailesi</div>
+                </div>
+                <button class="owner-message-btn" onclick="messageOwner()" id="messageBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+
+
+
+            <button class="add-friend-btn" onclick="addFriend()">
+                <i class="fas fa-user-plus"></i> Arkadaş Ol
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
+<script>
+function openDogModal(element) {
+    const modal = document.getElementById("dogModal");
+    modal.style.display = "flex";
+
+    const imgUrl = element.querySelector('img').src;
+    document.getElementById("modalImage").src = imgUrl;
+
+    document.getElementById("modalName").innerText = element.dataset.name || 'Adı Yok';
+
+    // Modal kutulara değerleri ata
+    document.getElementById("modalAgeBox").innerText = element.dataset.age ? element.dataset.age + " yıl" : "-";
+    document.getElementById("modalBreedBox").innerText = element.dataset.breed || "-";
+    document.getElementById("modalSexBox").innerText =
+        element.dataset.sex.toLowerCase() === 'female' || element.dataset.sex.toLowerCase() === 'dişi'
+            ? 'Dişi' : 'Erkek';
+    document.getElementById("modalWeightBox").innerText = element.dataset.weight ? element.dataset.weight + " kg" : "-";
+
+    // Hakkında kısmı
+    const about = element.dataset.about || '-';
+    document.getElementById("modalAbout").textContent = about;
+
+    // Debug için konsola yaz
+    console.log("📋 About:", about);
+
+    // ✅ Dinamik Sahip Bilgileri
+    document.getElementById("ownerAvatar").src = element.dataset.pp || "https://i.pravatar.cc/100?u=default";
+    document.getElementById("ownerName").innerText = element.dataset.uname || "Bilinmiyor";
+
+    // Eğer mesaj gönderme butonuna tıklarken email göndermek istersen:
+    document.getElementById("messageBtn").setAttribute("onclick", `messageOwner('${element.dataset.email}')`);
+
+    console.log("📦 Profil Fotoğrafı:", element.dataset.pp);
+
+}
+
+function toggleReadMore(element) {
+    const aboutSection = element.previousElementSibling;
+    aboutSection.classList.toggle('expanded');
+    element.textContent = aboutSection.classList.contains('expanded') ? 'Daha az göster' : 'Daha fazla oku';
+}
+
+function addFriend() {
+    // Arkadaş ekleme işlemi burada yapılacak
+    alert('Arkadaşlık isteği gönderildi!');
+}
+
+function toggleFavorite(button, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    button.classList.toggle("active");
+    const dogId = button.closest('.dog-card')?.getAttribute("data-dog-id") || 
+                  document.querySelector('.dog-card[data-dog-id]').getAttribute("data-dog-id");
+
+    fetch("/api/toggle-favorite/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ pet_id: dogId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "added") {
+            console.log("Favorilere eklendi");
+        } else if (data.status === "removed") {
+            console.log("Favorilerden çıkarıldı");
+        }
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById("dogModal");
+    modal.style.display = "none";
+}
+
+// Modal dışına tıklandığında kapatma
+document.getElementById("dogModal").addEventListener("click", function(event) {
+    if (event.target === this) {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}
+

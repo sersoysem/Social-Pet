@@ -11,6 +11,7 @@
 </head>
 <body>
     <!-- Navbar -->
+    {% block navbar %}
     <nav class="navbar">
         <div class="nav-left">
             <a href="/" class="logo">
@@ -39,10 +40,11 @@
             </div>
         </div>
     </nav>
-
+    {% endblock %}
     <!-- Main Content -->
     <div class="container">
         <!-- Aside Menu -->
+        {% block sidebar %}
         <aside class="sidebar">
             <div class="menu-section">
                 <h3>Kategoriler</h3>
@@ -74,6 +76,7 @@
                 </ul>
             </div>
         </aside>
+        {% endblock %}
 
         <!-- Main Content Area -->
         <main class="main-content">
