@@ -405,10 +405,198 @@
   }
 }
 
+/* Filtreleme Sistemi Stilleri */
+.filter-container {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+.filter-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.filter-icon {
+    color: #FF6B35;
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    margin-left: -5px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #e4e4e4;
+    border-radius: 12px;
+    background: white;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    font-weight: 500;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF6B35' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+    border-color: #FF6B35;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+/* Select option stilleri */
+.filter-select option {
+    padding: 10px;
+    background: white;
+    color: #333;
+}
+
+.filter-select option:checked {
+    background: #FF6B35;
+    color: white;
+}
+
+.filter-select option:hover {
+    background: #fff5f2;
+}
+
+/* Webkit (Chrome, Safari) için özel stiller */
+.filter-select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filter-select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.filter-select::-webkit-scrollbar-thumb {
+    background: #FF6B35;
+    border-radius: 4px;
+}
+
+.filter-select::-webkit-scrollbar-thumb:hover {
+    background: #ff7d4f;
+}
+
+/* Firefox için özel stiller */
+.filter-select:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+/* IE için özel stiller */
+.filter-select::-ms-expand {
+    display: none;
+}
+
+.reset-filters {
+    width: 100%;
+    background: #FF6B35;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+.reset-filters:hover {
+    background: #ff7d4f;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+}
+
+.reset-filters i {
+    font-size: 1rem;
+}
+
+/* Mobil görünüm için düzenlemeler */
+@media (max-width: 768px) {
+    .filter-container {
+        padding: 1rem;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .filter-select {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
 </style>
 
 <div class="card-grid">
     <h1>Kediler</h1>
+    
+    <!-- Filtreleme Sistemi -->
+    <div class="filter-container">
+        <div class="filter-group">
+            <div style="display: flex; align-items: center; flex: 1; min-width: 200px;">
+                <i class="fas fa-filter filter-icon"></i>
+                <select id="breedFilter" class="filter-select">
+                    <option value="">Tüm Irklar</option>
+                    {% for cat in cat_pets %}
+                        <option value="{{ cat.breed }}">{{ cat.breed }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <select id="genderFilter" class="filter-select">
+                <option value="">Tüm Cinsiyetler</option>
+                <option value="Erkek">Erkek</option>
+                <option value="Dişi">Dişi</option>
+            </select>
+            
+            <select id="ageFilter" class="filter-select">
+                <option value="">Tüm Yaşlar</option>
+                <option value="0-1">0-1 Yaş</option>
+                <option value="1-3">1-3 Yaş</option>
+                <option value="3-5">3-5 Yaş</option>
+                <option value="5+">5+ Yaş</option>
+            </select>
+            
+            <select id="cityFilter" class="filter-select">
+                <option value="">Tüm İller</option>
+                {% for cat in cat_pets %}
+                    {% if cat.address %}
+                        <option value="{{ cat.address }}">{{ cat.address }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+
+            <button class="reset-filters" onclick="resetFilters()">
+                <i class="fas fa-undo"></i>
+                Filtreleri Sıfırla
+            </button>
+        </div>
+    </div>
+
     <div class="cat-card-container">
         {% for cat in cat_pets %}
         <div class="cat-card" 
@@ -428,9 +616,10 @@
 
             <div class="card-image-container">
                 <img src="{{ cat.imageUrl }}" alt="{{ cat.name }}">
-                <button class="fav-btn" data-cat-id="{{ cat.id }}" onclick="toggleFavorite(this)">
+                <button class="fav-btn {% if cat.is_favorite %}active{% endif %}" data-pet-id="{{ cat.id }}" onclick="toggleFavorite(this, event)">
                     <i class="fas fa-heart"></i>
                 </button>
+                
             </div>
             <h3>{{ cat.name }}</h3>
             <div class="breed">{{ cat.breed }}</div>
@@ -455,7 +644,7 @@
         <span class="modal-close" onclick="closeModal()">&times;</span>
         <div style="position: relative;">
             <img id="modalImage" src="" alt="Pet Görseli" class="modal-img" />
-            <button class="modal-fav-btn" onclick="toggleFavorite(this, event)">
+            <button class="modal-fav-btn" data-pet-id="" onclick="toggleFavorite(this, event)">
                 <i class="fas fa-heart"></i>
             </button>
         </div>
@@ -527,6 +716,15 @@ function openCatModal(element) {
     const imgUrl = element.querySelector('img').src;
     document.getElementById("modalImage").src = imgUrl;
 
+    // Kalp butonuna aktiflik durumunu ve pet ID'sini karttan al
+    const favBtn = element.querySelector('.fav-btn');
+    const catId = favBtn.getAttribute("data-pet-id");
+    const isFavorite = favBtn.classList.contains('active');
+    
+    const modalFavBtn = document.querySelector('.modal-fav-btn');
+    modalFavBtn.setAttribute("data-pet-id", catId);
+    modalFavBtn.classList.toggle("active", isFavorite);
+
     document.getElementById("modalName").innerText = element.dataset.name || 'Adı Yok';
 
     // Modal kutulara değerleri ata
@@ -541,18 +739,12 @@ function openCatModal(element) {
     const about = element.dataset.about || '-';
     document.getElementById("modalAbout").textContent = about;
 
-    // Debug için konsola yaz
-    console.log("📋 About:", about);
-
-    // ✅ Dinamik Sahip Bilgileri
+    // Sahip Bilgileri
     document.getElementById("ownerAvatar").src = element.dataset.pp || "https://i.pravatar.cc/100?u=default";
     document.getElementById("ownerName").innerText = element.dataset.uname || "Bilinmiyor";
 
-    // Eğer mesaj gönderme butonuna tıklarken email göndermek istersen:
+    // Mesaj butonu için email ayarla
     document.getElementById("messageBtn").setAttribute("onclick", `messageOwner('${element.dataset.email}')`);
-
-    console.log("📦 Profil Fotoğrafı:", element.dataset.pp);
-
 }
 
 function toggleReadMore(element) {
@@ -567,28 +759,41 @@ function addFriend() {
 }
 
 function toggleFavorite(button, event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    button.classList.toggle("active");
-    const catId = button.closest('.cat-card')?.getAttribute("data-cat-id") || 
-                  document.querySelector('.cat-card[data-cat-id]').getAttribute("data-cat-id");
+    if (event) event.stopPropagation();
 
+    const petId = button.getAttribute("data-pet-id");
+    if (!petId) return;
+
+    // Toggle UI
+    const isNowActive = !button.classList.contains("active");
+
+    // Tüm butonları senkronize et (hem modal hem kart butonları)
+    const allButtons = document.querySelectorAll(`[data-pet-id="${petId}"]`);
+    allButtons.forEach(btn => {
+        btn.classList.toggle("active", isNowActive);
+    });
+
+    // Sunucuya gönder
     fetch("/api/toggle-favorite/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": "{{ csrf_token }}"
         },
-        body: JSON.stringify({ pet_id: catId })
+        body: JSON.stringify({ pet_id: petId })
     })
     .then(res => res.json())
     .then(data => {
-        if (data.status === "added") {
-            console.log("Favorilere eklendi");
-        } else if (data.status === "removed") {
-            console.log("Favorilerden çıkarıldı");
+        if (data.status === "removed" && window.location.pathname.includes("favorites")) {
+            window.location.reload(); // Favoriler sayfasındaysa kartı çıkar
         }
+    })
+    .catch(error => {
+        console.error("Favori işlemi sırasında hata:", error);
+        // Hata durumunda UI'ı eski haline getir
+        allButtons.forEach(btn => {
+            btn.classList.toggle("active", !isNowActive);
+        });
     });
 }
 
@@ -603,6 +808,78 @@ document.getElementById("catModal").addEventListener("click", function(event) {
         closeModal();
     }
 });
+
+// Filtreleme fonksiyonları
+function filterCats() {
+    const breedFilter = document.getElementById('breedFilter').value;
+    const genderFilter = document.getElementById('genderFilter').value;
+    const ageFilter = document.getElementById('ageFilter').value;
+    const cityFilter = document.getElementById('cityFilter').value;
+    
+    const cards = document.querySelectorAll('.cat-card');
+    
+    cards.forEach(card => {
+        let show = true;
+        
+        // Irk filtresi
+        if (breedFilter && card.dataset.breed !== breedFilter) {
+            show = false;
+        }
+        
+        // Cinsiyet filtresi
+        if (genderFilter) {
+            const cardGender = card.dataset.sex.toLowerCase() === 'female' || card.dataset.sex.toLowerCase() === 'dişi' ? 'Dişi' : 'Erkek';
+            if (cardGender !== genderFilter) {
+                show = false;
+            }
+        }
+        
+        // Yaş filtresi
+        if (ageFilter) {
+            const age = parseFloat(card.dataset.age);
+            const [min, max] = ageFilter.split('-').map(Number);
+            
+            if (max) {
+                if (age < min || age > max) {
+                    show = false;
+                }
+            } else {
+                // 5+ yaş durumu
+                if (age < 5) {
+                    show = false;
+                }
+            }
+        }
+        
+        // İl filtresi
+        if (cityFilter && card.dataset.address !== cityFilter) {
+            show = false;
+        }
+        
+        // Kartı göster/gizle
+        card.style.display = show ? 'block' : 'none';
+    });
+}
+
+// Filtre değişikliklerini dinle
+document.getElementById('breedFilter').addEventListener('change', filterCats);
+document.getElementById('genderFilter').addEventListener('change', filterCats);
+document.getElementById('ageFilter').addEventListener('change', filterCats);
+document.getElementById('cityFilter').addEventListener('change', filterCats);
+
+function resetFilters() {
+    // Tüm select elementlerini sıfırla
+    document.getElementById('breedFilter').value = '';
+    document.getElementById('genderFilter').value = '';
+    document.getElementById('ageFilter').value = '';
+    document.getElementById('cityFilter').value = '';
+    
+    // Tüm kartları göster
+    const cards = document.querySelectorAll('.cat-card');
+    cards.forEach(card => {
+        card.style.display = 'block';
+    });
+}
 </script>
 {% endblock %}
 

@@ -13,7 +13,9 @@
         }
 
         .navbar {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.808);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 1rem 0;
             transition: all 0.3s ease;
@@ -21,8 +23,9 @@
 
         .navbar.scrolled {
             padding: 0.5rem 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
         .navbar-brand {
@@ -144,10 +147,10 @@
 
 
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/kedikopek.jpg');
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/arkaplan2.jpg');
             background-size: cover;
             background-position: center;
-            height: 80vh;
+            height: 90vh;
             display: flex;
             align-items: center;
             color: white; /* #FFFFFF */

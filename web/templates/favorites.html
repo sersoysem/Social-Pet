@@ -1,5 +1,5 @@
 {% extends "home.html" %}
-{% block title %}Kuşlar | Social Pet{% endblock %}
+{% block title %}Favorilerim | Social Pet{% endblock %}
 
 {% block main_content %}
 
@@ -15,13 +15,13 @@
     font-weight: 600;
 }
 
-.bird-card-container {
+.favorite-card-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-.bird-card {
+.favorite-card {
     width: 32%;
     background: white;
     border-radius: 16px;
@@ -31,25 +31,25 @@
     margin-bottom: 25px;
 }
 
-    .bird-card:hover {
+.favorite-card:hover {
     transform: scale(1.03);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.bird-card img {
+.favorite-card img {
     width: 100%;
     height: 250px;
     object-fit: cover;
     border-radius: 12px;
 }
 
-.bird-card h3 {
+.favorite-card h3 {
     margin-top: 12px;
     font-size: 1.25rem;
     color: #333;
 }
 
-.bird-card .breed {
+.favorite-card .breed {
     font-style: italic;
     font-size: 0.95rem;
     color: #888;
@@ -110,44 +110,9 @@
 }
 
 .fav-btn i { 
-    color: #ccc;
+    color: red;
     font-size: 1.2rem;
     transition: color 0.3s;
-}
-
-.fav-btn.active i {
-    color: red;
-}
-
-.modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 9999;
-}
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-.modal-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 12px;
-}
-.close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 
 .modal-backdrop {
@@ -200,8 +165,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     z-index: 2;
-
-
 }
 
 .modal-close:hover {
@@ -213,8 +176,8 @@
 
 .modal-fav-btn {
     position: absolute;
-    top: 315px; /* Yukarı çekmek için */
-    right: -13px; /* X butonunun biraz soluna yerleştirmek için */
+    top: 315px;
+    right: -13px;
     background: white;
     border: none;
     border-radius: 50%;
@@ -231,12 +194,8 @@
 
 .modal-fav-btn i {
     font-size: 1.4rem;
-    color: #ccc;
-    transition: color 0.3s;
-}
-
-.modal-fav-btn.active i {
     color: red;
+    transition: color 0.3s;
 }
 
 .modal-fav-btn:hover {
@@ -275,25 +234,6 @@
     display: inline-block;
 }
 
-.add-friend-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-    width: 100%;
-}
-
-.add-friend-btn:hover {
-    background: #218838;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
-}
-
 .modal-info-row {
     display: flex;
     justify-content: space-between;
@@ -304,7 +244,6 @@
 
 .modal-info-box {
     background: #f8f8f8;
-
     border-radius: 10px;
     padding: 12px 10px 8px 10px;
     flex: 1;
@@ -327,6 +266,7 @@
     color: #888;
     margin-top: 2px;
 }
+
 .owner-card {
     display: flex;
     align-items: center;
@@ -392,17 +332,16 @@
     box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
 }
 
-
-
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
 }
+
 @media (max-width: 600px) {
-  .modal-fav-btn {
-    right: 60px;
-    top: 10px;
-  }
+    .modal-fav-btn {
+        right: 60px;
+        top: 10px;
+    }
 }
 
 /* Filtreleme Sistemi Stilleri */
@@ -548,24 +487,30 @@
         min-width: unset;
     }
 }
-
 </style>
 
 <div class="card-grid">
-    <h1>Kuşlar</h1>
+    <h1>Favori Petlerim</h1>
     
     <!-- Filtreleme Sistemi -->
     <div class="filter-container">
         <div class="filter-group">
-            <div style="display: flex; align-items: center; flex: 1; min-width: 200px;">
-                <i class="fas fa-filter filter-icon"></i>
-                <select id="breedFilter" class="filter-select">
-                    <option value="">Tüm Irklar</option>
-                    {% for bird in bird_pets %}
-                        <option value="{{ bird.breed }}">{{ bird.breed }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <select id="typeFilter" class="filter-select">
+                <option value="">Tüm Türler</option>
+                <option value="Dogs">Köpek</option>
+                <option value="Cats">Kedi</option>
+                <option value="Birds">Kuş</option>
+                <option value="Fishes">Balık</option>
+                <option value="Hamsters">Hamster</option>
+                <option value="Other">Diğer</option>
+            </select>
+
+            <select id="breedFilter" class="filter-select">
+                <option value="">Tüm Irklar</option>
+                {% for pet in pets %}
+                    <option value="{{ pet.breed }}">{{ pet.breed }}</option>
+                {% endfor %}
+            </select>
             
             <select id="genderFilter" class="filter-select">
                 <option value="">Tüm Cinsiyetler</option>
@@ -583,9 +528,9 @@
             
             <select id="cityFilter" class="filter-select">
                 <option value="">Tüm İller</option>
-                {% for bird in bird_pets %}
-                    {% if bird.address %}
-                        <option value="{{ bird.address }}">{{ bird.address }}</option>
+                {% for pet in pets %}
+                    {% if pet.address %}
+                        <option value="{{ pet.address }}">{{ pet.address }}</option>
                     {% endif %}
                 {% endfor %}
             </select>
@@ -597,35 +542,34 @@
         </div>
     </div>
 
-    <div class="bird-card-container">
-        {% for bird in bird_pets %}
-        <div class="bird-card" 
-             data-image="{{ bird.imageUrl }}"
-             data-name="{{ bird.name }}"
-             data-breed="{{ bird.breed }}"
-             data-age="{{ bird.age }}"
-             data-sex="{{ bird.sex }}"
-             data-weight="{{ bird.weight }}"
-             data-address="{{ bird.address|default:"-" }}"
-             data-email="{{ bird.email|default:"-" }}"
-             data-about="{{ bird.about}}"
-             data-uname="{{ bird.uname }}"
-             data-pp="{{ bird.pp|default:'https://i.pravatar.cc/100?u=default' }}"
-             onclick="openBirdModal(this)">
-             <div style="display: none;">{{ bird.about }}</div>
-
+    <div class="favorite-card-container">
+        {% for pet in pets %}
+        <div class="favorite-card" 
+             data-image="{{ pet.imageUrl }}"
+             data-name="{{ pet.name }}"
+             data-breed="{{ pet.breed }}"
+             data-age="{{ pet.age }}"
+             data-sex="{{ pet.sex }}"
+             data-weight="{{ pet.weight }}"
+             data-address="{{ pet.address|default:"-" }}"
+             data-email="{{ pet.email|default:"-" }}"
+             data-about="{{ pet.about}}"
+             data-uname="{{ pet.uname }}"
+             data-pp="{{ pet.pp|default:'https://i.pravatar.cc/100?u=default' }}"
+             data-type="{{ pet.category }}"
+             onclick="openPetModal(this)">
             <div class="card-image-container">
-                <img src="{{ bird.imageUrl }}" alt="{{ bird.name }}">
-                <button class="fav-btn {% if bird.is_favorite %}active{% endif %}" data-pet-id="{{ bird.id }}" onclick="toggleFavorite(this,event); return false;">
+                <img src="{{ pet.imageUrl }}" alt="{{ pet.name }}">
+                <button class="fav-btn" data-pet-id="{{ pet.id }}" onclick="toggleFavorite(this, event)">
                     <i class="fas fa-heart"></i>
                 </button>
             </div>
-            <h3>{{ bird.name }}</h3>
-            <div class="breed">{{ bird.breed }}</div>
+            <h3>{{ pet.name }}</h3>
+            <div class="breed">{{ pet.breed }}</div>
             <div class="card-info-row">
-                <span class="badge-age">{{ bird.age }} Y</span>
-                <span class="sex-label {% if bird.sex|lower == 'female' or bird.sex|lower == 'dişi' %}female{% else %}male{% endif %}">
-                    {% if bird.sex|lower == 'female' or bird.sex|lower == 'dişi' %}
+                <span class="badge-age">{{ pet.age }} Y</span>
+                <span class="sex-label {% if pet.sex|lower == 'female' or pet.sex|lower == 'dişi' %}female{% else %}male{% endif %}">
+                    {% if pet.sex|lower == 'female' or pet.sex|lower == 'dişi' %}
                         <i class="fas fa-venus"></i> Dişi
                     {% else %}
                         <i class="fas fa-mars"></i> Erkek
@@ -633,22 +577,24 @@
                 </span>
             </div>
         </div>
+        {% empty %}
+        <p>Favori pet bulunamadı.</p>
         {% endfor %}
     </div>
 </div>
 
-<!-- Modal (döngü dışında, en sona ekleyin) -->
-<div id="birdModal" class="modal-backdrop">
+<!-- Modal -->
+<div id="petModal" class="modal-backdrop">
     <div class="modal-content-box" onclick="event.stopPropagation()">
         <span class="modal-close" onclick="closeModal()">&times;</span>
         <div style="position: relative;">
             <img id="modalImage" src="" alt="Pet Görseli" class="modal-img" />
-            <button class="modal-fav-btn {% if bird.is_favorite %}active{% endif %}" data-pet-id="{{ bird.id }}" onclick="toggleFavorite(this, event)">
+            <button class="modal-fav-btn" onclick="toggleFavorite(this, event)">
                 <i class="fas fa-heart"></i>
             </button>
         </div>
         <div class="modal-text">
-            <h2 id="modalName" style=" padding-bottom:10px; margin-top: -5px;">Pet Adı</h2>
+            <h2 id="modalName" style="padding-bottom:10px; margin-top: -5px;">Pet Adı</h2>
             <div class="modal-info-row">
                 <div class="modal-info-box">
                     <i class="fas fa-birthday-cake"></i>
@@ -656,7 +602,7 @@
                     <div class="modal-info-label">Yaş</div>
                 </div>
                 <div class="modal-info-box">
-                    <i class="fas fa-dove"></i>
+                    <i class="fas fa-paw"></i>
                     <span id="modalBreedBox"></span>
                     <div class="modal-info-label">Irk</div>
                 </div>
@@ -679,9 +625,6 @@
                 <span class="read-more" onclick="toggleReadMore(this)">Daha fazla oku</span>
             </div>
             
-            
-            <!-- Sahip Bilgisi Kartı -->
-            <!-- Sahip Bilgisi Kartı -->
             <div class="owner-card">
                 <img id="ownerAvatar" src="https://i.pravatar.cc/100?u=default" alt="Kullanıcı" class="owner-avatar">
                 <div class="owner-info">
@@ -692,12 +635,6 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-
-
-
-            <button class="add-friend-btn" onclick="addFriend()">
-                <i class="fas fa-user-plus"></i> Arkadaş Ol
-            </button>
         </div>
     </div>
 </div>
@@ -708,43 +645,80 @@
 {{ block.super }}
 
 <script>
-function openBirdModal(element) {
-    const modal = document.getElementById("birdModal");
-    modal.style.display = "flex";
+window.initializeCards = function() {
+    // Sadece favorites sayfasında çalışsın
+    if (!document.querySelector('.favorite-card')) return;
 
-    const imgUrl = element.querySelector('img').src;
-    document.getElementById("modalImage").src = imgUrl;
+    // Favori butonlarını aktifleştir
+    const favButtons = document.querySelectorAll('.fav-btn');
+    favButtons.forEach(button => {
+        button.classList.add('active');
+    });
 
-    // Kalp butonuna aktiflik durumunu ve pet ID'sini karttan al
-    const favBtn = element.querySelector('.fav-btn');
-    const petId = favBtn.getAttribute("data-pet-id");
-    const isFavorite = favBtn.classList.contains('active');
-    
-    const modalFavBtn = document.querySelector('.modal-fav-btn');
-    modalFavBtn.setAttribute("data-pet-id", petId);
-    modalFavBtn.classList.toggle("active", isFavorite);
+    // Filtreleme sistemini başlat
+    initializeFilters();
+};
 
-    document.getElementById("modalName").innerText = element.dataset.name || 'Adı Yok';
+// Sayfa yüklendiğinde çalışacak fonksiyonlar
+document.addEventListener('DOMContentLoaded', function () {
+    initializeFilters();
 
-    // Modal kutulara değerleri ata
-    document.getElementById("modalAgeBox").innerText = element.dataset.age ? element.dataset.age + " yıl" : "-";
-    document.getElementById("modalBreedBox").innerText = element.dataset.breed || "-";
-    document.getElementById("modalSexBox").innerText =
-        element.dataset.sex.toLowerCase() === 'female' || element.dataset.sex.toLowerCase() === 'dişi'
-            ? 'Dişi' : 'Erkek';
-    document.getElementById("modalWeightBox").innerText = element.dataset.weight ? element.dataset.weight + " kg" : "-";
+    ['typeFilter', 'breedFilter', 'genderFilter', 'ageFilter', 'cityFilter'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', filterPets);
+        }
+    });
+});
 
-    // Hakkında kısmı
-    const about = element.dataset.about || '-';
-    document.getElementById("modalAbout").textContent = about;
 
-    // Sahip Bilgileri
-    document.getElementById("ownerAvatar").src = element.dataset.pp || "https://i.pravatar.cc/100?u=default";
-    document.getElementById("ownerName").innerText = element.dataset.uname || "Bilinmiyor";
+function initializeFilters() {
+    const typeSelect = document.getElementById('typeFilter');
+    const breedSelect = document.getElementById('breedFilter');
+    const citySelect = document.getElementById('cityFilter');
 
-    // Mesaj butonu için email ayarla
-    document.getElementById("messageBtn").setAttribute("onclick", `messageOwner('${element.dataset.email}')`);
+    const types = new Set();
+    const breeds = new Set();
+    const cities = new Set();
+
+    document.querySelectorAll('.favorite-card').forEach(card => {
+        if (card.dataset.type) types.add(card.dataset.type);
+        if (card.dataset.breed) breeds.add(card.dataset.breed);
+        if (card.dataset.address) cities.add(card.dataset.address);
+    });
+
+    // Temizle ve yeniden doldur
+    if (typeSelect) {
+        typeSelect.innerHTML = `<option value="">Tüm Türler</option>`;
+        types.forEach(type => {
+            const opt = document.createElement("option");
+            opt.value = type;
+            opt.textContent = type; // Firestore’dan gelen Dogs, Cats...
+            typeSelect.appendChild(opt);
+        });
+    }
+
+    if (breedSelect) {
+        breedSelect.innerHTML = `<option value="">Tüm Irklar</option>`;
+        breeds.forEach(breed => {
+            const opt = document.createElement("option");
+            opt.value = breed;
+            opt.textContent = breed;
+            breedSelect.appendChild(opt);
+        });
+    }
+
+    if (citySelect) {
+        citySelect.innerHTML = `<option value="">Tüm İller</option>`;
+        cities.forEach(city => {
+            const opt = document.createElement("option");
+            opt.value = city;
+            opt.textContent = city;
+            citySelect.appendChild(opt);
+        });
+    }
 }
+
 
 function toggleReadMore(element) {
     const aboutSection = element.previousElementSibling;
@@ -752,13 +726,10 @@ function toggleReadMore(element) {
     element.textContent = aboutSection.classList.contains('expanded') ? 'Daha az göster' : 'Daha fazla oku';
 }
 
-function addFriend() {
-    // Arkadaş ekleme işlemi burada yapılacak
-    alert('Arkadaşlık isteği gönderildi!');
-}
-
 function toggleFavorite(button, event) {
-    if (event) event.stopPropagation();
+    // Event propagation'ı durdur
+    event.stopPropagation();
+    event.preventDefault();
 
     const petId = button.getAttribute("data-pet-id");
     if (!petId) return;
@@ -797,88 +768,103 @@ function toggleFavorite(button, event) {
 }
 
 function closeModal() {
-    const modal = document.getElementById("birdModal");
+    const modal = document.getElementById("petModal");
     modal.style.display = "none";
 }
 
 // Modal dışına tıklandığında kapatma
-document.getElementById("birdModal").addEventListener("click", function(event) {
+document.getElementById("petModal").addEventListener("click", function(event) {
     if (event.target === this) {
         closeModal();
     }
 });
 
 // Filtreleme fonksiyonları
-function filterBirds() {
-    const breedFilter = document.getElementById('breedFilter').value;
-    const genderFilter = document.getElementById('genderFilter').value;
-    const ageFilter = document.getElementById('ageFilter').value;
-    const cityFilter = document.getElementById('cityFilter').value;
-    
-    const cards = document.querySelectorAll('.bird-card');
-    
+function filterPets() {
+    const typeFilter = document.getElementById('typeFilter')?.value;
+    const breedFilter = document.getElementById('breedFilter')?.value;
+    const genderFilter = document.getElementById('genderFilter')?.value;
+    const ageFilter = document.getElementById('ageFilter')?.value;
+    const cityFilter = document.getElementById('cityFilter')?.value;
+
+    const cards = document.querySelectorAll('.favorite-card');
+
     cards.forEach(card => {
         let show = true;
-        
-        // Irk filtresi
-        if (breedFilter && card.dataset.breed !== breedFilter) {
-            show = false;
-        }
-        
-        // Cinsiyet filtresi
-        if (genderFilter) {
-            const cardGender = card.dataset.sex.toLowerCase() === 'female' || card.dataset.sex.toLowerCase() === 'dişi' ? 'Dişi' : 'Erkek';
-            if (cardGender !== genderFilter) {
-                show = false;
-            }
-        }
-        
-        // Yaş filtresi
+
+        const cardType = card.dataset.type;
+        const cardBreed = card.dataset.breed;
+        const cardGender = (card.dataset.sex?.toLowerCase() === 'female' || card.dataset.sex?.toLowerCase() === 'dişi') ? 'Dişi' : 'Erkek';
+        const cardAge = parseFloat(card.dataset.age);
+        const cardCity = card.dataset.address;
+
+        if (typeFilter && cardType !== typeFilter) show = false;
+        if (breedFilter && cardBreed !== breedFilter) show = false;
+        if (genderFilter && cardGender !== genderFilter) show = false;
+
         if (ageFilter) {
-            const age = parseFloat(card.dataset.age);
             const [min, max] = ageFilter.split('-').map(Number);
-            
             if (max) {
-                if (age < min || age > max) {
-                    show = false;
-                }
+                if (cardAge < min || cardAge > max) show = false;
             } else {
-                // 5+ yaş durumu
-                if (age < 5) {
-                    show = false;
-                }
+                if (cardAge < 5) show = false;
             }
         }
-        
-        // İl filtresi
-        if (cityFilter && card.dataset.address !== cityFilter) {
-            show = false;
-        }
-        
-        // Kartı göster/gizle
+
+        if (cityFilter && cardCity !== cityFilter) show = false;
+
         card.style.display = show ? 'block' : 'none';
     });
 }
 
 // Filtre değişikliklerini dinle
-document.getElementById('breedFilter').addEventListener('change', filterBirds);
-document.getElementById('genderFilter').addEventListener('change', filterBirds);
-document.getElementById('ageFilter').addEventListener('change', filterBirds);
-document.getElementById('cityFilter').addEventListener('change', filterBirds);
+document.getElementById('typeFilter').addEventListener('change', filterPets);
+document.getElementById('breedFilter').addEventListener('change', filterPets);
+document.getElementById('genderFilter').addEventListener('change', filterPets);
+document.getElementById('ageFilter').addEventListener('change', filterPets);
+document.getElementById('cityFilter').addEventListener('change', filterPets);
+
+// Sayfa yüklendiğinde benzersiz değerleri filtrele
+window.addEventListener('load', function() {
+    // Benzersiz türleri filtrele
+    const typeSelect = document.getElementById('typeFilter');
+    const types = new Set();
+    document.querySelectorAll('.favorite-card').forEach(card => {
+        if (card.dataset.type) {
+            types.add(card.dataset.type);
+        }
+    });
+    
+    // Benzersiz ırkları filtrele
+    const breedSelect = document.getElementById('breedFilter');
+    const breeds = new Set();
+    document.querySelectorAll('.favorite-card').forEach(card => {
+        breeds.add(card.dataset.breed);
+    });
+    
+    // Benzersiz illeri filtrele
+    const citySelect = document.getElementById('cityFilter');
+    const cities = new Set();
+    document.querySelectorAll('.favorite-card').forEach(card => {
+        if (card.dataset.address) {
+            cities.add(card.dataset.address);
+        }
+    });
+});
 
 function resetFilters() {
     // Tüm select elementlerini sıfırla
+    document.getElementById('typeFilter').value = '';
     document.getElementById('breedFilter').value = '';
     document.getElementById('genderFilter').value = '';
     document.getElementById('ageFilter').value = '';
     document.getElementById('cityFilter').value = '';
     
     // Tüm kartları göster
-    const cards = document.querySelectorAll('.bird-card');
+    const cards = document.querySelectorAll('.favorite-card');
     cards.forEach(card => {
         card.style.display = 'block';
     });
 }
 </script>
 {% endblock %}
-

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Social Pet{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+
     <style>
         /* Reset and Base Styles */
         * {
@@ -20,7 +22,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        
+
 
         /* Navbar Styles */
         .navbar {
@@ -43,11 +45,22 @@
             text-decoration: none;
             color: #333;
             gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-left .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
         }
 
         .nav-left .logo i {
             font-size: 2rem;
             color: #FF6B35;
+            transition: all 0.3s ease;
+        }
+
+        .nav-left .logo:hover i {
+            transform: rotate(15deg);
         }
 
         .nav-left .logo span {
@@ -75,6 +88,11 @@
             color: #FF6B35;
         }
 
+        .nav-item .nav-link.active {
+            color: #FF6B35;
+            font-weight: bold;
+        }
+
         .nav-item .profile-pic {
             width: 32px;
             height: 32px;
@@ -94,7 +112,7 @@
             right: 0;
             background-color: white;
             min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             z-index: 1000;
             margin-top: 10px;
@@ -136,7 +154,8 @@
         /* Container Layout */
         .container {
             display: flex;
-            margin-top: 72px; /* Navbar height */
+            margin-top: 72px;
+            /* Navbar height */
             min-height: calc(100vh - 72px);
         }
 
@@ -151,6 +170,8 @@
             bottom: 0;
             overflow-y: auto;
             box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            margin-top: -10px;
+            /* Navbar height */
         }
 
         .menu-section {
@@ -220,7 +241,7 @@
             height: 100%;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             cursor: grab;
             transition: transform 0.3s ease;
@@ -269,7 +290,7 @@
             border-radius: 50%;
             border: none;
             background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -283,11 +304,11 @@
         }
 
         .dislike-btn i {
-            color: #FF6B35;
+            color: #11521a;
         }
 
         .like-btn i {
-            color: #4CAF50;
+            color: #ff0000;
         }
 
         .card.removing {
@@ -307,7 +328,7 @@
             .sidebar {
                 width: 240px;
             }
-            
+
             .main-content {
                 margin-left: 240px;
             }
@@ -318,19 +339,19 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s;
             }
-            
+
             .sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
+
             .nav-right span {
                 display: none;
             }
-            
+
             .nav-right {
                 gap: 1rem;
             }
@@ -352,31 +373,86 @@
             filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(346deg) brightness(118%) contrast(119%);
         }
 
-        .menu-list a.active, .menu-list a:active {
+        .menu-list a.active,
+        .menu-list a:active {
             background-color: #ffe5d0;
             color: #FF6B35;
             font-weight: bold;
         }
+
         .hamster-icon-normal {
             display: inline-block;
         }
+
         .hamster-icon-hover {
             display: none;
         }
+
         .menu-list a.active .hamster-icon-normal,
         .menu-list a:hover .hamster-icon-normal {
             display: none;
         }
+
         .menu-list a.active .hamster-icon-hover,
         .menu-list a:hover .hamster-icon-hover {
             display: inline-block;
         }
 
+        .swipe-feedback {
+            position: fixed;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .swipe-feedback.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .swipe-feedback.heart {
+            color: #f80000;
+            top: 20%;
+            left: 40%;
+        }
+
+        .swipe-feedback.cross {
+            color: #000000;
+            top: 20%;
+            left: 75%;
+        }
+
+
+
+        .floating-icon {
+            position: fixed;
+            font-size: 100px;
+            z-index: 9999;
+            opacity: 0;
+            animation: floatIcon 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatIcon {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5) rotate(15deg);
+            }
+        }
     </style>
     {% load static %}
 
     {% block styles %}{% endblock %}
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -390,13 +466,22 @@
         </div>
         <div class="nav-right">
             <div class="nav-item">
-                <a href="/matches" class="nav-link">
+                <a href="/matches" class="nav-link{% if request.path == '/matches' %} active{% endif %}">
                     <i class="fas fa-comments"></i>
                     <span>Mesajlar</span>
                 </a>
             </div>
+
+            <!-- Yeni Eklenen Favorilerim Kısmı -->
             <div class="nav-item">
-                <a href="/vet" class="nav-link">
+                <a href="{% url 'favorites' %}" class="nav-link{% if request.path == '/favorites/' %} active{% endif %}">
+                    <i class="fas fa-heart"></i>
+                    <span>Favorilerim</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="/vet" class="nav-link{% if request.path == '/vet' %} active{% endif %}">
                     <i class="fas fa-stethoscope"></i>
                     <span>Veteriner</span>
                 </a>
@@ -415,7 +500,7 @@
                     <a href="/api/logout/" class="logout">
                         <i class="fas fa-sign-out-alt"></i>
 
-                        
+
                         Çıkış Yap
                     </a>
                 </div>
@@ -424,6 +509,8 @@
     </nav>
     {% endblock %}
 
+    <!-- Ana içeriğin hemen üstüne ekle -->
+    <div class="swipe-feedback" id="swipeFeedback"></div>
 
     <!-- Main Content -->
     <div class="container">
@@ -433,35 +520,49 @@
             <div class="menu-section">
                 <h3>Kategoriler</h3>
                 <ul class="menu-list">
-                    <li><a href="{% url 'dogs' %}" class="{% if request.resolver_match.url_name == 'dogs' %}active{% endif %}"><i class="fas fa-dog"></i> Köpekler</a></li>
-                    <li><a href="{% url 'cats' %}" class="{% if request.resolver_match.url_name == 'cats' %}active{% endif %}"><i class="fas fa-cat"></i> Kediler</a></li>
-                    <li><a href="{% url 'birds' %}" class="{% if request.resolver_match.url_name == 'birds' %}active{% endif %}"><i class="fas fa-dove"></i> Kuşlar</a></li>
-                    <li><a href="{% url 'fishes' %}" class="{% if request.resolver_match.url_name == 'fishes' %}active{% endif %}"><i class="fas fa-fish"></i> Balıklar</a></li>
-                    <li><a href="{% url 'hamsters' %}" class="{% if request.resolver_match.url_name == 'hamsters' %}active{% endif %}">
-                        <img src="{% static 'images/hamster.png' %}" class="hamster-icon-normal" alt="Hamster" style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
-                        <img src="{% static 'images/hamster-hover.png' %}" class="hamster-icon-hover" alt="Hamster Hover" style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
-                        Hamsterlar
-                    </a></li>
-                    <li><a href="{% url 'others' %}" class="{% if request.resolver_match.url_name == 'others' %}active{% endif %}"><i class="fas fa-paw"></i> Diğer</a></li>
+                    <li><a href="{% url 'dogs' %}"
+                            class="{% if request.resolver_match.url_name == 'dogs' %}active{% endif %}"><i
+                                class="fas fa-dog"></i> Köpekler</a></li>
+                    <li><a href="{% url 'cats' %}"
+                            class="{% if request.resolver_match.url_name == 'cats' %}active{% endif %}"><i
+                                class="fas fa-cat"></i> Kediler</a></li>
+                    <li><a href="{% url 'birds' %}"
+                            class="{% if request.resolver_match.url_name == 'birds' %}active{% endif %}"><i
+                                class="fas fa-dove"></i> Kuşlar</a></li>
+                    <li><a href="{% url 'fishes' %}"
+                            class="{% if request.resolver_match.url_name == 'fishes' %}active{% endif %}"><i
+                                class="fas fa-fish"></i> Balıklar</a></li>
+                    <li><a href="{% url 'hamsters' %}"
+                            class="{% if request.resolver_match.url_name == 'hamsters' %}active{% endif %}">
+                            <img src="{% static 'images/hamster.png' %}" class="hamster-icon-normal" alt="Hamster"
+                                style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
+                            <img src="{% static 'images/hamster-hover.png' %}" class="hamster-icon-hover"
+                                alt="Hamster Hover"
+                                style="width:17px;height:17px;vertical-align:middle;margin-right:3px;">
+                            Hamsterlar
+                        </a></li>
+                    <li><a href="{% url 'others' %}"
+                            class="{% if request.resolver_match.url_name == 'others' %}active{% endif %}"><i
+                                class="fas fa-paw"></i> Diğer</a></li>
                 </ul>
             </div>
 
             <div class="menu-section">
                 <h3>Etkinlikler</h3>
                 <ul class="menu-list">
-                    <li><a href="/events/upcoming"><i class="fas fa-calendar"></i> Yaklaşan Etkinlikler</a></li>
-                    <li><a href="/events/past"><i class="fas fa-history"></i> Geçmiş Etkinlikler</a></li>
-                    <li><a href="/events/create"><i class="fas fa-plus"></i> Etkinlik Oluştur</a></li>
+                    <li><a href="{% url 'upcoming_events' %}" class="{% if request.resolver_match.url_name == 'upcoming_events' %}active{% endif %}"><i class="fas fa-calendar"></i> Yaklaşan Etkinlikler</a></li>
+                    <li><a href="{% url 'past_events' %}" class="{% if request.resolver_match.url_name == 'past_events' %}active{% endif %}"><i class="fas fa-history"></i> Geçmiş Etkinlikler</a></li>
+                    <li><a href="{% url 'create_events' %}" class="{% if request.resolver_match.url_name == 'create_events' %}active{% endif %}"><i class="fas fa-plus"></i> Etkinlik Oluştur</a></li>
                 </ul>
             </div>
 
             <div class="menu-section">
                 <h3>Petshop</h3>
                 <ul class="menu-list">
-                    <li><a href="/shop/food"><i class="fas fa-bone"></i> Mama</a></li>
-                    <li><a href="/shop/toys"><i class="fas fa-basketball-ball"></i> Oyuncaklar</a></li>
-                    <li><a href="/shop/accessories"><i class="fas fa-tshirt"></i> Aksesuarlar</a></li>
-                    <li><a href="/shop/health"><i class="fas fa-heartbeat"></i> Sağlık</a></li>
+                    <li><a href="/shop/food" class="{% if request.resolver_match.url_name == 'shop_food' %}active{% endif %}"><i class="fas fa-bone"></i> Mama</a></li>
+                    <li><a href="/shop/toys" class="{% if request.resolver_match.url_name == 'shop_toys' %}active{% endif %}"><i class="fas fa-basketball-ball"></i> Oyuncaklar</a></li>
+                    <li><a href="/shop/accessories" class="{% if request.resolver_match.url_name == 'shop_accessories' %}active{% endif %}"><i class="fas fa-tshirt"></i> Aksesuarlar</a></li>
+                    <li><a href="/shop/health" class="{% if request.resolver_match.url_name == 'shop_health' %}active{% endif %}"><i class="fas fa-heartbeat"></i> Sağlık</a></li>
                 </ul>
             </div>
         </aside>
@@ -487,11 +588,93 @@
     </div>
 
     {% block scripts %}
-   
+
     <script>
+        function spawnFloatingIcon(type) {
+            const icon = document.createElement('i');
+            icon.classList.add('floating-icon', 'fas');
+
+            if (type === 'like') {
+                icon.classList.add('fa-heart');
+                icon.style.color = '#ff0000';
+                // Kalp animasyonu için sağ tarafa konumlandır
+                const x = window.innerWidth * 0.7 + (Math.random() * 50);  // Ekranın sağ tarafında
+                const y = window.innerHeight / 4 + (Math.random() * 40 - 0);
+                icon.style.left = `${x}px`;
+                icon.style.top = `${y}px`;
+            } else {
+                icon.classList.add('fa-times');
+                icon.style.color = '#11521a';
+                // Çarpı animasyonu için sol tarafa konumlandır
+                const x = window.innerWidth * 0.3 + (Math.random() * 50);  // Ekranın sol tarafında
+                const y = window.innerHeight / 4 + (Math.random() * 40 - 0);
+                icon.style.left = `${x}px`;
+                icon.style.top = `${y}px`;
+            }
+
+            document.body.appendChild(icon);
+
+            // Animasyon tamamlandıktan sonra DOM'dan sil
+            setTimeout(() => {
+                icon.remove();
+            }, 1000);
+        }
+
+
+        function showSwipeFeedback(type) {
+            const feedback = document.getElementById('swipeFeedback');
+            feedback.className = 'swipe-feedback show ' + (type === 'like' ? 'heart' : 'cross');
+            feedback.innerHTML = type === 'like' ? '<i class="fas fa-heart"></i>' : '<i class="fas fa-times"></i>';
+
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 600);
+        }
+
+        function likeCard() {
+            const card = document.querySelector('.card');
+            if (!card) return;
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => spawnFloatingIcon('like'), i * 100);
+            }
+
+            card.classList.add('like', 'removing');
+            setTimeout(() => {
+                card.remove();
+                currentIndex++;
+                if (currentIndex < pets.length) {
+                    const newCard = createCard(pets[currentIndex]);
+                    document.querySelector('.card-container').appendChild(newCard);
+                    setupCardDrag(newCard);
+                }
+            }, 500);
+        }
+
+        function dislikeCard() {
+            const card = document.querySelector('.card');
+            if (!card) return;
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => spawnFloatingIcon('dislike'), i * 100);
+            }
+
+            card.classList.add('dislike', 'removing');
+            setTimeout(() => {
+                card.remove();
+                currentIndex++;
+                if (currentIndex < pets.length) {
+                    const newCard = createCard(pets[currentIndex]);
+                    document.querySelector('.card-container').appendChild(newCard);
+                    setupCardDrag(newCard);
+                }
+            }, 500);
+        }
+
+
 
         // Backend'den gelen verileri kullan
-        let pets = {{ pets|safe }};
+        let pets = {{ pets | safe }};
         let currentIndex = 0;
         let isDragging = false;
         let startX = 0;
@@ -514,9 +697,12 @@
         }
 
         function initializeCards() {
+            // Sadece ana sayfada çalışsın, .card-container yoksa hiçbir şey yapmasın
             const container = document.querySelector('.card-container');
+            if (!container) return;
+
             container.innerHTML = '';
-            
+
             if (currentIndex < pets.length) {
                 const card = createCard(pets[currentIndex]);
                 container.appendChild(card);
@@ -529,7 +715,7 @@
             card.addEventListener('mousemove', drag);
             card.addEventListener('mouseup', endDragging);
             card.addEventListener('mouseleave', endDragging);
-            
+
             // Touch events for mobile
             card.addEventListener('touchstart', startDragging);
             card.addEventListener('touchmove', drag);
@@ -558,7 +744,7 @@
             isDragging = false;
             const card = e.target.closest('.card');
             const diff = currentX - startX;
-            
+
             if (Math.abs(diff) > 100) {
                 if (diff > 0) {
                     likeCard();
@@ -571,42 +757,16 @@
             }
         }
 
-        function likeCard() {
-            const card = document.querySelector('.card');
-            if (!card) return;
-            
-            card.classList.add('like', 'removing');
-            setTimeout(() => {
-                card.remove();
-                currentIndex++;
-                if (currentIndex < pets.length) {
-                    const newCard = createCard(pets[currentIndex]);
-                    document.querySelector('.card-container').appendChild(newCard);
-                    setupCardDrag(newCard);
-                }
-            }, 500);
-        }
-
-        function dislikeCard() {
-            const card = document.querySelector('.card');
-            if (!card) return;
-            
-            card.classList.add('dislike', 'removing');
-            setTimeout(() => {
-                card.remove();
-                currentIndex++;
-                if (currentIndex < pets.length) {
-                    const newCard = createCard(pets[currentIndex]);
-                    document.querySelector('.card-container').appendChild(newCard);
-                    setupCardDrag(newCard);
-                }
-            }, 500);
-        }
-
         // Sayfa yüklendiğinde verileri çek
-        document.addEventListener('DOMContentLoaded', initializeCards);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sadece ana sayfada çalışsın
+            if (document.querySelector('.card-container')) {
+                initializeCards();
+            }
+        });
     </script>
-     <script src="{% static 'js/global.js' %}"></script>
+    <script src="{% static 'js/global.js' %}"></script>
     {% endblock %}
 </body>
-</html> 
+
+</html>
