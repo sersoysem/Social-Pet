@@ -3,60 +3,74 @@ import React, { useEffect, useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Shared from '../Shared/Shared';
 import { useUser } from '@clerk/clerk-expo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function MarkFav({ pet, size, color='black' }) {
-    const { user } = useUser();
-    const [favList, setFavList] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false);
+export default function MarkFav({ pet, size, color = 'black' }) {
+  const { user } = useUser();
+  const [favList, setFavList] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [userEmail, setUserEmail] = useState(null);
 
-    // Kullanıcının favori listesini getir
-    useEffect(() => {
-        if (user) {
-            GetFav();
+  useEffect(() => {
+    getUserEmailAndFavList();
+  }, [user]);
+
+  useEffect(() => {
+    setIsFavorite(favList.includes(pet?.id));
+  }, [favList, pet]);
+
+  const getUserEmailAndFavList = async () => {
+    try {
+      if (user && user?.primaryEmailAddress?.emailAddress) {
+        // Google kullanıcıları
+        setUserEmail(user.primaryEmailAddress.emailAddress);
+        const result = await Shared.GetFavList(user.primaryEmailAddress.emailAddress);
+        setFavList(Array.isArray(result?.favorites) ? result.favorites : []);
+      } else {
+        // E-posta/şifre ile giriş yapan kullanıcılar
+        const localData = await AsyncStorage.getItem('userData');
+        if (localData) {
+          const parsed = JSON.parse(localData);
+          setUserEmail(parsed.email);
+          const result = await Shared.GetFavList(parsed.email);
+          setFavList(Array.isArray(result?.favorites) ? result.favorites : []);
         }
-    }, [user]);
+      }
+    } catch (error) {
+      console.error('Favoriler alınamadı:', error);
+    }
+  };
 
-    // Favori listesi veya pet değiştiğinde, favori olup olmadığını kontrol et
-    useEffect(() => {
-        setIsFavorite(favList.includes(pet?.id));
-    }, [favList, pet]);
+  const ToggleFav = async () => {
+    try {
+      if (!userEmail) {
+        console.warn("userEmail null, ToggleFav iptal.");
+        return;
+      }
 
-    const GetFav = async () => {
-        try {
-            const result = await Shared.GetFavList(user);
-            setFavList(result?.favorites || []);
-        } catch (error) {
-            console.error('Favoriler alınamadı:', error);
-        }
-    };
+      let updatedFavList;
+      if (isFavorite) {
+        updatedFavList = favList.filter(id => id !== pet?.id);
+      } else {
+        updatedFavList = [...favList, pet?.id];
+      }
 
-    const ToggleFav = async () => {
-        try {
-            let updatedFavList;
-            if (isFavorite) {
-                // Favoriden çıkar
-                updatedFavList = favList.filter(id => id !== pet?.id);
-            } else {
-                // Favoriye ekle
-                updatedFavList = [...favList, pet?.id];
-            }
-            
-            await Shared.UpdateFav(user, updatedFavList);
-            setFavList(updatedFavList); // Güncel listeyi state'e yansıt
-        } catch (error) {
-            console.error('Favori güncelleme hatası:', error);
-        }
-    };
+      await Shared.UpdateFav(userEmail, updatedFavList);
+      setFavList(updatedFavList);
+    } catch (error) {
+      console.error('Favori güncelleme hatası:', error);
+    }
+  };
 
-    return (
-        <View>
-            <Pressable onPress={ToggleFav}>
-                <AntDesign 
-                    name={isFavorite ? "heart" : "hearto"} 
-                    size={size || 30}
-                    color={isFavorite ? "red" : color} 
-                />
-            </Pressable>
-        </View>
-    );
+  return (
+    <View>
+      <Pressable onPress={ToggleFav}>
+        <AntDesign
+          name={isFavorite ? "heart" : "hearto"}
+          size={size || 30}
+          color={isFavorite ? "red" : color}
+        />
+      </Pressable>
+    </View>
+  );
 }

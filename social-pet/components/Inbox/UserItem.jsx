@@ -3,8 +3,9 @@ import React from 'react'
 import { Link } from 'expo-router'
 
 export default function UserItem({userInfo}) {
+  console.log("UserItem userInfo:", userInfo);
 
-      // Tarihi formatlayan yardımcı fonksiyon
+  // Tarihi formatlayan yardımcı fonksiyon
   const formatTime = (date) => {
     if (!date) return '';
 
@@ -28,20 +29,43 @@ export default function UserItem({userInfo}) {
 
   return (
     <Link href={`/chat?id=${userInfo.docId}`}>
-      <View style={{ marginVertical: 7, paddingHorizontal: 10 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <View style={{ marginVertical: 7, paddingHorizontal: 10 , width: '95%', justifyContent: 'space-between', flex: 1 }}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start'
+        }}>
           {/* Sol kısım: Profil ve isim + mesaj */}
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <Image
               source={{ uri: userInfo?.pp }}
               style={{ width: 40, height: 40, borderRadius: 99 }}
             />
             <View>
-              <Text style={{ fontFamily: 'outfit-medium', fontSize: 16 }}>
-                {userInfo?.name}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontFamily: 'outfit-medium', fontSize: 16 }}>
+                  {userInfo?.name}
+                </Text>
+                {userInfo?.unread && (
+                  <View
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                      backgroundColor: '#FF4C29',
+                      marginLeft: 6,
+                      marginTop: 2
+                    }}
+                  />
+                )}
+              </View>
               {userInfo?.lastMessage && (
-                <Text style={{ fontSize: 14, color: 'gray', maxWidth: 250 ,marginTop:3}} numberOfLines={1}>
+                <Text style={{
+                  fontSize: 14,
+                  color: userInfo?.unread ? '#222' : 'gray',
+                  fontWeight: userInfo?.unread ? 'bold' : 'normal',
+                  marginTop: 3
+                }} numberOfLines={1}>
                   {userInfo?.lastMessage}
                 </Text>
               )}
@@ -50,10 +74,9 @@ export default function UserItem({userInfo}) {
 
           {/* Sağ üst köşe: Zaman */}
           {userInfo?.lastMessageTime && (
-            <Text style={{ 
-              fontSize: 12, 
-              color: 'gray', 
-              width: 215, 
+            <Text style={{
+              fontSize: 12,
+              color: 'gray',
               textAlign: 'right',
               marginRight: 5
             }}>

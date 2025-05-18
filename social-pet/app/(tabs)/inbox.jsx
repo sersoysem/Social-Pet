@@ -1,124 +1,113 @@
-import { View, Text, FlatList } from 'react-native'
-import React from 'react'
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { View, Text, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 import { db } from '../../config/FireBaseConfig';
 import { useUser } from "@clerk/clerk-expo";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserItem from '../../components/Inbox/UserItem';
+import { setGlobalUnreadCount } from '../../hooks/useGlobalUnread';
+
 export default function Inbox() {
+  const { user } = useUser();
+  const [currentUserEmail, setCurrentUserEmail] = useState(null);
+  const [userList, setUserList] = useState([]);
+  const [loader, setLoader] = useState(false);
 
-  const {user}=useUser();
-  const [userList,setUserList]=useState([]);
-  const [loader,setLoader]=useState(false);
-  useEffect(()=>{
-    user&&GetUserList();
-  },[user]);
+  // Login tipi fark etmeksizin mail çek
+  useEffect(() => {
+    const getUserEmail = async () => {
+      if (user?.primaryEmailAddress?.emailAddress) {
+        setCurrentUserEmail(user.primaryEmailAddress.emailAddress);
+      } else {
+        const userData = await AsyncStorage.getItem('userData');
+        if (userData) {
+          const parsed = JSON.parse(userData);
+          setCurrentUserEmail(parsed.email);
+        }
+      }
+    };
+    getUserEmail();
+  }, [user]);
 
+  // Gerçek zamanlı chat takibi ve unread badge hesaplama
+  useEffect(() => {
+    if (!currentUserEmail) return;
 
-  //Kullanıcı listesini emaile göre alma
-
-  const GetUserList = async () => {
     setLoader(true);
-    setUserList([]);
-  
-    const q = query(
+
+    const chatQuery = query(
       collection(db, 'Chat'),
-      where('userIds', 'array-contains', user?.primaryEmailAddress?.emailAddress)
+      where('userIds', 'array-contains', currentUserEmail),
+      orderBy('lastMessageTime', 'desc')
     );
-    const querySnapshot = await getDocs(q);
-  
-    const validChats = [];
-  
-    for (const docSnap of querySnapshot.docs) {
-      const messagesRef = collection(db, 'Chat', docSnap.id, 'Messages');
-      const messagesSnapshot = await getDocs(messagesRef);
-  
-      // Eğer en az bir mesaj varsa bu sohbeti listeye ekle
-      if (!messagesSnapshot.empty) {
+
+    const unsubscribe = onSnapshot(chatQuery, (querySnapshot) => {
+      const chats = [];
+      querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
-        const lastMessageData = messagesSnapshot.docs[0].data();
-        validChats.push({ 
-          ...data, 
+        // unread badge: son mesajda kendi mailin yoksa göster
+        const unread = data.lastMessage &&
+          Array.isArray(data.lastMessageSeenBy) &&
+          !data.lastMessageSeenBy.includes(currentUserEmail);
+        chats.push({
+          ...data,
           docId: docSnap.id,
-          lastMessage: lastMessageData.text,
-          lastMessageTime: lastMessageData.createdAt?.toDate?.()
-        
+          unread,
+        });
+      });
+      setUserList(chats);
+      setLoader(false);
+    });
+
+    return () => unsubscribe();
+  }, [currentUserEmail]);
+
+  // Karşı kullanıcıyı filtrele, chatte sadece diğer kullanıcıyı göster
+  const MapOtherUserList = () => {
+    if (!currentUserEmail) return [];
+    const list = [];
+    userList.forEach((record) => {
+      const otherUser = record.users?.filter(u => u?.email !== currentUserEmail);
+      if (otherUser && otherUser.length > 0) {
+        list.push({
+          docId: record.docId,
+          name: otherUser[0].name,
+          pp: otherUser[0].pp || otherUser[0].imageUrl,
+          email: otherUser[0].email,
+          lastMessage: record.lastMessage,
+          lastMessageTime: record.lastMessageTime?.toDate ? record.lastMessageTime.toDate() : record.lastMessageTime,
+          unread: record.unread,
         });
       }
-    }
-  
-    setUserList(validChats);
-    setLoader(false);
+      console.log("USERLIST BADGE STATE:", list);
+    });
+    return list;
   };
+
+  useEffect(() => {
+      const unread = MapOtherUserList().filter(item => item.unread).length;
+      setGlobalUnreadCount(unread);
+  }, [userList]);
   
-
-  //Geri kalan kullanıcıları filtreleme
-  const MapOtherUserList = () => {
-  const currentUserEmail = user?.primaryEmailAddress?.emailAddress;
-  const list = [];
-
-  userList.forEach((record) => {
-    // Kendi emailini çıkart
-    const otherUser = record.users?.filter(u => u?.email !== currentUserEmail);
-
-    if (otherUser && otherUser.length > 0) {
-      list.push({
-        docId: record.docId,         // Chat döküman ID'si
-        name: otherUser[0].name,     // Karşı tarafın adı
-        pp: otherUser[0].pp || otherUser[0].imageUrl, // pp veya imageUrl varsa
-        email: otherUser[0].email, 
-        lastMessage: record.lastMessage,
-        lastMessageTime: record.lastMessageTime, // Karşı tarafın maili
-      });
-    }
-  });
-
-
-  return list;
-};
-
-const formatTime = (date) => {
-  const now = new Date();
-  const isToday = now.toDateString() === date.toDateString();
-
-  const yesterday = new Date();
-  yesterday.setDate(now.getDate() - 1);
-  const isYesterday = yesterday.toDateString() === date.toDateString();
-
-  if (isToday) {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  } else if (isYesterday) {
-    return 'Dün';
-  } else {
-    return date.toLocaleDateString('tr-TR');
-  }
-};
-
-
-
-
-
   return (
     <View style={{
-      padding:20,
-      marginTop:20,
+      padding: 20,
+      marginTop: 20,
     }}>
       <Text style={{
-        fontFamily:'outfit-medium',
-        fontSize:30,
+        fontFamily: 'outfit-medium',
+        fontSize: 30,
       }}>Mesajlarım</Text>
 
       <FlatList
         data={MapOtherUserList()}
         refreshing={loader}
         contentContainerStyle={{ paddingBottom: 50 }}
-        onRefresh={GetUserList}
         style={{
-          marginTop:20,
+          marginTop: 20,
         }}
-        renderItem={({item,index})=>(
-          <UserItem userInfo={item} key={index}/>
+        renderItem={({ item, index }) => (
+          <UserItem userInfo={item} key={index} />
         )}
         ItemSeparatorComponent={() => (
           <View style={{ height: 50, justifyContent: 'center' }}>
@@ -128,6 +117,11 @@ const formatTime = (date) => {
               marginHorizontal: 10
             }} />
           </View>
+        )}
+        ListEmptyComponent={() => (
+          !loader ? <Text style={{ textAlign: 'center', marginTop: 50, color: 'gray' }}>
+            Hiç sohbetiniz yok.
+          </Text> : null
         )}
       />
     </View>

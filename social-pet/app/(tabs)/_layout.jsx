@@ -1,11 +1,14 @@
 import {View, Text} from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import {Tabs} from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Colors from '../../constants/Colors'
+import { useGlobalUnread } from '../../hooks/useGlobalUnread';
 
 
 export default function TabLayout(){
+    const unreadCount = useGlobalUnread();
+
     return(
         <Tabs
         
@@ -32,14 +35,24 @@ export default function TabLayout(){
                 ),
             }}
             />
-            <Tabs.Screen name='inbox' 
+            <Tabs.Screen name='discover' 
             options={{
-                title:'Mesajlar',
+                title:'Keşfet',
                 headerShown:false,
                 tabBarIcon:({color})=> (
-                    <Ionicons name="chatbubbles" size={24} color={color} />
+                    <Ionicons name="paw" size={24} color={color} />
                 ),
             }}
+            />
+            <Tabs.Screen name='inbox' 
+                options={{
+                    title:'Mesajlar',
+                    headerShown:false,
+                    tabBarIcon:({color})=> (
+                        <Ionicons name="chatbubbles" size={24} color={color} />
+                    ),
+                    tabBarBadge: unreadCount > 0 ? unreadCount : undefined, // BADGE BURADA!
+                }}
             />
             <Tabs.Screen name='profile' 
             options={{
