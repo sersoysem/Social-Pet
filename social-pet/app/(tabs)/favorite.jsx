@@ -126,7 +126,8 @@ export default function Favorite() {
       <Text style={{
         fontSize: 25,
         fontFamily: 'outfit-medium',
-        marginBottom: 20
+        marginBottom: 20,
+        color:'#ff6b35'
       }}>Favorilerim</Text>
 
       <FlatList
@@ -135,7 +136,7 @@ export default function Favorite() {
         onRefresh={() => userEmail && GetFavPetIds(userEmail)}
         refreshing={loader}
         renderItem={({item}) => (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, marginRight: 17 }}>
             <PetListItem
               pet={item}
               isFavorite={isFavorite(item.id)}

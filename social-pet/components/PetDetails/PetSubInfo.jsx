@@ -1,6 +1,7 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
 import PetSubInfoCard from './PetSubInfoCard'
+import { MaterialIcons } from '@expo/vector-icons'
 
 export default function PetSubInfo({pet}) {
   return (
@@ -12,36 +13,33 @@ export default function PetSubInfo({pet}) {
         flexDirection:'row',
       }}>
          <PetSubInfoCard 
-         icon={require('../../assets/images/calendar.png')} 
+         icon={<MaterialIcons name="cake" size={24} color="#ff6b35" />}
          title='Yaş' 
          value={pet?.age + ' yaşında'}
          />
          
          <PetSubInfoCard 
-         icon={require('../../assets/images/bone.png')} 
+         icon={<MaterialIcons name="pets" size={24} color="#ff6b35" />}
          title='Irk' 
          value={pet?.breed}
          />
       </View>
-
 
       <View style={{
         display:'flex',
         flexDirection:'row',
       }}>
          <PetSubInfoCard 
-         icon={require('../../assets/images/sex.png')} 
+         icon={<MaterialIcons name="wc" size={24} color="#ff6b35" />}
          title='Cinsiyet' 
          value={pet?.sex === 'Male' ? 'Erkek' : pet?.sex === 'Female' ? 'Dişi' : 'Diğer'}
          />
          
          <PetSubInfoCard 
-         icon={require('../../assets/images/weight.png')} 
+         icon={<MaterialIcons name="monitor-weight" size={24} color="#ff6b35" />}
          title='Kilo' 
          value={pet?.weight+' kg'}
          />
-
-         
       </View>
     </View>
   )

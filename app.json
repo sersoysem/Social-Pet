@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "89e5379c-8aad-4a34-acee-ab5efab50e6a"
+      }
+    },
+    "android": {
+      "package": "com.semraersoy.social_pet_mobil"
+    }
+  }
+}

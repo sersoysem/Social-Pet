@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { ClerkProvider } from '@clerk/clerk-expo'
 import * as SecureStore from 'expo-secure-store'
+import { CartProvider } from './petshop/CartContext'; // Dizinine göre yolunu ayarla
 
 const tokenCache = {
   async getToken(key) {
@@ -29,11 +30,7 @@ const tokenCache = {
   }
 }
 
-
-
 export default function RootLayout() {
- 
-
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
   
   if (!publishableKey) {
@@ -48,21 +45,23 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider 
-    tokenCache={tokenCache}
-     publishableKey={publishableKey}> 
-      <Stack>
-        <Stack.Screen name="index"/>
-        <Stack.Screen name="(tabs)"
-        options={{
-          headerShown:false
-        }}
-        />
-        <Stack.Screen name="login/index" 
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
+      tokenCache={tokenCache}
+      publishableKey={publishableKey}> 
+      <CartProvider>
+        <Stack>
+          <Stack.Screen name="index"/>
+          <Stack.Screen name="(tabs)"
+            options={{
+              headerShown:false
+            }}
+          />
+          <Stack.Screen name="login/index" 
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </CartProvider>
     </ClerkProvider>
   );
 }

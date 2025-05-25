@@ -117,7 +117,7 @@ export default function PetDetails() {
       </ScrollView>
       <View style={styles.bottomContainer}>
         <TouchableOpacity onPress={InitiateChat} style={styles.friendButton}>
-          <Text style={{ textAlign: 'center', fontFamily: 'outfit-medium', fontSize: 20 }}>Arkadaş Ol</Text>
+          <Text style={{ textAlign: 'center', fontFamily: 'outfit-medium', fontSize: 20, color: 'white' }}>Arkadaş Ol</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -125,6 +125,6 @@ export default function PetDetails() {
 }
 
 const styles = StyleSheet.create({
-  friendButton: { padding: 15, backgroundColor: '#E8B20E' },
+  friendButton: { padding: 15, backgroundColor: '#ff6b35' },
   bottomContainer: { position: 'absolute', width: '100%', bottom: 0 }
 });

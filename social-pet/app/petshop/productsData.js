@@ -1,0 +1,76 @@
+// petshop/productsData.js
+
+const products = [
+  {
+    id: '1',
+    name: 'Köpek Maması 2kg',
+    price: 230,
+    image: 'https://cdn.pixabay.com/photo/2017/09/25/13/12/dog-food-2785065_1280.jpg',
+    description: 'Sağlıklı ve lezzetli köpek maması.',
+    weight: '2000g',
+    animalType: 'Köpek',
+    isFavorite: false,
+  },
+  {
+    id: '2',
+    name: 'Kedi Oyuncağı',
+    price: 90,
+    image: 'https://cdn.pixabay.com/photo/2014/04/13/20/49/cat-323262_1280.jpg',
+    description: 'Kediniz için eğlenceli oyuncak.',
+    weight: '120g',
+    animalType: 'Kedi',
+    isFavorite: false,
+  },
+  {
+    id: '3',
+    name: 'Kuş Yemi 500g',
+    price: 45,
+    image: 'https://cdn.pixabay.com/photo/2017/01/31/23/42/bird-2028687_1280.png',
+    description: 'Vitamin ve mineral destekli kuş yemi.',
+    weight: '500g',
+    animalType: 'Kuş',
+    isFavorite: false,
+  },
+  {
+    id: '4',
+    name: 'Balık Yemi 100ml',
+    price: 35,
+    image: 'https://cdn.pixabay.com/photo/2016/12/31/21/22/discus-fish-1943755_1280.jpg',
+    description: 'Tropikal balıklar için özel formül.',
+    weight: '100ml',
+    animalType: 'Balık',
+    isFavorite: false,
+  },
+  {
+    id: '5',
+    name: 'Köpek Tasması',
+    price: 120,
+    image: 'https://cdn.pixabay.com/photo/2017/09/25/13/12/dog-2785064_1280.jpg',
+    description: 'Dayanıklı ve ayarlanabilir köpek tasması.',
+    weight: '150g',
+    animalType: 'Köpek',
+    isFavorite: false,
+  },
+  {
+    id: '6',
+    name: 'Kedi Kumu 5L',
+    price: 150,
+    image: 'https://cdn.pixabay.com/photo/2017/01/31/23/42/cat-2028688_1280.png',
+    description: 'Topaklanan kedi kumu, kokuyu engeller.',
+    weight: '5L',
+    animalType: 'Kedi',
+    isFavorite: false,
+  },
+  {
+    id: '7',
+    name: 'Hamster Çarkı',
+    price: 75,
+    image: 'https://cdn.pixabay.com/photo/2017/01/31/23/42/hamster-2028689_1280.png',
+    description: 'Sessiz dönen hamster egzersiz çarkı.',
+    weight: '300g',
+    animalType: 'Hamster',
+    isFavorite: false,
+  }
+];
+
+export default products;

@@ -28,12 +28,12 @@ export default function OwnerInfo({pet}) {
             <Text style={{
                 fontFamily:'outfit',
                 fontSize:16,
-                color:"#E8B20E",
+                color:"#ff6b35",
                 marginTop:5,
             }}>Ailesi</Text>
         </View>
         </View>
-        <FontAwesome name="send" size={24} color="#E8B20E" />
+        <FontAwesome name="send" size={24} color="#ff6b35" />
     </View>
   )
 }
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:15,
         padding:20,
-        borderColor:"#E8B20E",
+        borderColor:"#ff6b35",
         backgroundColor:'#fff',
         justifyContent:'space-between',
 

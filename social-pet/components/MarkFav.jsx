@@ -1,9 +1,11 @@
-import { View, Pressable } from 'react-native';
+import { View, Pressable, StyleSheet, TouchableOpacity,  } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Shared from '../Shared/Shared';
 import { useUser } from '@clerk/clerk-expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialIcons } from '@expo/vector-icons'
+
 
 export default function MarkFav({ pet, size, color = 'black' }) {
   const { user } = useUser();
@@ -63,14 +65,25 @@ export default function MarkFav({ pet, size, color = 'black' }) {
   };
 
   return (
-    <View>
-      <Pressable onPress={ToggleFav}>
-        <AntDesign
-          name={isFavorite ? "heart" : "hearto"}
-          size={size || 30}
-          color={isFavorite ? "red" : color}
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.favoriteButton} onPress={ToggleFav}>
+        <MaterialIcons 
+          name={isFavorite ? "favorite" : "favorite-border"} 
+          size={24} 
+          color={isFavorite ? "#ff6b35" : "#fff"} 
         />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  favoriteButton: {
+    position: 'absolute',
+    top: 1,
+    right: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 20,
+    padding: 8,
+  },
+});

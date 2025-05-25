@@ -24,7 +24,7 @@ export default function AboutPet({pet}) {
         <Text style={{
             fontFamily:'outfit-medium',
             fontSize:15,
-            color:'#E8B20E',
+            color:'#ff6b35',
         }}>Daha Fazla Oku</Text>
       </Pressable>}
     </View>

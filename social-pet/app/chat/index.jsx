@@ -1,11 +1,12 @@
-import { View } from 'react-native';
+import { View, SafeAreaView, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { db } from '../../config/FireBaseConfig';
 import { addDoc, doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion, getDocs, query as fsQuery, collection as fsCollection, where as fsWhere } from 'firebase/firestore';
 import { useUser } from '@clerk/clerk-expo';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Kullanıcı adı ve fotoğrafı için fallback fonksiyonu
 async function getUserDisplayInfo(email) {
@@ -203,28 +204,67 @@ export default function ChatScreen() {
   }, [messages, params?.id, currentUserEmail]);
   
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={onSend}
-      showUserAvatar={true}
-      user={{
-        _id: currentUserEmail,
-        name: currentUserName,
-        avatar: currentUserAvatar,
-      }}
-      renderBubble={(props) => (
-        <Bubble
-          {...props}
-          wrapperStyle={{
-            left: { backgroundColor: '#FEF3E2' },
-            right: { backgroundColor: '#FE5D26' }
+    <SafeAreaView style={styles.container}>
+      <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 40 }}>
+        <GiftedChat
+          messages={messages}
+          onSend={onSend}
+          showUserAvatar={true}
+          user={{
+            _id: currentUserEmail,
+            name: currentUserName,
+            avatar: currentUserAvatar,
           }}
-          textStyle={{
-            left: { color: '#0E0E0E' },
-            right: { color: '#FFFFFF' }
+          renderBubble={(props) => (
+            <Bubble
+              {...props}
+              wrapperStyle={{
+                left: { backgroundColor: '#FEF3E2' },
+                right: { backgroundColor: '#FF6B35' }
+              }}
+              textStyle={{
+                left: { color: '#0E0E0E' },
+                right: { color: '#FFFFFF' }
+              }}
+            />
+          )}
+          listViewProps={{
+            style: { flex: 1 },
+            contentContainerStyle: { 
+              flexGrow: 1,
+              paddingBottom: 10,
+              paddingTop: 10
+            },
+            keyboardShouldPersistTaps: 'handled',
           }}
+          renderInputToolbar={(props) => (
+            <InputToolbar
+              {...props}
+              containerStyle={{
+                backgroundColor: '#fff',
+                borderTopWidth: 1,
+                borderTopColor: '#e8e8e8',
+                paddingHorizontal: 8,
+                marginBottom: 20,
+                marginTop: 10
+              }}
+            />
+          )}
+          alwaysShowSend
+          scrollToBottom
+          scrollToBottomComponent={() => (
+            <View style={{ padding: 8 }}>
+              <Ionicons name="chevron-down" size={24} color="#FF6B35" />
+            </View>
+          )}
         />
-      )}
-    />
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 0.95,
+  },
+});

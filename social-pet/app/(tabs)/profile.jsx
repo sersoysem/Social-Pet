@@ -91,10 +91,6 @@ export default function Profile() {
       marginTop: 20,
       flex: 1,
     }}>
-      <Text style={{
-        fontSize: 20,
-        fontFamily: 'outfit-medium',
-      }}>Profile</Text>
 
       <View style={{
         display: 'flex',
@@ -144,7 +140,7 @@ export default function Profile() {
             <Ionicons
               name={item?.icon}
               size={35}
-              color={item.name === 'Çıkış Yap' ? '#ff4d4d' : '#E8B20E'}
+              color={item.name === 'Çıkış Yap' ? '#ff4d4d' : '#FF6B35'}
               style={{
                 padding: 10,
                 backgroundColor: item.name === 'Çıkış Yap' ? '#ffe6e6' : '#faeedc',

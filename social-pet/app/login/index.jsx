@@ -1,4 +1,4 @@
-import { View, Text, Image, Alert } from "react-native";
+import { View, Text, Image, ImageBackground, Alert, SafeAreaView } from "react-native";
 import React, { useEffect, useCallback } from "react";
 import Colors from "../../constants/Colors";
 import { Pressable } from "react-native";
@@ -8,6 +8,7 @@ import * as Linking from "expo-linking";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Clerk } from "@clerk/clerk-expo";
+import TinderImage from "../../assets/images/tinder.jpg";
 
 
 export const useWarmUpBrowser = () => {
@@ -103,54 +104,79 @@ export default function LoginScreen() {
   }, [isSignedIn]);
   
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.WHITE }}>
-      <Image
-        source={require("../images/resim7.jpg")}
-        style={{
-          width: "100%",
-          height: "50%",
-          resizeMode: "cover",
-          marginTop: 50,
-        }}
-      />
-      <View style={{ padding: 20, alignItems: "center" }}>
-        <Text style={{ fontFamily: "outfit-medium", fontSize: 30, textAlign: "center" }}>
-          Yeni arkadaşlar edinmeye hazır mısın?
-        </Text>
-        <Text style={{ fontFamily: "outfit-medium", fontSize: 16, textAlign: "center", color: Colors.GRAY, marginTop: 10 }}>
-          Evcil dostunla birlikte sosyalleşmenin, oyun arkadaşları bulmanın en keyifli yolu burada seni bekliyor!
-        </Text>
-
-        <Pressable
-          onPress={onPress}
-          style={{
-            backgroundColor: Colors.PRIMARY,
-            padding: 14,
-            marginTop: 70,
-            width: "100%",
-            borderRadius: 14,
-          }}
-        >
-          <Text style={{ fontFamily: "outfit-medium", fontSize: 20, textAlign: "center", color: "white" }}>
-            Google ile Giriş Yap
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => router.push("/login/email-login")}
-          style={{
-            backgroundColor: Colors.GRAY,
-            padding: 14,
-            marginTop: 20,
-            width: "100%",
-            borderRadius: 14,
-          }}
-        >
-          <Text style={{ fontFamily: "outfit-medium", fontSize: 20, textAlign: "center", color: "white" }}>
-            E-posta ile Giriş
-          </Text>
-        </Pressable>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
+      <View style={{ flex: 1, backgroundColor: Colors.WHITE }}>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '55%', zIndex: 1 }}>
+          <Image
+            source={TinderImage}
+            style={{
+              width: '100%',
+              height: '100%',
+              resizeMode: 'cover',
+            }}
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <View style={{
+            backgroundColor: Colors.WHITE,
+            borderTopLeftRadius: 25,
+            borderTopRightRadius: 25,
+            paddingVertical: 40,
+            paddingHorizontal: 24,
+            width: '100%',
+            minHeight: '48%',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 8,
+            elevation: 4,
+            marginTop: 25,
+            zIndex: 2,
+          }}>
+            <Text style={{ fontFamily: "outfit-bold", fontSize: 22, textAlign: "center", marginBottom: 12 }}>
+              Yeni arkadaşlar edinmeye hazır mısın?
+            </Text>
+            <Text style={{ fontFamily: "outfit-medium", fontSize: 16, textAlign: "center", color: Colors.GRAY, marginBottom: 32 }}>
+              Evcil dostunla birlikte sosyalleşmenin, oyun arkadaşları bulmanın en keyifli yolu burada seni bekliyor!
+            </Text>
+            <Pressable
+              onPress={onPress}
+              style={{
+                backgroundColor: '#FF6B35',
+                paddingVertical: 16,
+                width: "100%",
+                borderRadius: 16,
+                marginBottom: 16,
+                shadowColor: '#FF6B35',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.15,
+                shadowRadius: 8,
+                elevation: 2,
+              }}
+            >
+              <Text style={{ fontFamily: "outfit-bold", fontSize: 20, textAlign: "center", color: "white" }}>
+                Google ile Giriş Yap
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("/login/email-login")}
+              style={{
+                backgroundColor: '#fff',
+                paddingVertical: 20,
+                width: "100%",
+                borderRadius: 16,
+                borderColor: '#ff6b35',
+                borderWidth: 1,
+              }}
+            >
+              <Text style={{ fontFamily: "outfit-bold", fontSize: 20, textAlign: "center", color: '#ff6b35', }}>
+                E-posta ile Giriş Yap
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

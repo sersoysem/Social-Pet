@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, Image, SafeAreaView } from "react-native";
 import Colors from "../../constants/Colors";
 import { collection, query, where, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/FireBaseConfig';
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Shared from '../../Shared/Shared';
+import Resim7 from '../images/resim7.jpg';
 
 export default function EmailLoginScreen() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const navigation = useNavigation();
 
   useEffect(() => {
+    navigation.setOptions({ headerTitle: 'E-Posta' });
     checkUserSession();
   }, []);
 
@@ -82,55 +85,97 @@ export default function EmailLoginScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.WHITE, justifyContent: 'center', padding: 20 }}>
-      <Text style={{ fontFamily: "outfit-medium", fontSize: 28, textAlign: "center", marginBottom: 30 }}>
-        E-posta ile Giriş
-      </Text>
-      <TextInput
-        placeholder="E-posta"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        style={{
-          width: "100%",
-          borderWidth: 1,
-          borderColor: Colors.GRAY,
-          borderRadius: 8,
-          padding: 10,
-          marginBottom: 15,
-          fontSize: 16,
-        }}
-      />
-      <TextInput
-        placeholder="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          width: "100%",
-          borderWidth: 1,
-          borderColor: Colors.GRAY,
-          borderRadius: 8,
-          padding: 10,
-          marginBottom: 20,
-          fontSize: 16,
-        }}
-      />
-      <Pressable
-        onPress={handleEmailLogin}
-        style={{
-          backgroundColor: Colors.PRIMARY,
-          padding: 14,
-          borderRadius: 14,
-          opacity: loading ? 0.7 : 1,
-        }}
-        disabled={loading}
-      >
-        <Text style={{ fontFamily: "outfit-medium", fontSize: 20, textAlign: "center", color: "white" }}>
-          Giriş Yap
-        </Text>
-      </Pressable>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
+      <View style={{ flex: 1, backgroundColor: Colors.WHITE }}>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '55%', zIndex: 1 }}>
+          <Image
+            source={Resim7}
+            style={{
+              width: '90%',
+              height: '90%',
+              resizeMode: 'cover',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <View style={{
+            backgroundColor: Colors.WHITE,
+            borderTopLeftRadius: 25,
+            borderTopRightRadius: 25,
+            paddingVertical: 40,
+            paddingHorizontal: 24,
+            width: '100%',
+            minHeight: '48%',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 8,
+            elevation: 4,
+            marginTop: 25,
+            zIndex: 2,
+            paddingTop: 25,
+          }}>
+            <Text style={{ fontFamily: "outfit-bold", fontSize: 22, textAlign: "center", marginBottom: 30, color: '#FF6B35' }}>
+              E-posta ile Giriş
+            </Text>
+            <TextInput
+              placeholder="E-posta"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              style={{
+                width: "100%",
+                borderWidth: 1,
+                borderColor: '#ff6b35',
+                borderRadius: 8,
+                padding: 14,
+                marginBottom: 15,
+                fontSize: 16,
+                backgroundColor: '#fcf7f5',
+              }}
+            />
+            <TextInput
+              placeholder="Şifre"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={{
+                width: "100%",
+                borderWidth: 1,
+                borderColor: '#ff6b35',
+                borderRadius: 8,
+                padding: 14,
+                marginBottom: 32,
+                fontSize: 16,
+                backgroundColor: '#fcf7f5',
+              }}
+            />
+            <Pressable
+              onPress={handleEmailLogin}
+              style={{
+                backgroundColor: '#FF6B35',
+                paddingVertical: 16,
+                width: "100%",
+                borderRadius: 16,
+                opacity: loading ? 0.7 : 1,
+                marginBottom: 16,
+              }}
+              disabled={loading}
+            >
+              <Text style={{ fontFamily: "outfit-bold", fontSize: 20, textAlign: "center", color: "white", }}>
+                Giriş Yap
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
