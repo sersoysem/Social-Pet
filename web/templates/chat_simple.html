@@ -1,0 +1,621 @@
+{% extends "home.html" %}
+{% block title %}Sohbetler | Social Pet{% endblock %}
+
+{% block sidebar %}
+<!-- Home.html'den gelen sidebar'ı gizle -->
+{% endblock %}
+
+{% block main_content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Sohbetler</title>
+    <style>
+        /* Modern CSS Variables - Home.html'den alınan */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-glass: 0 8px 32px 0 rgba(255, 107, 53, 0.15);
+            
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --text-muted: #a0a0a0;
+            
+            --bg-primary: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+            
+            --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+            --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            
+            --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Home.html'den gelen sidebar'ı gizle */
+        .sidebar {
+            display: none !important;
+        }
+        
+        /* Main content'i full width yap */
+        .main-content {
+            margin-left: 0 !important;
+        }
+        
+        body {
+            margin: 0; 
+            padding: 0;
+            font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow: hidden; /* Sayfa kaydırmasını tamamen engelle */
+            height: 100vh; /* Tam yükseklik */
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%);
+            animation: particleFloat 15s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 42px); /* Navbar yüksekliğini düşürdüm */
+            margin-top: 0;
+            position: fixed;
+            top: 42px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden; /* Container'da da kaydırmayı engelle */
+        }
+
+        .chat-sidebar {
+            width: 330px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 107, 53, 0.2);
+            overflow-y: auto; /* Sadece Y ekseninde kaydırma */
+            overflow-x: hidden; /* X ekseninde kaydırma yok */
+            padding: 0;
+            height: 100%;
+            box-shadow: var(--shadow-glass);
+            animation: slideInLeft 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .chatlist {
+            list-style: none;
+            margin: 0; 
+            padding: 0;
+        }
+
+        .chatlist li {
+            padding: 16px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+            display: flex;
+            align-items: center;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatlist li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .chatlist li:hover::before {
+            left: 100%;
+        }
+
+        .chatlist li.active,
+        .chatlist li:hover {
+            background: rgba(255, 107, 53, 0.08);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-elevation-1);
+        }
+
+        .chatlist li.active {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+        }
+
+        .chatlist li.active .chat-avatar {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-avatar {
+            width: 45px; 
+            height: 45px;
+            border-radius: 50%; 
+            margin-right: 15px;
+            background: #eee; 
+            object-fit: cover;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            transition: var(--transition-bounce);
+        }
+
+        .chat-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-elevation-2);
+        }
+
+        .chat-main {
+            flex: 1; 
+            display: flex; 
+            flex-direction: column;
+            background: transparent;
+            height: 100%;
+            min-height: 0;
+            z-index: 1;
+            margin-left: 0;
+            overflow: hidden; /* Chat main'de genel kaydırmayı engelle */
+        }
+
+        .chat-header {
+            background: var(--primary-gradient);
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 20px 25px;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            flex-shrink: 0;
+            overflow-x: hidden;
+            box-shadow: var(--shadow-elevation-2);
+            display: flex;
+            align-items: center;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .chat-header img {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 25px 25px 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 0;
+            width: 100%;
+            box-sizing: border-box;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .msg {
+            display: flex; 
+            align-items: flex-end; 
+            gap: 12px;
+            max-width: 100%;
+            width: 100%;
+            margin-left: 60px;
+            animation: messageSlideIn 0.4s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .msg.me { 
+            flex-direction: row-reverse; 
+            margin-left: 0;
+            margin-right: 20px;
+        }
+
+        .msg-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: var(--radius-lg);
+            min-width: 44px;
+            max-width: 45%;
+            box-shadow: var(--shadow-elevation-1);
+            word-wrap: break-word;
+            word-break: break-word;
+            border: 1px solid rgba(255, 107, 53, 0.1);
+            transition: var(--transition-quick);
+            position: relative;
+            font-weight: 500;
+        }
+
+        .msg-content:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevation-2);
+        }
+
+        .msg.me .msg-content { 
+            background: var(--primary-gradient);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .msg-avatar {
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%;
+            object-fit: cover; 
+            background: #eee;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            transition: var(--transition-bounce);
+        }
+
+        .msg-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-elevation-1);
+        }
+
+        .chat-input-box {
+            display: flex; 
+            padding: 52px 25px;
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-shrink: 0;
+            gap: 15px;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            box-shadow: var(--shadow-elevation-1);
+        }
+
+        .chat-input-box input[type="text"] {
+            flex: 1; 
+            padding: 12px 16px; 
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            outline: none;
+            font-size: 1rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+            font-family: inherit;
+        }
+
+        .chat-input-box input[type="text"]:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .chat-input-box button {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none; 
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            font-size: 1rem; 
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            box-shadow: var(--shadow-elevation-1);
+            font-family: inherit;
+        }
+
+        .chat-input-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevation-3);
+        }
+
+        .chat-input-box button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 800px) {
+            .container { 
+                flex-direction: column;
+                position: relative;
+                top: 0;
+                height: calc(100vh - 80px);
+            }
+            .chat-sidebar { 
+                width: 100%; 
+                height: 260px; 
+                border-right: none; 
+                border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+                flex-shrink: 0;
+                border-radius: 0;
+            }
+            .chat-main { 
+                height: calc(100% - 260px);
+                flex: 1;
+            }
+            .chat-header {
+                border-radius: 0;
+            }
+            .chat-input-box {
+                border-radius: 0;
+            }
+        }
+
+        /* Chat item düzenlemesi */
+        .chat-item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-item-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: inherit;
+        }
+
+        .chat-item-last-message {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .chatlist li.active .chat-item-last-message {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Okunmamış mesaj badge'i */
+        .unread-badge {
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 20px;
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+            }
+            50% {
+                box-shadow: 0 2px 15px rgba(255, 71, 87, 0.6);
+            }
+            100% {
+                box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+            }
+        }
+
+        .chatlist li.active .unread-badge {
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff6b35;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <div class="chat-sidebar">
+        <ul class="chatlist">
+            {% for chat in chats %}
+            <li {% if chat.id == active_chat_id %}class="active"{% endif %}
+                onclick="window.location.href='?chat_id={{ chat.id }}'">
+                <img src="{{ chat.other_pp }}" class="chat-avatar">
+                <div class="chat-item-content">
+                    <div class="chat-item-header">
+                        <div class="chat-item-name">{{ chat.other_name }}</div>
+                        {% if chat.has_unread %}
+                        <div class="unread-badge">!</div>
+                        {% endif %}
+                    </div>
+                    <div class="chat-item-last-message">
+                        {% if chat.last_message %}
+                            {{ chat.last_message }}
+                        {% else %}
+                            Henüz mesaj yok
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <li>Hiç sohbetiniz yok.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Main chat panel -->
+    <div class="chat-main">
+        {% if selected_chat %}
+            <div class="chat-header">
+                <img src="{{ selected_chat.other_pp }}" style="width:36px;height:36px;border-radius:50%;vertical-align:middle;margin-right:12px;">
+                {{ selected_chat.other_name }}
+            </div>
+            <div class="chat-messages" id="messages">
+                {% for m in messages %}
+                    <div class="msg{% if m.user_email == email %} me{% endif %}">
+                        <img src="{{ m.avatar }}" class="msg-avatar">
+                        <div class="msg-content">{{ m.text }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <form class="chat-input-box" id="sendMsg" method="post" autocomplete="off">
+                {% csrf_token %}
+                <input type="hidden" name="chat_id" value="{{ selected_chat.id }}">
+                <input type="text" name="text" placeholder="Mesaj yaz..." required>
+                <button type="submit">Gönder</button>
+            </form>
+            
+            {% if selected_chat %}
+            <script type="text/javascript">
+                // Template verilerini JavaScript değişkenlerine aktar
+                window.selectedChatId = '{{ selected_chat.id }}';
+                window.currentUserEmail = '{{ email }}';
+            </script>
+            {% else %}
+            <script type="text/javascript">
+                window.selectedChatId = null;
+                window.currentUserEmail = '{{ email }}';
+            </script>
+            {% endif %}
+            
+            <script>
+            // Mesaj gönderme ajax
+            document.getElementById('sendMsg').onsubmit = function(e){
+                e.preventDefault();
+                var data = new FormData(this);
+                fetch("/chat/send/", {
+                    method: "POST",
+                    body: data,
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                })
+                .then(r=>r.json())
+                .then(j=>{
+                    if(j.success) {
+                        document.querySelector('input[name="text"]').value = "";
+                        // Sayfa yenileme yerine mesajları güncelle
+                        loadMessages();
+                    }
+                });
+            };
+
+            // Mesajları yükle ve ekranda göster
+            function loadMessages() {
+                if (!window.selectedChatId) return;
+                
+                fetch(`/chat/messages/${window.selectedChatId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateMessagesDisplay(data.messages);
+                    }
+                })
+                .catch(error => {
+                    console.error('Mesajlar yüklenirken hata:', error);
+                });
+            }
+
+            // Mesajları HTML olarak güncelle
+            function updateMessagesDisplay(messages) {
+                const messagesContainer = document.getElementById("messages");
+                if (!messagesContainer) return;
+                
+                let messagesHTML = "";
+                
+                messages.forEach(message => {
+                    const isMe = message.sender === window.currentUserEmail || (message.avatar && message.avatar.includes(window.currentUserEmail));
+                    const messageClass = isMe ? "msg me" : "msg";
+                    
+                    messagesHTML += `
+                        <div class="${messageClass}">
+                            <img src="${message.avatar || 'https://i.pravatar.cc/150?u=' + message.sender}" class="msg-avatar">
+                            <div class="msg-content">${escapeHtml(message.text)}</div>
+                        </div>
+                    `;
+                });
+                
+                messagesContainer.innerHTML = messagesHTML;
+                
+                // Otomatik en sona kaydır
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // HTML escape fonksiyonu
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Sayfa yüklendiğinde mesajları yükle
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.selectedChatId) {
+                    // İlk mesajları yükle
+                    loadMessages();
+                    
+                    // Her 3 saniyede bir yeni mesajları kontrol et
+                    setInterval(loadMessages, 3000);
+                }
+                
+                // Otomatik en sona kaydır (ilk yükleme için)
+                var msgBox = document.getElementById("messages");
+                if (msgBox) msgBox.scrollTop = msgBox.scrollHeight;
+            });
+            </script>
+        {% else %}
+            <div class="chat-header">Bir sohbet seçin</div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

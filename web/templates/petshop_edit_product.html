@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürünü Düzenle</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ff6b35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --primary-hover: #e55a2b;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .paw-icon {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .btn-back {
+            background-color: #f8f9fa;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label i {
+            color: var(--primary-color);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.8rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn-submit {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="header-container">
+                <h2 class="page-title">
+                    <i class="fas fa-paw paw-icon"></i>
+                    Ürünü Düzenle
+                </h2>
+                <a href="{% url 'petshop_products' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Geri
+                </a>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Adı</label>
+                    <input type="text" name="name" class="form-control" value="{{ product.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-turkish-lira-sign"></i> Fiyat (TL)</label>
+                    <input type="number" name="price" class="form-control" value="{{ product.price }}" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Resim URL</label>
+                    <input type="url" name="image" class="form-control" value="{{ product.image }}" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> Açıklama</label>
+                    <textarea name="description" class="form-control" required>{{ product.description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-weight-hanging"></i> Ağırlık (kg)</label>
+                    <input type="text" name="weight" class="form-control" value="{{ product.weight }}" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-paw"></i> Hayvan Türü</label>
+                    <select name="animalType" class="form-select" required>
+                        <option value="Dogs" {% if product.animalType == "Dogs" %}selected{% endif %}>Dogs</option>
+                        <option value="Cats" {% if product.animalType == "Cats" %}selected{% endif %}>Cats</option>
+                        <option value="Birds" {% if product.animalType == "Birds" %}selected{% endif %}>Birds</option>
+                        <option value="Fishes" {% if product.animalType == "Fishes" %}selected{% endif %}>Fishes</option>
+                        <option value="Hamsters" {% if product.animalType == "Hamsters" %}selected{% endif %}>Hamsters</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Kategori</label>
+                    <select name="category" class="form-select" required>
+                        <option value="accessories" {% if product.category == "accessories" %}selected{% endif %}>Aksesuar</option>
+                        <option value="food" {% if product.category == "food" %}selected{% endif %}>Yemek</option>
+                        <option value="health" {% if product.category == "health" %}selected{% endif %}>Sağlık</option>
+                        <option value="toys" {% if product.category == "toys" %}selected{% endif %}>Oyuncak</option>
+                    </select>
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save me-2"></i>Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

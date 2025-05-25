@@ -5,217 +5,437 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Evcil Hayvan Profilini Oluştur</title>
   <link rel="icon" type="image/x-icon" href="images/turuncu-pati.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
   <style>
+    /* Ultra Modern CSS Variables */
     :root {
-      --primary-color: #ff6b35;
-      --secondary-color: #E8B20E;
-      --text-color: #333;
-      --light-bg: #f5f5f5;
-      --white: #fff;
+      --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+      --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+      --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+      --success-gradient: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+      --warning-gradient: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+      
+      --glass-bg: rgba(255, 255, 255, 1);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-shadow: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+      
+      --text-primary: #2d3436;
+      --text-secondary: #636e72;
+      --text-muted: #a0a0a0;
+      --text-light: #2d3436;
+      
+      --bg-primary: #ffffff;
+      --bg-dark: #1a1a2e;
+      --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+      --bg-particles: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, rgba(245, 245, 245, 0.6) 0%, transparent 50%);
+      
+      --shadow-glass: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+      --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+      --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+      --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+      --shadow-elevation-4: 0 14px 28px rgba(255, 107, 53, 0.25), 0 10px 10px rgba(255, 107, 53, 0.22);
+      --shadow-elevation-5: 0 19px 38px rgba(255, 107, 53, 0.30), 0 15px 12px rgba(255, 107, 53, 0.22);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-2xl: 32px;
+      --radius-full: 50px;
+      
+      --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    
-    body {
+
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Poppins', sans-serif;
-      position: relative;
-      min-height: 100vh;
-      overflow-x: hidden;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      box-sizing: border-box;
     }
 
+    body {
+      font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-weight: 400;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background Particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-particles);
+      animation: particleFloat 15s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes particleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(120deg); }
+      66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    /* Floating Geometric Shapes */
+    .geometric-shapes {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 20s infinite linear;
+    }
+
+    .shape:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #dee2e6 0%, #adb5bd 100%);
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+      top: 70%;
+      right: 10%;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+      transform: rotate(45deg);
+      animation-delay: -5s;
+    }
+
+    .shape:nth-child(3) {
+      top: 40%;
+      left: 80%;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+      border-radius: 30%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(90deg); }
+      50% { transform: translateY(0px) rotate(180deg); }
+      75% { transform: translateY(-10px) rotate(270deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+
+    /* Main Container */
     .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      display: block;
+      padding: 0;
       position: relative;
       z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: 40px auto;
-      background:  rgba(255, 255, 255, 1) 43%;
-      
-      border-radius: 16px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
-      overflow: hidden;
+      animation: slideInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* Left Panel - Full Screen & Fixed */
     .left {
-      background: transparent;
-      flex: 1 1 300px;
-      padding: 32px;
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      width: calc(35vw - 3rem);
+      height: calc(100vh - 4rem);
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-2xl);
+      padding: 3rem 2rem;
+      box-shadow: var(--shadow-glass);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      position: relative;
+      overflow: hidden;
+      animation: slideInLeft 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+      z-index: 10;
     }
 
-    .left img.pet-illustration {
-      width: 220px;
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .left img.design-overlay {
+    .left::before {
+      content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background: var(--primary-gradient); }
+      33% { background: var(--accent-gradient); }
+      66% { background: var(--warning-gradient); }
+    }
+
+    .pet-illustration {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      z-index: 1;
-      opacity: 0.8;
+      max-width: 300px;
+      margin-bottom: 2rem;
+      transition: var(--transition-bounce);
+      filter: drop-shadow(0 10px 20px rgba(255, 107, 53, 0.2));
+    }
+
+    .pet-illustration:hover {
+      transform: scale(1.05) translateY(-10px);
+      filter: drop-shadow(0 20px 40px rgba(255, 107, 53, 0.3));
     }
 
     .left h2 {
-      position: relative;
-      z-index: 2;
-    }
-    .top-offset {
-      top: calc(50% - 400px) !important; /* 125px yukarı kaydır */
-    }
-
-
-    .right {
-      flex: 2 1 600px;
-      padding: 40px 32px;
-    }
-
-    h1 {
-      color: #FF6B35;
       font-size: 1.8rem;
-      margin-bottom: 20px;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      animation: shimmer 2s ease-in-out infinite;
     }
 
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .left p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Right Panel - Adjusted for Fixed Left */
+    .right {
+      margin-left: calc(35vw + 1rem);
+      max-width: 800px;
+      margin-right: 2rem;
+      padding: 3rem;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-glass);
+      animation: slideInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s both;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Form Title */
+    .form-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      text-align: center;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    /* Form Groups */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.6s ease-out backwards;
     }
 
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Labels */
     label {
       display: block;
-      margin-bottom: 6px;
-      color: #FF6B35;
-      font-weight: 500;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
     }
 
+    label::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    /* Form Controls */
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1.5px solid #ccc;
+      padding: 1rem 1.25rem;
+      border: 2px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-lg);
       font-size: 1rem;
-      transition: 0.3s;
+      font-family: inherit;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-elevation-1);
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: #4CAF50;
       outline: none;
+      border-color: rgba(255, 107, 53, 0.6);
+      box-shadow: var(--shadow-elevation-3);
+      transform: translateY(-2px);
     }
 
-    .form-row {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
+    input:hover, select:hover, textarea:hover {
+      border-color: rgba(255, 107, 53, 0.4);
+      transform: translateY(-1px);
     }
 
-    .form-row .form-group {
-      flex: 1 1 0;
-      min-width: 0;
-      margin-bottom: 0;
-    }
-
+    /* Interest Tags */
     .interests {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 0.75rem;
+      margin-top: 1rem;
     }
 
     .interest {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid #FF6B35;
-      background: #FFF3E6;
-      color: #FF6B35;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      border: 2px solid rgba(255, 107, 53, 0.3);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
       user-select: none;
+      transition: var(--transition-bounce);
+      position: relative;
+      overflow: hidden;
     }
 
-    .interest:hover, .interest.selected {
-      background: #4CAF50;
-      border-color: rgb(77, 173, 80);
+    .interest::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .interest:hover::before {
+      left: 100%;
+    }
+
+    .interest:hover {
+      border-color: rgba(255, 107, 53, 0.6);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-elevation-2);
+    }
+
+    .interest.selected {
+      background: var(--primary-gradient);
       color: white;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-elevation-3);
     }
 
+    /* Custom Interest Input */
     .custom-interest {
       display: flex;
-      gap: 8px;
-      margin-top: 8px;
-      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      align-items: flex-end;
     }
 
     .custom-interest input {
       flex: 1;
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1.5px solid #FF6B35;
-      font-size: 0.9rem;
+      margin-bottom: 0;
     }
 
     .custom-interest button {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1.5px solid #FF6B35;
-      background: #FF6B35;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: var(--radius-lg);
+      background: var(--accent-gradient);
       color: white;
-      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-elevation-2);
     }
 
     .custom-interest button:hover {
-      background: #3d8b40;
-      border-color: rgb(77, 173, 80);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-elevation-4);
     }
 
+    /* Photo Upload Section */
     .photo-upload-section {
-      margin-top: 32px;
+      margin-top: 2rem;
+      animation: fadeInUp 0.8s ease-out 0.8s both;
     }
 
     .photo-grid {
       display: grid;
-      grid-template-columns: repeat(4, 110px);
-      gap: 18px;
-      justify-content: start;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 1rem;
     }
 
     .photo-slot {
-      width: 110px;
-      height: 110px;
-      background: #FFF3E6;
-      border: 2px dashed #FF6B35;
-      border-radius: 16px;
+      aspect-ratio: 1;
+      background: rgba(255, 107, 53, 0.05);
+      border: 2px dashed rgba(255, 107, 53, 0.3);
+      border-radius: var(--radius-xl);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       cursor: pointer;
       overflow: hidden;
-      transition: border 0.2s, background 0.2s;
+      transition: var(--transition-bounce);
     }
 
     .photo-slot:hover {
-      border: 2px solid #FF6B35;
-      background: #FFE3D1;
+      border-color: rgba(255, 107, 53, 0.6);
+      background: rgba(255, 107, 53, 0.1);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-elevation-3);
     }
 
     .photo-slot input[type="file"] {
@@ -226,146 +446,71 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
     }
 
     .add-photo-btn {
-      color: #FF6B35;
-      font-size: 2.2rem;
+      color: rgba(255, 107, 53, 0.6);
+      font-size: 2rem;
       background: none;
       border: none;
       cursor: pointer;
-      transition: color 0.2s;
+      transition: var(--transition-smooth);
     }
 
     .add-photo-btn:hover {
-      color: #4CAF50;
+      color: rgba(255, 107, 53, 1);
+      transform: scale(1.2);
     }
 
     .remove-photo-btn {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      background: rgba(255,255,255,0.85);
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
       border: none;
       border-radius: 50%;
-      color: #FF6B35;
-      font-size: 1.2rem;
-      width: 26px;
-      height: 26px;
+      color: #ff4757;
+      font-size: 1rem;
+      width: 2rem;
+      height: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 2;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      transition: background 0.2s, color 0.2s;
+      box-shadow: var(--shadow-elevation-2);
+      transition: var(--transition-bounce);
     }
 
     .remove-photo-btn:hover {
-      background: #FF6B35;
-      color: #fff;
-    }
-
-    .photo-info {
-      font-size: 0.9rem;
-      color: #555;
-      margin-top: 10px;
-      margin-bottom: 0;
-    }
-
-    .submit-btn {
-      margin-top: 24px;
-      background: #FF6B35;
+      background: #ff4757;
       color: white;
-      padding: 12px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 8px;
-      width: 100%;
-      cursor: pointer;
-      transition: background 0.3s;
+      transform: scale(1.1);
     }
 
-    .submit-btn:hover {
-      background: #4CAF50;
-    }
-
-    @media(max-width: 1100px) {
-      .container {
-        flex-direction: column;
-        max-width: 98vw;
-      }
-      .right {
-        padding: 32px 8px;
-      }
-      .photo-grid {
-        grid-template-columns: repeat(2, 110px);
-      }
-    }
-
-    @media(max-width: 700px) {
-      .form-row {
-        flex-direction: column;
-        gap: 16px;
-      }
-      .form-row .form-group {
-        width: 100%;
-        margin-bottom: 0;
-      }
-      #petAge-label {
-        display: inline-block;
-        width: calc(100% - 10px);
-        }
-
-    }
-
-    .custom-breed-input {
-      display: none;
-      margin-top: 8px;
-    }
-
-    .custom-breed-input input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1.5px solid #FF6B35;
-      font-size: 1rem;
-      transition: 0.3s;
-    }
-
-    .custom-breed-input input:focus {
-      border-color: #FF6B35;
-      outline: none;
-    }
-
+    /* File Upload Boxes */
     .file-upload-section {
-      margin-top: 24px;
-    }
-
-    .file-upload-group {
-      margin-bottom: 16px;
-    }
-
-    .file-upload-label {
-      display: block;
-      margin-bottom: 8px;
-      color: #FF6B35;
-      font-weight: 500;
+      margin-top: 2rem;
+      animation: fadeInUp 0.8s ease-out 0.9s both;
     }
 
     .file-upload-box {
-      border: 2px dashed #FF6B35;
-      border-radius: 8px;
-      padding: 16px;
+      border: 2px dashed rgba(255, 107, 53, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s;
-      background: #FFF3E6;
+      transition: var(--transition-bounce);
+      background: rgba(255, 107, 53, 0.05);
+      margin-bottom: 1.5rem;
     }
 
     .file-upload-box:hover {
-      background: #FFE3D1;
+      border-color: rgba(255, 107, 53, 0.6);
+      background: rgba(255, 107, 53, 0.1);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-elevation-3);
     }
 
     .file-upload-box input[type="file"] {
@@ -373,25 +518,28 @@
     }
 
     .file-upload-icon {
-      color: #FF6B35;
-      font-size: 24px;
-      margin-bottom: 8px;
+      color: rgba(255, 107, 53, 0.7);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
 
     .file-upload-text {
-      color: #666;
-      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
 
     .file-name {
-      margin-top: 8px;
-      color: #FF6B35;
-      font-size: 0.9rem;
+      margin-top: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
       display: none;
     }
 
     .file-upload-box.has-file {
       border-style: solid;
+      border-color: rgba(255, 107, 53, 0.6);
+      background: rgba(255, 107, 53, 0.1);
     }
 
     .file-upload-box.has-file .file-name {
@@ -401,183 +549,390 @@
     .file-upload-box.has-file .file-upload-text {
       display: none;
     }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1.25rem 2rem;
+      margin-top: 2rem;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-xl);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-elevation-3);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease-out 1s both;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-elevation-5);
+    }
+
+    /* Custom Breed Input */
+    .custom-breed-input {
+      display: none;
+      margin-top: 1rem;
+      animation: fadeInDown 0.3s ease-out;
+    }
+
+    /* Animations */
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .left {
+        width: calc(40vw - 3rem);
+      }
+
+      .right {
+        margin-left: calc(40vw + 1rem);
+        padding: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .left {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: calc(100% - 4rem);
+        height: auto;
+        min-height: 50vh;
+        margin: 2rem;
+        border-radius: var(--radius-2xl);
+      }
+
+      .right {
+        margin-left: 0;
+        margin-right: 2rem;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        margin-left: 2rem;
+        border-radius: var(--radius-2xl);
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .custom-interest {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .interests {
+        gap: 0.5rem;
+      }
+
+      .interest {
+        font-size: 0.85rem;
+        padding: 0.6rem 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .left {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+        padding: 2rem 1.5rem;
+      }
+
+      .right {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .form-title {
+        font-size: 1.75rem;
+      }
+
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pet-illustration {
+        max-width: 200px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Floating Geometric Shapes -->
+  <div class="geometric-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
   <div class="container">
     <div class="left">
-      <img src="/static/images/tasarım1.png" alt="Tasarım" class="design-overlay top-offset" />
-
-      <img src="/static/images/deneme2.png" alt="Hayvan illüstrasyonu" class="pet-illustration" style="width: 100%; padding-top: 50px;"/>
+      <img src="/static/images/deneme2.png" alt="Hayvan illüstrasyonu" class="pet-illustration"/>
+      <h2>Yeni Dostunuzu Tanıtalım!</h2>
+      <p>Evcil hayvanınızın profilini oluşturarak, ona en uygun arkadaşları bulmasına yardımcı olun.</p>
     </div>
+    
     <div class="right">
-      <h1>Evcil Hayvan Profilini Oluştur</h1>
-    <form action="/add-pet/" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+      <h1 class="form-title">Evcil Hayvan Profilini Oluştur</h1>
       
-      <!-- Adı -->
-      <div class="form-group">
-        <label for="petName">Adı</label>
-        <input type="text" name="petName" id="petName" placeholder="Dostunuzun adı" style="width: 97%;"/>
-      </div>
-
-      <div class="form-row">
-        <!-- Tür -->
+      <form action="/add-pet/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Adı -->
         <div class="form-group">
-          <label for="petType">Türü</label>
-          <select id="petType" name="petType" onchange="updateBreeds()">
-            <option value="">Seçiniz</option>
-            <option value="Cats">Kedi</option>
-            <option value="Dogs">Köpek</option>
-            <option value="Birds">Kuş</option>
-            <option value="Hamsters">Kemirgen</option>
-            <option value="Others">Diğer</option>
-          </select>
+          <label for="petName">Dostunuzun Adı</label>
+          <input type="text" name="petName" id="petName" placeholder="Dostunuzun adını girin" required/>
         </div>
 
-        <!-- Cins -->
-        <div class="form-group">
-          <label for="petBreed">Cinsi</label>
-          <select id="petBreed" name="petBreed" onchange="handleBreedChange()" disabled>
-            <option value="">Önce türü seçin</option>
-          </select>
-          <div id="customBreedInput" class="custom-breed-input">
-            <input type="text" id="otherBreed" placeholder="Cinsini yazın..." style="width: 94%;">
+        <div class="form-row">
+          <!-- Tür -->
+          <div class="form-group">
+            <label for="petType">Türü</label>
+            <select id="petType" name="petType" onchange="updateBreeds()" required>
+              <option value="">Seçiniz</option>
+              <option value="Cats">Kedi</option>
+              <option value="Dogs">Köpek</option>
+              <option value="Birds">Kuş</option>
+              <option value="Hamsters">Kemirgen</option>
+              <option value="Others">Diğer</option>
+            </select>
+          </div>
+
+          <!-- Cins -->
+          <div class="form-group">
+            <label for="petBreed">Cinsi</label>
+            <select id="petBreed" name="petBreed" onchange="handleBreedChange()" disabled>
+              <option value="">Önce türü seçin</option>
+            </select>
+            <div id="customBreedInput" class="custom-breed-input">
+              <input type="text" id="otherBreed" placeholder="Cinsini yazın...">
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Yaş -->
-      <div class="form-row">
-        <div class="form-group">
-            <label for="petAge" id="petAge-label">Yaşı</label>
-            <input type="number" name="petAge" id="petAge" placeholder="Yaş" style="width: 94%;"/>
+        <div class="form-row">
+          <!-- Yaş -->
+          <div class="form-group">
+            <label for="petAge">Yaşı</label>
+            <input type="number" name="petAge" id="petAge" placeholder="Yaş" min="0" max="30" required/>
+          </div>
+
+          <!-- Cinsiyet -->
+          <div class="form-group">
+            <label for="petGender">Cinsiyeti</label>
+            <select id="petGender" name="petGender" required>
+              <option value="">Seçiniz</option>
+              <option value="Erkek">Erkek</option>
+              <option value="Dişi">Dişi</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Cinsiyet -->
+        <!-- Kısırlaştırma -->
         <div class="form-group">
-          <label for="petGender">Cinsiyeti</label>
-          <select id="petGender" name="petGender">
-            <option>Seçiniz</option>
-            <option>Erkek</option>
-            <option>Dişi</option>
+          <label for="sterilizationStatus">Kısırlaştırma Durumu</label>
+          <select id="sterilizationStatus" name="sterilizationStatus">
+            <option value="">Seçiniz</option>
+            <option value="sterilized">Kısırlaştırıldı</option>
+            <option value="not_sterilized">Kısırlaştırılmadı</option>
+            <option value="unknown">Bilinmiyor</option>
           </select>
         </div>
-      </div>
 
-      <!-- Kısırlaştırma -->
-      <div class="form-group">
-        <label for="sterilizationStatus">Kısırlaştırma Durumu</label>
-        <select id="sterilizationStatus" name="sterilizationStatus">
-          <option value="">Seçiniz</option>
-          <option value="sterilized">Kısırlaştırıldı</option>
-          <option value="not_sterilized">Kısırlaştırılmadı</option>
-          <option value="unknown">Bilinmiyor</option>
-        </select>
-      </div>
-
-      <!-- Açıklama -->
-      <div class="form-group">
-        <label for="petDesc">Açıklama</label>
-        <textarea id="petDesc" name="petDesc" rows="3" placeholder="Kısa bir açıklama..." style="font-family: inherit; width: 97%;"></textarea>
-      </div>
-
-      <!-- Adres -->
-      <div class="form-group">
-        <label for="petAddress">Adres</label>
-        <textarea id="petAddress" name="petAddress" rows="2" placeholder="Evcil hayvanın konumunu belirtin..." style="font-family: inherit; width: 97%;"></textarea>
-      </div>
-      
-
-      <!-- Aşı Karnesi -->
-      <div class="file-upload-section">
-        <div class="file-upload-group">
-          <label class="file-upload-label">Aşı Karnesi</label>
-          <label class="file-upload-box" id="vaccinationCardBox">
-            <input type="file" id="vaccinationCard" name="vaccination_card" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vaccinationCardBox')">
-            <div class="file-upload-icon">
-              <i class="fas fa-file-medical"></i>
-            </div>
-            <div class="file-upload-text">
-              Aşı karnesini yüklemek için tıklayın<br>
-              <small>(PDF, JPG, PNG)</small>
-            </div>
-            <div class="file-name"></div>
-          </label>
+        <!-- Açıklama -->
+        <div class="form-group">
+          <label for="petDesc">Dostunuz Hakkında</label>
+          <textarea id="petDesc" name="petDesc" rows="4" placeholder="Dostunuzun özelliklerini, karakterini anlatın..."></textarea>
         </div>
 
-        <!-- Veteriner Raporu -->
-        <div class="file-upload-group">
-          <label class="file-upload-label">Veteriner Raporu</label>
-          <label class="file-upload-box" id="vetReportBox">
-            <input type="file" id="vetReport" name="vet_report" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vetReportBox')">
-            <div class="file-upload-icon">
-              <i class="fas fa-file-medical-alt"></i>
-            </div>
-            <div class="file-upload-text">
-              Veteriner raporunu yüklemek için tıklayın<br>
-              <small>(PDF, JPG, PNG)</small>
-            </div>
-            <div class="file-name"></div>
-          </label>
-        </div>
-      </div>
-
-      <!-- İlgi Alanları -->
-      <div class="form-group">
-        <label>İlgi Alanları</label>
-        <div class="interests">
-          <span class="interest" onclick="toggleInterest(this)">Top</span>
-          <span class="interest" onclick="toggleInterest(this)">Tüy Oyuncağı</span>
-          <span class="interest" onclick="toggleInterest(this)">Koşmak</span>
-          <span class="interest" onclick="toggleInterest(this)">Kucak</span>
-          <span class="interest" onclick="toggleInterest(this)">Yüzmek</span>
-          <span class="interest" onclick="toggleInterest(this)">Kedi Otu</span>
-        </div>
-        <div class="custom-interest">
-          <input type="text" id="newInterest" placeholder="Yeni ilgi alanı ekle...">
-          <button type="button" onclick="addCustomInterest()">Ekle</button>
+        <!-- Adres -->
+        <div class="form-group">
+          <label for="petAddress">Konum</label>
+          <textarea id="petAddress" name="petAddress" rows="2" placeholder="Şehir, ilçe bilgisi..."></textarea>
         </div>
 
-        <!-- Gizli alan -->
+        <!-- Aşı ve Veteriner Belgeleri -->
+        <div class="file-upload-section">
+          <div class="form-group">
+            <label class="file-upload-label">Aşı Karnesi</label>
+            <label class="file-upload-box" id="vaccinationCardBox">
+              <input type="file" id="vaccinationCard" name="vaccination_card" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vaccinationCardBox')">
+              <div class="file-upload-icon">
+                <i class="fas fa-file-medical"></i>
+              </div>
+              <div class="file-upload-text">
+                Aşı karnesini yüklemek için tıklayın<br>
+                <small>(PDF, JPG, PNG formatında)</small>
+              </div>
+              <div class="file-name"></div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="file-upload-label">Veteriner Raporu</label>
+            <label class="file-upload-box" id="vetReportBox">
+              <input type="file" id="vetReport" name="vet_report" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'vetReportBox')">
+              <div class="file-upload-icon">
+                <i class="fas fa-file-medical-alt"></i>
+              </div>
+              <div class="file-upload-text">
+                Veteriner raporunu yüklemek için tıklayın<br>
+                <small>(PDF, JPG, PNG formatında)</small>
+              </div>
+              <div class="file-name"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- İlgi Alanları -->
+        <div class="form-group">
+          <label>İlgi Alanları</label>
+          <div class="interests">
+            <span class="interest" onclick="toggleInterest(this)">Top Oyunları</span>
+            <span class="interest" onclick="toggleInterest(this)">Tüy Oyuncağı</span>
+            <span class="interest" onclick="toggleInterest(this)">Koşma</span>
+            <span class="interest" onclick="toggleInterest(this)">Kucaklaşma</span>
+            <span class="interest" onclick="toggleInterest(this)">Su Oyunları</span>
+            <span class="interest" onclick="toggleInterest(this)">Kedi Otu</span>
+            <span class="interest" onclick="toggleInterest(this)">Sosyalleşme</span>
+            <span class="interest" onclick="toggleInterest(this)">Eğitim</span>
+          </div>
+          <div class="custom-interest">
+            <input type="text" id="newInterest" placeholder="Özel ilgi alanı ekleyin...">
+            <button type="button" onclick="addCustomInterest()">
+              <i class="fas fa-plus"></i> Ekle
+            </button>
+          </div>
+          <input type="hidden" name="interests" id="interestsInput">
+        </div>
+
+        <!-- Fotoğraf Ekleme -->
+        <div class="photo-upload-section">
+          <label>Profil Fotoğrafları</label>
+          <div class="photo-grid" id="photoGrid">
+            <label class="photo-slot">
+              <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,0)">
+              <span class="add-photo-btn"><i class="fas fa-camera"></i></span>
+            </label>
+            <label class="photo-slot">
+              <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,1)">
+              <span class="add-photo-btn"><i class="fas fa-camera"></i></span>
+            </label>
+            <label class="photo-slot">
+              <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,2)">
+              <span class="add-photo-btn"><i class="fas fa-camera"></i></span>
+            </label>
+            <label class="photo-slot">
+              <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,3)">
+              <span class="add-photo-btn"><i class="fas fa-camera"></i></span>
+            </label>
+          </div>
+          <p class="photo-info" style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+            En az 1, en fazla 4 fotoğraf yükleyebilirsiniz.
+          </p>
+        </div>
+
+        <!-- Hidden Fields -->
         <input type="hidden" name="ownerEmail" value="{{ user_email }}">
-        <input type="hidden" name="interests" id="interestsInput">
-      </div>
 
-      <!-- Fotoğraf Ekleme -->
-      <div class="photo-upload-section">
-        <label style="color:#FF6B35;font-weight:600;">Profil Fotoğrafları</label>
-        <div class="photo-grid" id="photoGrid">
-          <label class="photo-slot">
-            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,0)">
-            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
-          </label>
-          <label class="photo-slot">
-            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,1)">
-            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
-          </label>
-          <label class="photo-slot">
-            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,2)">
-            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
-          </label>
-          <label class="photo-slot">
-            <input type="file" name="photos" accept="image/*" onchange="handlePhoto(event,3)">
-            <span class="add-photo-btn"><i class="fas fa-plus"></i></span>
-          </label>
-        </div>
-        <p class="photo-info">En az 1, en fazla 4 fotoğraf yükleyin.</p>
-      </div>
-
-      <button type="submit" class="submit-btn">Devam</button>
-</form>
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-paw"></i> Profili Oluştur
+        </button>
+      </form>
     </div>
   </div>
 
   <script>
-    // Fotoğraf yükleme ve gösterme
+    // Form functionality
     const photoGrid = document.getElementById('photoGrid');
 
-    // Tür ve cins ilişkisi
+    // Breed options
     const breedOptions = {
       'Cats': [
         'British Shorthair',
@@ -600,7 +955,7 @@
         'Beagle',
         'Cocker Spaniel',
         'Doberman',
-          'Shih Tzu',
+        'Shih Tzu',
         'Diğer'
       ],
       'Birds': [
@@ -629,15 +984,12 @@
       const breedSelect = document.getElementById('petBreed');
       const customBreedInput = document.getElementById('customBreedInput');
       
-      // Önceki seçenekleri temizle
       breedSelect.innerHTML = '';
       customBreedInput.style.display = 'none';
       
       if (petType && breedOptions[petType]) {
-        // Cins seçimini aktif et
         breedSelect.disabled = false;
         
-        // Yeni seçenekleri ekle
         breedOptions[petType].forEach(breed => {
           const option = document.createElement('option');
           option.value = breed;
@@ -645,7 +997,6 @@
           breedSelect.appendChild(option);
         });
       } else {
-        // Tür seçilmediğinde veya geçersiz tür seçildiğinde
         breedSelect.disabled = true;
         const option = document.createElement('option');
         option.value = '';
@@ -668,17 +1019,20 @@
     function handlePhoto(event, idx) {
       const file = event.target.files[0];
       if (!file) return;
+      
       const reader = new FileReader();
       reader.onload = function(e) {
         const slot = photoGrid.children[idx];
         let img = slot.querySelector('img');
+        
         if (!img) {
           img = document.createElement('img');
           slot.appendChild(img);
           slot.querySelector('.add-photo-btn').style.display = 'none';
         }
+        
         img.src = e.target.result;
-        // Silme butonunu ekle
+        
         let removeBtn = slot.querySelector('.remove-photo-btn');
         if (!removeBtn) {
           removeBtn = document.createElement('button');
@@ -693,19 +1047,14 @@
           };
           slot.appendChild(removeBtn);
         }
-        removeBtn.style.display = '';
       };
       reader.readAsDataURL(file);
     }
-  </script>
 
-  <script>
-    // İlgi alanı seçme fonksiyonu
     function toggleInterest(element) {
       element.classList.toggle('selected');
     }
 
-    // Özel ilgi alanı ekleme fonksiyonu
     function addCustomInterest() {
       const input = document.getElementById('newInterest');
       const value = input.value.trim();
@@ -721,15 +1070,6 @@
       }
     }
 
-    // Enter tuşu ile özel ilgi alanı ekleme
-    document.getElementById('newInterest').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        addCustomInterest();
-      }
-    });
-  </script>
-
-  <script>
     function handleFileUpload(input, boxId) {
       const box = document.getElementById(boxId);
       const fileName = input.files[0]?.name;
@@ -742,14 +1082,20 @@
         box.querySelector('.file-name').textContent = '';
       }
     }
-  </script>
 
-  <script>
+    // Form submission
     document.querySelector('form').addEventListener('submit', function (e) {
       const selected = Array.from(document.querySelectorAll('.interest.selected')).map(el => el.textContent);
       document.getElementById('interestsInput').value = JSON.stringify(selected);
     });
-  </script>
 
+    // Enter key for custom interests
+    document.getElementById('newInterest').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addCustomInterest();
+      }
+    });
+  </script>
 </body>
 </html>

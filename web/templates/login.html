@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Animal - Giriş Yap</title>
+  <title>Social Pet - Giriş Yap</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
   <style>
    * {
   margin: 0;
@@ -22,20 +23,31 @@ body, .page-wrapper {
 .page-wrapper {
   display: flex;
   overflow: hidden;
-  background: none; /* ŞEFFAF */
+  background: none;
 }
 
 .login-container {
-  background-color: rgba(255, 255, 255); /* Hafif transparan beyaz arka plan */
+  background-color: white;
   padding: 2rem;
   padding-top: 80px;
   width: 100%;
   max-width: 450px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 999;
-  
   border-top-right-radius: 105px;
+  animation: fadeInLeft 0.8s ease-out;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .video-side {
@@ -57,59 +69,96 @@ body, .page-wrapper {
 .login-header {
   text-align: center;
   margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-header h1 {
-  color: #FFAA33;
+  color: #FF6B35;
   font-size: 2.8rem;
   font-weight: 800;
   letter-spacing: 1px;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .logo {
   width: 95%;
   height: 60%;
   margin-right: 5%;
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 5px 15px rgba(255, 107, 53, 0.2));
 }
 
 .form-group {
   margin-bottom: 1.5rem;
+  animation: fadeInUp 0.8s ease-out both;
 }
+
+.form-group:nth-child(1) { animation-delay: 0.4s; }
+.form-group:nth-child(2) { animation-delay: 0.5s; }
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   color: #333;
   font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .form-group input {
   width: 100%;
   padding: 0.8rem;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  background: white;
 }
 
 .form-group input:focus {
   outline: none;
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-group input:hover {
   border-color: #FF6B35;
 }
 
 .login-button {
   width: 100%;
   padding: 0.8rem;
-  background-color: #FF6B35;
+  background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+  animation: fadeInUp 0.8s ease-out 0.6s both;
 }
 
 .login-button::before {
@@ -128,61 +177,13 @@ body, .page-wrapper {
 }
 
 .login-button:hover {
-  background-color: #d1572e;
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+  background: linear-gradient(135deg, #e55a2b 0%, #d1572e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
 }
 
 .login-button:active {
-  transform: scale(0.95);
-}
-
-.google-button {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: white;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.google-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-  transition: 0.5s;
-}
-
-.google-button:hover::before {
-  left: 100%;
-}
-
-.google-button:hover {
-  background-color: #f5f5f5;
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.google-button:active {
-  transform: scale(0.95);
-}
-
-.google-button img {
-  width: 20px;
-  margin-right: 10px;
+  transform: translateY(0);
 }
 
 .register-link {
@@ -190,15 +191,104 @@ body, .page-wrapper {
   margin-top: 1.5rem;
   font-size: 0.9rem;
   color: #666;
+  animation: fadeInUp 0.8s ease-out 0.7s both;
 }
 
 .register-link a {
   color: #FF6B35;
   text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.register-link a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #FF6B35;
+  transition: width 0.3s ease;
+}
+
+.register-link a:hover::after {
+  width: 100%;
 }
 
 .register-link a:hover {
-  text-decoration: underline;
+  color: #e55a2b;
+}
+
+/* Toast message styling */
+#toast {
+  background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+  animation: slideInDown 0.5s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .login-container {
+    max-width: 100%;
+    border-top-right-radius: 0;
+    padding: 1.5rem;
+    padding-top: 60px;
+  }
+  
+  .video-side {
+    right: 0;
+  }
+  
+  .login-header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .logo {
+    width: 80%;
+    height: 50%;
+  }
+}
+
+/* Loading animation for form submission */
+.login-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.login-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
   </style>
@@ -207,10 +297,10 @@ body, .page-wrapper {
     <div class="page-wrapper">
       <div class="login-container">
         <div class="login-header">
-          <img src="/static/images/tasarim.png" alt="logo" class="logo">
+          <img src="/static/images/tasarım1.png" alt="logo" class="logo">
         </div>
         {% if messages %}
-          <div id="toast" style="background:#FF6B35;color:white;padding:10px;border-radius:5px;margin-bottom:10px;">
+          <div id="toast">
             {% for message in messages %}
               {{ message }}
             {% endfor %}
@@ -218,12 +308,18 @@ body, .page-wrapper {
           <script>
             setTimeout(() => {
               const toast = document.getElementById('toast');
-              if (toast) toast.style.display = 'none';
-            }, 3000); // 3 saniye sonra kaybolur
+              if (toast) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                  toast.style.display = 'none';
+                }, 300);
+              }
+            }, 3000);
           </script>
         {% endif %}
 
-        <form action="/api/login/submit/" method="POST">
+        <form action="/api/login/submit/" method="POST" id="loginForm">
           {% csrf_token %}        
           <div class="form-group">
             <label for="email">E-posta</label>
@@ -233,13 +329,8 @@ body, .page-wrapper {
             <label for="password">Parola</label>
             <input type="password" id="password" name="password" required placeholder="Parolanızı girin">
           </div>
-          <button type="submit" class="login-button">Giriş Yap</button>
+          <button type="submit" class="login-button" id="loginBtn">Giriş Yap</button>
         </form>
-        
-        <button id="google-signin" class="google-button">
-          <img src="https://www.google.com/favicon.ico" alt="Google">
-          Google ile devam et
-        </button>
         
         <div class="register-link">
           <p>Hesabınız yok mu?</p>
@@ -254,5 +345,40 @@ body, .page-wrapper {
         </video>
       </div>
     </div>
+
+    <script>
+      // Form submission loading state
+      document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('loginBtn');
+        btn.classList.add('loading');
+        btn.textContent = '';
+      });
+
+      // Simple input interactions
+      document.querySelectorAll('.form-group input').forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.querySelector('label').style.color = '#FF6B35';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.querySelector('label').style.color = '#333';
+        });
+      });
+
+      // Smooth page transitions
+      document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          if (this.href && !this.href.includes('#')) {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+              window.location.href = this.href;
+            }, 300);
+          }
+        });
+      });
+    </script>
   </body>  
 </html>
+        

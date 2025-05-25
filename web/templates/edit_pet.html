@@ -1,84 +1,828 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Pet Bilgilerini Düzenle</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Bilgilerini Düzenle - SocialPet</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ff6b35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ultra Modern CSS Variables */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+            --success-gradient: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+            --warning-gradient: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+            --danger-gradient: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+            
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --text-muted: #a0a0a0;
+            --text-light: #2d3436;
+            
+            --bg-primary: #ffffff;
+            --bg-dark: #1a1a2e;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+            --bg-particles: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 40% 80%, rgba(245, 245, 245, 0.6) 0%, transparent 50%);
+            
+            --shadow-glass: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+            --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+            --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-4: 0 14px 28px rgba(255, 107, 53, 0.25), 0 10px 10px rgba(255, 107, 53, 0.22);
+            --shadow-elevation-5: 0 19px 38px rgba(255, 107, 53, 0.30), 0 15px 12px rgba(255, 107, 53, 0.22);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            --radius-full: 50px;
+            
+            --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-particles);
+            animation: particleFloat 15s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        /* Floating Geometric Shapes */
+        .geometric-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dee2e6 0%, #adb5bd 100%);
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            top: 70%;
+            right: 10%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+            transform: rotate(45deg);
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            top: 40%;
+            left: 80%;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+            border-radius: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(-10px) rotate(270deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
+
+        /* Floating Back Button */
+        .page-back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+        }
+
+        .btn-page-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-bounce);
+            box-shadow: var(--shadow-glass);
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+        }
+
+        .btn-page-back::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-page-back:hover::before {
+            left: 100%;
+        }
+
+        .btn-page-back:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: var(--shadow-elevation-4);
+            background: rgba(255, 107, 53, 0.05);
+            border-color: rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-page-back i {
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: slideInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .content-section {
+            margin-top: 4rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-glass);
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background: var(--primary-gradient); }
+            33% { background: var(--accent-gradient); }
+            66% { background: var(--warning-gradient); }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .paw-icon {
+            font-size: 2.5rem;
+            background: var(--warning-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Labels */
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        .form-label i {
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Form Controls */
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-elevation-1);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: rgba(255, 107, 53, 0.6);
+            box-shadow: var(--shadow-elevation-3);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: rgba(255, 107, 53, 0.4);
+            transform: translateY(-1px);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Image Section */
+        .image-section {
+            background: rgba(255, 107, 53, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            margin: 2rem 0;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+
+        .current-image, .new-image {
+            text-align: center;
+            flex: 1;
+        }
+
+        .image-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--radius-xl);
+            border: 3px solid rgba(255, 107, 53, 0.3);
+            box-shadow: var(--shadow-elevation-3);
+            transition: var(--transition-bounce);
+        }
+
+        .image-preview:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: var(--shadow-elevation-5);
+            border-color: rgba(255, 107, 53, 0.6);
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-top: 1.5rem;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition-bounce);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: var(--shadow-elevation-2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .file-input-label:hover::before {
+            left: 100%;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-elevation-4);
+        }
+
+        .arrow-icon {
+            font-size: 2.5rem;
+            background: var(--accent-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .btn-submit {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-bounce);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-elevation-3);
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-elevation-5);
+        }
+
+        .btn-cancel {
+            background: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
+            border: 2px solid rgba(244, 67, 54, 0.3);
+            padding: 1.25rem 2.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-elevation-1);
+            position: relative;
+            overflow: hidden;
+            justify-content: center;
+        }
+
+        .btn-cancel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(244, 67, 54, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-cancel:hover::before {
+            left: 100%;
+        }
+
+        .btn-cancel:hover {
+            background: var(--danger-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-elevation-4);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-back-button {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .form-container {
+                padding: 2rem;
+            }
+
+            .content-section {
+                margin-top: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .page-back-button {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 1rem;
+                display: inline-block;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .content-section {
+                margin-top: 0;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .image-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .arrow-icon {
+                transform: rotate(90deg);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-page-back {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .form-container {
+                padding: 1rem;
+            }
+
+            .image-preview {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-  <div class="container mt-5">
-    <h2 class="mb-4">🐾 Pet Bilgilerini Düzenle</h2>
-    
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+<body>
+    <!-- Floating Geometric Shapes -->
+    <div class="geometric-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
-      <div class="mb-3">
-        <label class="form-label">Pet İsmi</label>
-        <input type="text" class="form-control" name="name" value="{{ pet.name }}" required>
-      </div>
-      
-      <div class="mb-3">
-        <label class="form-label">Pet Yaşı</label>
-        <input type="text" class="form-control" name="age" value="{{ pet.age }}" required>
-      </div>
-      
-      <div class="mb-3">
-        <label class="form-label">Pet Adres'i</label>
-        <input type="text" class="form-control" name="address" value="{{ pet.address }}" required>
-      </div>
-      
-      <div class="mb-3">
-        <div class="form-group">
-          <label for="petGender">Cinsiyeti</label>
-          <select id="petGender" name="petGender" class="form-control" required>
-            <option value="Erkek" {% if pet.sex == "Erkek" %}selected{% endif %}>Erkek</option>
-            <option value="Dişi" {% if pet.sex == "Dişi" %}selected{% endif %}>Dişi</option>
-          </select>
+    <!-- Back Button - Top Left of Page -->
+    <div class="page-back-button">
+        <a href="/my-pets/" class="btn-page-back">
+            <i class="fas fa-arrow-left"></i>
+            Geri Dön
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="content-section">
+            <div class="form-container">
+                <div class="header">
+                    <h2 class="page-title">
+                        <i class="fas fa-paw paw-icon"></i>
+                        Pet Bilgilerini Düzenle
+                    </h2>
+                    <p class="page-subtitle">Dostunuzun bilgilerini güncelleyin</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-paw"></i>
+                                Pet İsmi
+                            </label>
+                            <input type="text" class="form-control" name="name" value="{{ pet.name }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-birthday-cake"></i>
+                                Pet Yaşı
+                            </label>
+                            <input type="text" class="form-control" name="age" value="{{ pet.age }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Pet Adresi
+                        </label>
+                        <input type="text" class="form-control" name="address" value="{{ pet.address }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-venus-mars"></i>
+                            Cinsiyeti
+                        </label>
+                        <select name="petGender" class="form-control" required>
+                            <option value="Erkek" {% if pet.sex == "Erkek" %}selected{% endif %}>Erkek</option>
+                            <option value="Dişi" {% if pet.sex == "Dişi" %}selected{% endif %}>Dişi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Açıklama (Bio)
+                        </label>
+                        <textarea class="form-control" name="bio" rows="4" placeholder="Dostunuzun özelliklerini, karakterini anlatın...">{{ pet.bio }}</textarea>
+                    </div>
+
+                    <div class="image-section">
+                        <div class="image-container">
+                            <div class="current-image">
+                                <h4 class="image-title">Mevcut Görsel</h4>
+                                <img src="{{ pet.imageUrl }}" alt="Mevcut Görsel" class="image-preview">
+                            </div>
+
+                            <div class="arrow-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+
+                            <div class="new-image">
+                                <h4 class="image-title">Yeni Görsel</h4>
+                                <img id="preview" src="#" alt="Yeni Görsel Önizleme" class="image-preview" style="display: none;">
+                                <div class="file-input-container">
+                                    <label class="file-input-label">
+                                        <i class="fas fa-upload"></i>
+                                        Görsel Seç
+                                    </label>
+                                    <input type="file" name="new_photo" accept="image/*" class="file-input" onchange="previewImage(event)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i>
+                            Güncelle
+                        </button>
+                        <a href="/my-pets/" class="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-      
-      <div class="mb-3">
-        <label class="form-label">Açıklama (Bio)</label>
-        <textarea class="form-control" name="bio" rows="3">{{ pet.bio }}</textarea>
-      </div>
+    </div>
 
-      <div style="display: flex; gap: 40px; align-items: center; margin-bottom: 30px;">
-        <!-- Eski Görsel -->
-        <div style="text-align: center;">
-          <p><strong>Mevcut Görsel</strong></p>
-          <img src="{{ pet.imageUrl }}" alt="Eski Görsel" width="180" style="border-radius: 12px; border: 2px solid #ccc;">
-        </div>
-    
-        <!-- Ok işareti -->
-        <div style="font-size: 30px;">➡️</div>
-    
-        <!-- Yeni Görsel -->
-        <div style="text-align: center;">
-          <p><strong>Yeni Görsel</strong></p>
-          <input type="file" name="new_photo" accept="image/*" onchange="previewImage(event)">
-          <br>
-          <img id="preview" src="#" alt="Yeni Görsel Önizleme" style="display:none; width: 180px; margin-top: 10px; border-radius: 12px; border: 2px solid #ccc;">
-        </div>
-      </div>
-
-      <!-- Butonlar -->
-      <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; margin-bottom: 50px;">Güncelle</button>
-      <a href="/my-pets/" style="margin-left: 20px; color: #ff4444; text-decoration: none;">İptal</a>
-
-    </form>
-  </div>
-
-  <script>
-  function previewImage(event) {
-    const reader = new FileReader();
-    reader.onload = function () {
-      const preview = document.getElementById("preview");
-      preview.src = reader.result;
-      preview.style.display = "block";
-    };
-    reader.readAsDataURL(event.target.files[0]);
-  }
-  </script>
-    
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById("preview");
+                preview.src = reader.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 </body>
 </html>

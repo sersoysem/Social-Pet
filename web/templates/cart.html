@@ -1,0 +1,1125 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}Sepetim - Social Pet{% endblock %}
+
+{% block styles %}
+<style>
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+    padding-left: 5px;
+    margin-left: 5%;
+}
+
+.cart-page-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Sol taraf - Sepet ürünleri */
+.cart-items-container {
+    flex: 1;
+    background: #fff;
+    border-radius: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+    min-height: 500px;
+}
+
+.cart-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #FF6B35;
+    margin-bottom: 30px;
+    text-align: left;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-title i {
+    font-size: 2rem;
+}
+
+.cart-items {
+    margin-bottom: 30px;
+}
+
+/* Boş sepet tasarımı */
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-cart-icon {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-cart-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.empty-cart-desc {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.empty-cart-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #FF6B35, #F7931E);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+}
+
+.empty-cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Sağ taraf - Adres ve Ödeme */
+.cart-info-container {
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.address-container, .payment-container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    padding: 30px;
+    border: 2px solid #FF6B35;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #FF6B35;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s;
+}
+
+.cart-item:hover {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px 15px;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.1);
+    transition: transform 0.3s;
+}
+
+.cart-item-img:hover {
+    transform: scale(1.05);
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.cart-item-meta {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.cart-item-price {
+    color: #FF6B35;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.cart-qty-btn {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #e9ecef;
+    background: #fff;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-qty-btn:hover {
+    background: #FF6B35;
+    color: #fff;
+    border-color: #FF6B35;
+    transform: scale(1.1);
+}
+
+.cart-qty-input {
+    width: 50px;
+    text-align: center;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 8px;
+    font-weight: 600;
+}
+
+.cart-qty-input:focus {
+    border-color: #FF6B35;
+    outline: none;
+}
+
+.cart-item-remove {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: all 0.3s;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.cart-item-remove:hover {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.1);
+}
+
+.cart-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #dee2e6;
+}
+
+.cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    padding: 5px 0;
+}
+
+.cart-summary-total {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #FF6B35;
+    border-top: 2px solid #FF6B35;
+    padding-top: 15px;
+    margin-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #fff;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: #FF6B35;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8f9fa;
+}
+
+.payment-method:hover {
+    border-color: #FF6B35;
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255,107,53,0.1);
+}
+
+.payment-method.selected {
+    border-color: #FF6B35;
+    background: rgba(255,107,53,0.05);
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.payment-method-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #666;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.payment-method.selected .payment-method-icon {
+    color: #FF6B35;
+    background: rgba(255,107,53,0.1);
+}
+
+.card-details-container {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.card-input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.card-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.card-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.card-input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.card-input:focus {
+    border-color: #FF6B35;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.card-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    z-index: 1;
+}
+
+.card-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card-row .card-input-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.card-security-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.card-security-info i {
+    color: #FF6B35;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(45deg, #FF6B35, #F7931E);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+}
+
+.checkout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+}
+
+.checkout-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading animasyonu */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #FF6B35;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Alert mesajları */
+.alert {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive tasarım */
+@media (max-width: 1200px) {
+    .cart-page-container {
+        flex-direction: column;
+        padding: 0 20px;
+    }
+    
+    .cart-info-container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-page-container {
+        padding: 0 15px;
+        margin: 20px auto;
+    }
+    
+    .cart-items-container, .address-container, .payment-container {
+        padding: 25px 20px;
+    }
+    
+    .cart-title {
+        font-size: 2rem;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .cart-item-img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .card-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block main_content %}
+<div class="cart-page-container">
+    <div class="cart-items-container">
+        <div id="cart-content">
+            <!-- JS ile doldurulacak -->
+            <div class="text-center" style="padding: 60px 0;">
+                <div class="loading"></div>
+                <p>Sepetiniz yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="cart-info-container">
+        <div class="address-container">
+            <div class="section-title">
+                <i class="fas fa-map-marker-alt"></i>
+                Teslimat Adresi
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ad Soyad</label>
+                <input type="text" class="form-input" id="fullName" placeholder="Adınızı ve soyadınızı girin" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Telefon</label>
+                <input type="tel" class="form-input" id="phone" placeholder="0555 123 45 67" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">İl</label>
+                <select id="province" class="form-input form-select" onchange="loadDistricts()" required>
+                    <option value="">İl Seçiniz</option>
+                    <option value="İstanbul">İstanbul</option>
+                    <option value="Ankara">Ankara</option>
+                    <option value="İzmir">İzmir</option>
+                    <option value="Bursa">Bursa</option>
+                    <option value="Antalya">Antalya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">İlçe</label>
+                <select id="district" class="form-input form-select" required>
+                    <option value="">İlçe Seçiniz</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Açık Adres</label>
+                <textarea class="form-textarea" id="address" required rows="4" placeholder="Detaylı adres bilgilerinizi yazın..."></textarea>
+            </div>
+        </div>
+        
+        <div class="payment-container">
+            <div class="section-title">
+                <i class="fas fa-credit-card"></i>
+                Ödeme Bilgileri
+            </div>
+            <div class="payment-method selected" onclick="selectPayment('credit')">
+                <div class="payment-method-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 600; font-size: 1.1rem;">Kredi Kartı</div>
+                    <div style="font-size: 0.9rem; color: #666;">Visa, Mastercard, American Express</div>
+                </div>
+            </div>
+            <div class="payment-method" onclick="selectPayment('debit')">
+                <div class="payment-method-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 600; font-size: 1.1rem;">Banka Kartı</div>
+                    <div style="font-size: 0.9rem; color: #666;">Tüm banka kartları</div>
+                </div>
+            </div>
+            <div class="payment-method" onclick="selectPayment('cash')">
+                <div class="payment-method-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 600; font-size: 1.1rem;">Kapıda Ödeme</div>
+                    <div style="font-size: 0.9rem; color: #666;">Teslimatta nakit ödeme</div>
+                </div>
+            </div>
+            
+            <div id="card-details">
+                <div class="card-details-container">
+                    <div class="card-input-group">
+                        <label>Kart Üzerindeki İsim</label>
+                        <div class="card-input-wrapper">
+                            <i class="fas fa-user card-icon"></i>
+                            <input type="text" class="card-input" id="cardName" placeholder="Ad Soyad">
+                        </div>
+                    </div>
+                    <div class="card-input-group">
+                        <label>Kart Numarası</label>
+                        <div class="card-input-wrapper">
+                            <i class="fas fa-credit-card card-icon" id="cardTypeIcon"></i>
+                            <input type="text" class="card-input" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" onkeyup="formatCardNumber(this)">
+                        </div>
+                    </div>
+                    <div class="card-row">
+                        <div class="card-input-group">
+                            <label>Son Kullanma Tarihi</label>
+                            <div class="card-input-wrapper">
+                                <i class="fas fa-calendar card-icon"></i>
+                                <input type="text" class="card-input" id="expiry" placeholder="AA/YY" maxlength="5" onkeyup="formatExpiry(this)">
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+                            <label>CVV</label>
+                            <div class="card-input-wrapper">
+                                <i class="fas fa-lock card-icon"></i>
+                                <input type="text" class="card-input" id="cvv" maxlength="3" placeholder="123">
+                            </div>
+                            <div class="card-security-info">
+                                <i class="fas fa-info-circle"></i>
+                                Kartınızın arkasındaki 3 haneli güvenlik kodu
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="checkout-btn" onclick="handleCheckout()" id="checkoutBtn">
+                <i class="fas fa-lock"></i> Güvenli Ödeme
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+// Global değişkenler
+let currentCart = [];
+let isLoading = false;
+
+/* --- Backend'e Tamamen Bağlı Sepet Yönetimi --- */
+
+// Backend'den sepeti getir
+async function getCartItems() {
+    try {
+        const response = await fetch('/cart/get/', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        });
+        const data = await response.json();
+        currentCart = data.items || [];
+        return currentCart;
+    } catch (error) {
+        console.error('Sepet getirme hatası:', error);
+        return [];
+    }
+}
+
+// Sepeti backend'e kaydet
+async function saveCartItems(items) {
+    try {
+        const response = await fetch('/cart/save/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ items })
+        });
+        const data = await response.json();
+        return data.success;
+    } catch (error) {
+        console.error('Sepet kaydetme hatası:', error);
+        return false;
+    }
+}
+
+// Sepeti ekrana yaz
+async function renderCart() {
+    const cartContent = document.getElementById('cart-content');
+    const items = await getCartItems();
+    
+    if (!items.length) {
+        cartContent.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="empty-cart-title">Sepetinizde hiç ürün yok!</div>
+                <div class="empty-cart-desc">Hadi alışverişe devam edin ve evcil dostunuz için en iyi ürünleri keşfedin.</div>
+                <a href="{% url 'food' %}" class="empty-cart-btn">
+                    <i class="fas fa-paw"></i> Alışverişe Başla
+                </a>
+            </div>
+        `;
+        updateCartCount();
+        updateCheckoutButton();
+        return;
+    }
+    
+    let total = 0;
+    let itemsHtml = items.map((item, idx) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        return `
+            <div class="cart-item" data-product-id="${item.id}">
+                <img src="${item.image || '/static/images/default-product.jpg'}" class="cart-item-img" alt="${item.name}">
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.name}</div>
+                    <div class="cart-item-meta">${item.brand || 'Genel Marka'}</div>
+                    <div class="cart-item-price">₺${item.price.toFixed(2)}</div>
+                    <div class="cart-item-qty">
+                        <button class="cart-qty-btn" onclick="updateQty('${item.id}', -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" max="10" 
+                               onchange="setQty('${item.id}', this.value)" data-product-id="${item.id}">
+                        <button class="cart-qty-btn" onclick="updateQty('${item.id}', 1)" ${item.quantity >= 10 ? 'disabled' : ''}>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="cart-item-remove" onclick="removeItem('${item.id}')" title="Kaldır">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="cart-item-price" style="min-width:100px;text-align:right;font-size:1.2rem;">
+                    ₺${itemTotal.toFixed(2)}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    cartContent.innerHTML = `
+        <div class="cart-title">
+            <i class="fas fa-shopping-cart"></i>
+            Sepetim (${items.length} ürün)
+        </div>
+        <div class="cart-items">${itemsHtml}</div>
+        <div class="cart-summary">
+            <div class="cart-summary-row">
+                <span><i class="fas fa-calculator"></i> Ara Toplam (${items.reduce((sum, item) => sum + item.quantity, 0)} adet)</span>
+                <span>₺${total.toFixed(2)}</span>
+            </div>
+            <div class="cart-summary-row">
+                <span><i class="fas fa-truck"></i> Kargo</span>
+                <span>₺0.00</span>
+            </div>
+            <div class="cart-summary-row cart-summary-total">
+                <span><i class="fas fa-money-check-alt"></i> Toplam</span>
+                <span>₺${total.toFixed(2)}</span>
+            </div>
+        </div>
+    `;
+    
+    updateCartCount();
+    updateCheckoutButton();
+}
+
+// Miktar güncelle
+async function updateQty(productId, diff) {
+    if (isLoading) return;
+    isLoading = true;
+    
+    try {
+        const response = await fetch('/cart/update/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ 
+                product_id: productId, 
+                quantity: currentCart.find(item => item.id === productId).quantity + diff 
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            await renderCart();
+            showAlert('Miktar güncellendi!', 'success');
+        } else {
+            showAlert(data.message || 'Hata oluştu!', 'error');
+        }
+    } catch (error) {
+        console.error('Miktar güncelleme hatası:', error);
+        showAlert('Bir hata oluştu!', 'error');
+    } finally {
+        isLoading = false;
+    }
+}
+
+// Miktar direkt ayarla
+async function setQty(productId, val) {
+    if (isLoading) return;
+    isLoading = true;
+    
+    let newQty = parseInt(val) || 1;
+    if (newQty < 1) newQty = 1;
+    if (newQty > 10) newQty = 10;
+    
+    try {
+        const response = await fetch('/cart/update/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ 
+                product_id: productId, 
+                quantity: newQty 
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            await renderCart();
+        } else {
+            showAlert(data.message || 'Hata oluştu!', 'error');
+        }
+    } catch (error) {
+        console.error('Miktar ayarlama hatası:', error);
+        showAlert('Bir hata oluştu!', 'error');
+    } finally {
+        isLoading = false;
+    }
+}
+
+// Ürün sil
+async function removeItem(productId) {
+    if (isLoading) return;
+    
+    if (!confirm('Bu ürünü sepetten çıkarmak istediğinizden emin misiniz?')) {
+        return;
+    }
+    
+    isLoading = true;
+    
+    try {
+        const response = await fetch('/cart/remove/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ product_id: productId })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            await renderCart();
+            showAlert('Ürün sepetten çıkarıldı!', 'success');
+        } else {
+            showAlert(data.message || 'Hata oluştu!', 'error');
+        }
+    } catch (error) {
+        console.error('Ürün silme hatası:', error);
+        showAlert('Bir hata oluştu!', 'error');
+    } finally {
+        isLoading = false;
+    }
+}
+
+// Sepet sayacını güncelle (navbar'daki)
+function updateCartCount() {
+    const totalItems = currentCart.reduce((sum, item) => sum + item.quantity, 0);
+    const cartCountEl = document.getElementById('cartCount');
+    if (cartCountEl) {
+        cartCountEl.textContent = totalItems;
+    }
+    
+    // Header'daki diğer sepet sayaçları varsa onları da güncelle
+    const cartBadges = document.querySelectorAll('.cart-badge, .cart-count');
+    cartBadges.forEach(badge => {
+        badge.textContent = totalItems;
+    });
+}
+
+// Checkout butonunu güncelle
+function updateCheckoutButton() {
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (currentCart.length === 0) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = '<i class="fas fa-ban"></i> Sepetiniz Boş';
+    } else {
+        checkoutBtn.disabled = false;
+        checkoutBtn.innerHTML = '<i class="fas fa-lock"></i> Güvenli Ödeme';
+    }
+}
+
+// Alert mesajı göster
+function showAlert(message, type = 'success') {
+    // Eski alert'leri kaldır
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        ${message}
+    `;
+    
+    const cartContent = document.getElementById('cart-content');
+    cartContent.insertBefore(alertDiv, cartContent.firstChild);
+    
+    // 3 saniye sonra kaldır
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// Ödeme yöntemi seç
+function selectPayment(type) {
+    const methods = document.querySelectorAll('.payment-method');
+    methods.forEach(method => method.classList.remove('selected'));
+    
+    event.currentTarget.classList.add('selected');
+    
+    const cardDetails = document.getElementById('card-details');
+    if (type === 'cash') {
+        cardDetails.style.display = 'none';
+    } else {
+        cardDetails.style.display = 'block';
+    }
+}
+
+// Kart numarası formatla
+function formatCardNumber(input) {
+    let value = input.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    input.value = formattedValue;
+    
+    // Kart türünü tespit et
+    const cardTypeIcon = document.getElementById('cardTypeIcon');
+    if (value.startsWith('4')) {
+        cardTypeIcon.className = 'fab fa-cc-visa card-icon';
+    } else if (value.startsWith('5')) {
+        cardTypeIcon.className = 'fab fa-cc-mastercard card-icon';
+    } else {
+        cardTypeIcon.className = 'fas fa-credit-card card-icon';
+    }
+}
+
+// Son kullanma tarihi formatla
+function formatExpiry(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    input.value = value;
+}
+
+// İlçe yükle (basit örnek)
+function loadDistricts() {
+    const province = document.getElementById('province').value;
+    const districtSelect = document.getElementById('district');
+    
+    districtSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
+    
+    if (province === 'İstanbul') {
+        const districts = ['Kadıköy', 'Beşiktaş', 'Şişli', 'Beylikdüzü', 'Bakırköy'];
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district;
+            option.textContent = district;
+            districtSelect.appendChild(option);
+        });
+    } else if (province === 'Ankara') {
+        const districts = ['Çankaya', 'Keçiören', 'Yenimahalle', 'Mamak'];
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district;
+            option.textContent = district;
+            districtSelect.appendChild(option);
+        });
+    }
+    // Diğer iller için de benzer şekilde eklenebilir
+}
+
+// Sipariş tamamla
+async function handleCheckout() {
+    if (isLoading || currentCart.length === 0) return;
+    
+    // Form validasyonu
+    const requiredFields = ['fullName', 'phone', 'province', 'district', 'address'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            field.style.borderColor = '#dc3545';
+            isValid = false;
+        } else {
+            field.style.borderColor = '#e9ecef';
+        }
+    });
+    
+    if (!isValid) {
+        showAlert('Lütfen tüm gerekli alanları doldurun!', 'error');
+        return;
+    }
+    
+    // Seçili ödeme yöntemini kontrol et
+    const selectedPayment = document.querySelector('.payment-method.selected');
+    if (!selectedPayment) {
+        showAlert('Lütfen bir ödeme yöntemi seçin!', 'error');
+        return;
+    }
+    
+    isLoading = true;
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const originalContent = checkoutBtn.innerHTML;
+    checkoutBtn.innerHTML = '<div class="loading"></div> İşlem yapılıyor...';
+    checkoutBtn.disabled = true;
+    
+    try {
+        // Sepeti temizle
+        const response = await fetch('/cart/clear/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showAlert('🎉 Siparişiniz başarıyla alındı! Teşekkür ederiz.', 'success');
+            await renderCart();
+            
+            // Formu temizle
+            requiredFields.forEach(fieldId => {
+                document.getElementById(fieldId).value = '';
+            });
+            
+            // 3 saniye sonra alışverişe yönlendir
+            setTimeout(() => {
+                window.location.href = '{% url "food" %}';
+            }, 3000);
+        } else {
+            showAlert(data.message || 'Sipariş işleminde hata oluştu!', 'error');
+        }
+    } catch (error) {
+        console.error('Checkout hatası:', error);
+        showAlert('Sipariş işleminde hata oluştu!', 'error');
+    } finally {
+        isLoading = false;
+        checkoutBtn.innerHTML = originalContent;
+        checkoutBtn.disabled = false;
+    }
+}
+
+// Sayfa yüklendiğinde çalışacak
+document.addEventListener('DOMContentLoaded', async () => {
+    await renderCart();
+    
+    // Sepet sayacını periyodik olarak güncelle
+    setInterval(updateCartCount, 30000); // 30 saniyede bir
+});
+
+// Global olarak sepete ekleme fonksiyonu (diğer sayfalardan çağrılabilir)
+window.addToCart = async function(productId, quantity = 1) {
+    try {
+        const response = await fetch('/cart/add/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ 
+                product_id: productId, 
+                quantity: quantity 
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            updateCartCount();
+            return true;
+        } else {
+            console.error('Sepete ekleme hatası:', data.message);
+            return false;
+        }
+    } catch (error) {
+        console.error('Sepete ekleme hatası:', error);
+        return false;
+    }
+};
+</script>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

@@ -5,260 +5,1081 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Evcil Hayvan Profil Yönetimi" />
   <title>Evcil Hayvanlarım</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* Base Styles */
+    /* Ultra Modern CSS Variables */
     :root {
-      --primary-color: #ff6b35;
-      --secondary-color: #e8b20e;
-      --text-color: #333;
-      --light-bg: #f5f5f5;
-      --white: #fff;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.2);
-      --border-radius-sm: 8px;
-      --border-radius-md: 16px;
-      --border-radius-lg: 24px;
-      --transition: all 0.3s ease;
+      --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+      --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+      --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+      --success-gradient: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+      --warning-gradient: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+      
+      --glass-bg: rgba(255, 255, 255, 1);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-shadow: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+      
+      --text-primary: #2d3436;
+      --text-secondary: #636e72;
+      --text-muted: #a0a0a0;
+      --text-light: #2d3436;
+      
+      --bg-primary: #ffffff;
+      --bg-dark: #1a1a2e;
+      --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+      --bg-particles: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, rgba(245, 245, 245, 0.6) 0%, transparent 50%);
+      
+      --shadow-glass: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+      --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+      --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+      --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+      --shadow-elevation-4: 0 14px 28px rgba(255, 107, 53, 0.25), 0 10px 10px rgba(255, 107, 53, 0.22);
+      --shadow-elevation-5: 0 19px 38px rgba(255, 107, 53, 0.30), 0 15px 12px rgba(255, 107, 53, 0.22);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-2xl: 32px;
+      --radius-full: 50px;
+      
+      --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      margin: 0;
-      padding: 30px;
-      color: var(--text-color);
-    }
-
-    /* Container Styles */
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 40px;
-      border-radius: var(--border-radius-lg);
-      animation: fadeIn 0.4s ease-in-out;
-    }
-
-    /* Profile Box Styles */
-    .user-info-centered {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
-    }
-
-    .profile-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 45px 0 0 0;
-      gap: 60px;
-    }
-    .profile-box {
-      background: #fff;
-      color: #ff6b35;
-      padding: 30px 25px;
-      border-radius: var(--border-radius-md);
-      box-shadow: var(--shadow-lg);
-      max-width: 1000px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 60px;
-      margin-top: -50px;
-    }
-
-    .profile-box * {
+      font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-weight: 400;
+      overflow-x: hidden;
       position: relative;
-      z-index: 1;
-    }
-    .profile-info {
-      display: flex;
     }
 
-    .profile-pic {
+    /* Animated Background Particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-particles);
+      animation: particleFloat 15s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes particleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(120deg); }
+      66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    /* Floating Geometric Shapes */
+    .geometric-shapes {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 20s infinite linear;
+    }
+
+    .shape:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #dee2e6 0%, #adb5bd 100%);
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+      top: 70%;
+      right: 10%;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+      transform: rotate(45deg);
+      animation-delay: -5s;
+    }
+
+    .shape:nth-child(3) {
+      top: 40%;
+      left: 80%;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+      border-radius: 30%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(90deg); }
+      50% { transform: translateY(0px) rotate(180deg); }
+      75% { transform: translateY(-10px) rotate(270deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+
+    /* Glass Container */
+    .profile-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Floating Back Button */
+    .page-back-button {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 1000;
+    }
+
+    .btn-page-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 50%;
+      color: var(--primary-gradient);
+      text-decoration: none;
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-page-back::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-page-back:hover::before {
+      left: 100%;
+    }
+
+    .btn-page-back:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: var(--shadow-elevation-4);
+      background: rgba(255, 107, 53, 0.05);
+      border-color: rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-page-back i {
+      font-size: 1.2rem;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Glassmorphism Profile Header */
+    .profile-header {
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-2xl);
+      padding: 3rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+      animation: slideInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background: var(--primary-gradient); }
+      33% { background: var(--accent-gradient); }
+      66% { background: var(--warning-gradient); }
+    }
+
+    .profile-main {
+      display: flex;
+      align-items: flex-end;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    /* 3D Profile Image */
+    .profile-image {
       width: 200px;
       height: 200px;
-      border-radius: 50%;
+      border-radius: var(--radius-xl);
       object-fit: cover;
-      border: 3px solid var(--white);
-      margin-bottom: 15px;
-      display: flex;
-      flex-shrink: 0;
-      justify-content: left;
-      align-items: left;
-      
+      box-shadow: var(--shadow-elevation-5);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      transition: var(--transition-bounce);
+      position: relative;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05) rotateY(10deg) rotateX(5deg);
+      box-shadow: 0 25px 50px rgba(255, 107, 53, 0.4);
     }
 
     .profile-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 10px;
+      flex: 1;
+      padding-bottom: 1rem;
+      color: var(--text-primary);
     }
 
-    .main-content {
-      margin-top: 25px;
-      background: var(--white);
-    }
-
-    .user-name {
-      margin: 0;
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-
-    .user-email,
-    .user-address {
-      margin: 5px 0;
-      font-size: 1.3rem;
-    }
-
-    /* Button Styles */
-    .btn-profile-centered {
-      margin-top: 10px;
-      background-color: #ff5722;
-      color: #fff;
+    .profile-type {
+      font-size: 0.9rem;
       font-weight: 600;
-      padding: 10px 20px;
-      border-radius: var(--border-radius-sm);
-      text-decoration: none;
-      font-size: 0.95rem;
-      display: inline-block;
-      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      animation: fadeInLeft 0.8s ease-out 0.3s both;
     }
 
-    .btn-profile-centered:hover {
-      background-color: #fff;
-      color: #ff5722;
+    .profile-name {
+      font-size: 4.5rem;
+      font-weight: 900;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      animation: shimmer 2s ease-in-out infinite, fadeInLeft 0.8s ease-out 0.4s both;
     }
 
-    /* Pet Card Styles */
-    .pet-card {
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .profile-username {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      animation: fadeInLeft 0.8s ease-out 0.5s both;
+    }
+
+    .profile-details {
       display: flex;
-      gap: 20px;
-      padding: 24px;
-      background: #ff723f2c;
-      border-radius: var(--border-radius-md);
-      margin-bottom: 24px;
-      align-items: flex-start;
-      box-shadow: var(--shadow-md);
-      transition: var(--transition);
-    }
-
-    .pet-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(255, 107, 53, 0.2);
-    }
-
-    .pet-card img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 14px;
-      border: 3px solid var(--primary-color);
-    }
-
-    .pet-details h3 {
-      margin: 0 0 10px;
-      color: var(--text-color);
-      font-size: 1.25rem;
-    }
-
-    .pet-details p {
-      margin: 4px 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    /* Bottom Navigation */
-    .bottom-buttons {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 50px;
-      gap: 20px;
+      gap: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      animation: fadeInLeft 0.8s ease-out 0.6s both;
     }
 
-    .btn-orange {
-      background-color: var(--primary-color);
-      color: var(--white);
-      padding: 14px 26px;
+    .profile-details span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-elevation-1);
+    }
+
+    .profile-details span:hover {
+      background: rgba(255, 107, 53, 0.05);
+      border-color: rgba(255, 107, 53, 0.4);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-elevation-2);
+    }
+
+    .profile-details i {
+      font-size: 1.1rem;
+      color: var(--primary-gradient);
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Action Buttons */
+    .profile-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeInUp 0.8s ease-out 0.7s both;
+    }
+
+    .btn-edit {
+      background: var(--success-gradient);
+      color: white;
       border: none;
-      border-radius: var(--border-radius-sm);
-      font-size: 1rem;
+      padding: 1rem 2.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.95rem;
       text-decoration: none;
-      box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
-      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: var(--transition-bounce);
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-width: 160px;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-elevation-3);
+      position: relative;
+      overflow: hidden;
     }
 
-    .btn-orange:hover {
-      background-color: #e14f20;
+    .btn-edit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-edit:hover::before {
+      left: 100%;
+    }
+
+    .btn-edit:hover {
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: var(--shadow-elevation-5);
+    }
+
+    /* Logout Button */
+    .container-logout {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      animation: fadeInRight 0.8s ease-out 0.8s both;
+    }
+
+    .btn-container-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.8rem;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-container-logout::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-container-logout:hover::before {
+      left: 100%;
+    }
+
+    .btn-container-logout:hover {
+      background: rgba(255, 82, 82, 0.1);
+      border-color: rgba(255, 82, 82, 0.4);
+      color: #d32f2f;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-elevation-4);
+    }
+
+    /* Content Section */
+    .content-section {
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-2xl);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      animation: slideInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title i {
+      font-size: 2.2rem;
+      background: var(--warning-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    /* Ultra Modern Pet Grid */
+    .pets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .pet-item {
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: var(--transition-bounce);
+      cursor: pointer;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .pet-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, transparent 50%, rgba(255, 107, 53, 0.05) 100%);
+      opacity: 0;
+      transition: var(--transition-smooth);
+      z-index: 1;
+    }
+
+    .pet-item:hover::before {
+      opacity: 1;
+    }
+
+    .pet-item:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(5deg) scale(1.02);
+      box-shadow: var(--shadow-elevation-5);
+      border-color: rgba(255, 107, 53, 0.4);
+    }
+
+    .pet-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .pet-item:hover .pet-image {
       transform: scale(1.05);
     }
 
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    .pet-content {
+      padding: 2rem;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 2;
     }
 
-    @keyframes shine {
-      0% { transform: translateX(-100%) rotate(45deg); }
-      100% { transform: translateX(100%) rotate(45deg); }
+    .pet-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pet-category {
+      display: inline-block;
+      background: var(--accent-gradient);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: var(--shadow-elevation-2);
+    }
+
+    .pet-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .pet-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+      transition: var(--transition-smooth);
+    }
+
+    .pet-info-row:hover {
+      background: rgba(255, 107, 53, 0.05);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      margin: 0 -1rem;
+    }
+
+    .pet-bio {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-style: italic;
+      padding: 1rem;
+      background: rgba(255, 107, 53, 0.05);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent-gradient);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 6rem 2rem;
+      color: var(--text-primary);
+    }
+
+    .empty-state i {
+      font-size: 5rem;
+      background: var(--warning-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .empty-state h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      color: var(--text-secondary);
+    }
+
+    /* Bottom Actions */
+    .bottom-actions {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 107, 53, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .btn-action {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 2px solid rgba(255, 107, 53, 0.3);
+      padding: 1.2rem 2rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: var(--transition-bounce);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-action:hover::before {
+      left: 100%;
+    }
+
+    .btn-action:hover {
+      background: var(--primary-gradient);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: var(--shadow-elevation-5);
+    }
+
+    .btn-action i {
+      font-size: 1.1rem;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-action:hover i {
+      color: white;
+      background: none;
+      -webkit-text-fill-color: white;
+    }
+
+    /* Advanced Animations */
+    @keyframes slideInDown {
+      from {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        transform: translateX(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        transform: translateX(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Pet Item Staggered Animation */
+    .pet-item:nth-child(1) { animation: fadeInUp 0.8s ease-out 0.1s both; }
+    .pet-item:nth-child(2) { animation: fadeInUp 0.8s ease-out 0.2s both; }
+    .pet-item:nth-child(3) { animation: fadeInUp 0.8s ease-out 0.3s both; }
+    .pet-item:nth-child(4) { animation: fadeInUp 0.8s ease-out 0.4s both; }
+    .pet-item:nth-child(5) { animation: fadeInUp 0.8s ease-out 0.5s both; }
+    .pet-item:nth-child(6) { animation: fadeInUp 0.8s ease-out 0.6s both; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .profile-container {
+        padding: 1rem;
+      }
+
+      .page-back-button {
+        top: 1rem;
+        left: 1rem;
+      }
+
+      .btn-page-back {
+        width: 50px;
+        height: 50px;
+      }
+
+      .profile-header {
+        padding: 2rem;
+      }
+
+      .profile-main {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 2rem;
+      }
+
+      .profile-image {
+        width: 160px;
+        height: 160px;
+      }
+
+      .profile-name {
+        font-size: 3rem;
+      }
+
+      .profile-details {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .pets-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .bottom-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-group {
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .btn-action {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .container-logout {
+        bottom: 1rem;
+        right: 1rem;
+      }
+
+      .btn-container-logout {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .profile-name {
+        font-size: 2.5rem;
+      }
+
+      .profile-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn-edit {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .pet-content {
+        padding: 1.5rem;
+      }
+    }
+
+    /* Loading Animation */
+    .profile-container {
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Global Logout Button - Always Visible */
+    .global-logout {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      animation: fadeInRight 0.8s ease-out 0.8s both;
+    }
+
+    .btn-global-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.8rem;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-global-logout::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-global-logout:hover::before {
+      left: 100%;
+    }
+
+    .btn-global-logout:hover {
+      background: rgba(255, 82, 82, 0.1);
+      border-color: rgba(255, 82, 82, 0.4);
+      color: #d32f2f;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-elevation-4);
+    }
+
+    .btn-global-logout i {
+      font-size: 1rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-global-logout:hover i {
+      transform: rotate(10deg);
+    }
+
+    /* Empty State Enhanced */
+    .empty-state-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .empty-state-actions .action-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Responsive adjustments for global logout */
+    @media (max-width: 768px) {
+      .global-logout {
+        top: 1rem;
+        right: 1rem;
+      }
+
+      .btn-global-logout {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Floating Geometric Shapes -->
+  <div class="geometric-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <!-- Back Button - Top Left of Page -->
+  <div class="page-back-button">
+    <a href="/home/" class="btn-page-back">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+  </div>
+
+  <!-- Global Logout Button - Always Visible -->
+  <div class="global-logout">
+    <a href="/api/logout" class="btn-global-logout">
+      <i class="fas fa-sign-out-alt"></i> Çıkış
+    </a>
+  </div>
+
+  <div class="profile-container">
     {% if pets %}
-    <!-- Profil Bilgileri -->
-    <div class="profile-wrapper">
-      <div class="profile-box">
-        <img src="{{ pets.0.pp }}" alt="Profil Foto" class="profile-pic">
+    <!-- Profile Header - Ultra Modern Style -->
+    <div class="profile-header">
+      <div class="profile-main">
+        <img src="{{ pets.0.pp }}" alt="Profil Foto" class="profile-image">
         <div class="profile-info">
-          <h2 class="user-name">{{ pets.0.uname }}</h2>
-          <p class="user-email">{{ pets.0.email }}</p>
-          <p class="user-address"><i class="fas fa-map-marker-alt"></i> {{ pets.0.address }}</p>
-          <a href="/edit-profile/" class="btn-orange">
-            <i class="fas fa-user-edit"></i> Profilimi Düzenle
-          </a>
+          <div class="profile-type">Profil</div>
+          <h1 class="profile-name">{{ pets.0.uname }}</h1>
+          <div class="profile-username">{{ pets.0.email }}</div>
+          <div class="profile-details">
+            <span><i class="fas fa-envelope"></i> {{ pets.0.email }}</span>
+            <span><i class="fas fa-map-marker-alt"></i> {{ pets.0.address }}</span>
+          </div>
         </div>
+      </div>
+      
+      <div class="profile-actions">
+        <a href="/edit-profile/" class="btn-edit">
+          <i class="fas fa-edit"></i> Düzenle
+        </a>
+      </div>
+
+      <!-- Logout Button - Bottom Right of Profile Header -->
+      <div class="container-logout">
+        <a href="/api/logout" class="btn-container-logout">
+          <i class="fas fa-sign-out-alt"></i> Çıkış
+        </a>
       </div>
     </div>
     {% endif %}
 
-    <!-- Evcil Hayvanlar -->
-    <div class="container main-content">
+    <!-- Content Section -->
+    <div class="content-section">
       {% if pets %}
-      <h2 style="color: var(--primary-color); font-size: 2rem;">Evcil Hayvanlarım</h2>
-      {% for pet in pets %}
-      <div class="pet-card">
-        <img src="{{ pet.imageUrl }}" alt="{{ pet.name }}">
-        <div class="pet-details">
-          <h3>{{ pet.name }} <small style="color:#999;">({{ pet.category }})</small></h3>
-          <p><strong>Cins:</strong> {{ pet.breed }}</p>
-          <p><strong>Yaş:</strong> {{ pet.age }} yıl | <strong>Kilo:</strong> {{ pet.weight }} kg | <strong>Cinsiyet:</strong> {{ pet.sex }}</p>
-          <p><strong>Hakkında:</strong> {{ pet.bio }}</p>
+      <h2 class="section-title">
+        <i class="fas fa-paw"></i> Evcil Hayvanlarım
+      </h2>
+      
+      <div class="pets-grid">
+        {% for pet in pets %}
+        <div class="pet-item">
+          <img src="{{ pet.imageUrl }}" alt="{{ pet.name }}" class="pet-image">
+          <div class="pet-content">
+            <h3 class="pet-name">{{ pet.name }}</h3>
+            <span class="pet-category">{{ pet.category }}</span>
+            
+            <div class="pet-info">
+              <div class="pet-info-row">
+                <span><strong>Cins:</strong></span>
+                <span>{{ pet.breed }}</span>
+              </div>
+              <div class="pet-info-row">
+                <span><strong>Yaş:</strong></span>
+                <span>{{ pet.age }} yıl</span>
+              </div>
+              <div class="pet-info-row">
+                <span><strong>Kilo:</strong></span>
+                <span>{{ pet.weight }} kg</span>
+              </div>
+              <div class="pet-info-row">
+                <span><strong>Cinsiyet:</strong></span>
+                <span>{{ pet.sex }}</span>
+              </div>
+            </div>
+            
+            {% if pet.bio %}
+            <div class="pet-bio">{{ pet.bio }}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-paw"></i>
+        <h3>Henüz evcil hayvan yok</h3>
+        <p>İlk evcil hayvanınızı ekleyerek başlayın!</p>
+        <div class="empty-state-actions">
+          <a href="/pet-profile/" class="btn-action">
+            <i class="fas fa-plus"></i> İlk Pet'imi Ekle
+          </a>
+          <div class="action-row">
+            <a href="/edit-profile/" class="btn-action">
+              <i class="fas fa-user-edit"></i> Profili Düzenle
+            </a>
+          </div>
         </div>
       </div>
-      {% endfor %}
-      {% else %}
-      <p>Henüz evcil hayvan eklemediniz.</p>
       {% endif %}
 
-    <!-- Alt Butonlar -->
-    <div class="bottom-buttons">
-      <a href="/home/" class="btn-orange"><i class="fas fa-arrow-left"></i> Geri Dön</a>
-      <div style="display: flex; gap: 20px;">
-        <a href="/pet-profile/" class="btn-orange">+ Yeni Pet Ekle</a>
-        <a href="/my-pets/" class="btn-orange"><i class="fas fa-edit"></i> Petleri Düzenle</a>
+      <!-- Bottom Actions -->
+      <div class="bottom-actions">
+        <div class="action-group">
+          <a href="/pet-profile/" class="btn-action">
+            <i class="fas fa-plus"></i> Yeni Pet Ekle
+          </a>
+          <a href="/my-pets/" class="btn-action">
+            <i class="fas fa-edit"></i> Petleri Düzenle
+          </a>
+        </div>
       </div>
     </div>
   </div>

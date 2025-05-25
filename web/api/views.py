@@ -1,10 +1,23 @@
 #Sayfa Çağırma İşlemleri
+import json
+from django.shortcuts import render, redirect
+from firebase_init import db
+
 def register_page(request):
     return render(request, 'register.html')
 
 def home_view(request):
+    role = request.session.get("user_role", "user")  # default user
+    # Eğer admin ise kendi paneline gönder
+    if role == "admin":
+        return redirect("/adminpanel/")
+
     email = request.session.get("user_email", "Giriş yapılmamış")
     name = request.session.get("user_name", "")
+    
+    # Giriş kontrolü
+    if email == "Giriş yapılmamış" or not email:
+        return redirect("/login/")
     
     # Kullanıcının ilk pet'inden profil resmini al
     user_pets = db.collection("Pets").where("email", "==", email).limit(1).get()
@@ -16,25 +29,59 @@ def home_view(request):
             user_pp = pet_data["pp"]
         break
     
-    # Tüm petleri çek
+    # Kullanıcının kendi petlerinin ID'lerini al (sadece kendi petlerini filtrelemek için)
+    user_pet_ids = []
+    user_pets_query = db.collection("Pets").where("email", "==", email).get()
+    
+    print(f"🔍 Kullanıcı: {email}")
+    print(f"🔍 Kullanıcının petleri:")
+    
+    for doc in user_pets_query:
+        pet_data = doc.to_dict()
+        user_pet_ids.append(doc.id)
+        print(f"   - Pet ID: {doc.id}, Kategori: {pet_data.get('category')}, İsim: {pet_data.get('name', 'İsimsiz')}")
+    
+    # Tüm petleri çek - minimal filtreleme
     pets_query = db.collection("Pets").get()
     pets = []
     
     for doc in pets_query:
         data = doc.to_dict()
-        data["doc_id"] = doc.id
+        pet_id = doc.id
+        pet_email = data.get("email")
         
-        # Datetime nesnesini string'e çevir
-        if "createdAt" in data:
-            data["createdAt"] = data["createdAt"].isoformat()
+        # Minimal filtreleme koşulları:
+        # 1. Kendi petlerin olmasın
+        # 2. Email alanı boş olmasın
+        if (pet_id not in user_pet_ids and 
+            pet_email and  # Email boş olmasın
+            pet_email != email):  # Kendi email'in olmasın
             
-        pets.append(data)
+            data["doc_id"] = doc.id
+            data["id"] = doc.id  # Frontend için id alanı ekle
+            if "createdAt" in data:
+                data["createdAt"] = data["createdAt"].isoformat()
+            
+            # None değerlerini null ile değiştir (JSON uyumluluğu için)
+            for key, value in data.items():
+                if value is None:
+                    data[key] = None
+            
+            pets.append(data)
+            print(f"✅ Eklenen pet: {data.get('name', 'İsimsiz')} - {data.get('category')} - {pet_email}")
+    
+    print(f"🔍 Toplam gösterilecek pet sayısı: {len(pets)}")
+    
+    # Pet verilerini JSON string olarak hazırla
+    pets_json = json.dumps(pets, ensure_ascii=False, default=str)
     
     return render(request, "home.html", {
         "email": email,
         "name": name,
         "user_pp": user_pp,
-        "pets": pets
+        "pets": pets,
+        "pets_json": pets_json,
+        "total_pets": len(pets)  # Debug için
     })
 
 # Kullanıcı Çıkış İşlemleri
@@ -70,8 +117,9 @@ from datetime import datetime
 from firebase_init import db, upload_to_firebase_storage
 import uuid
 from django.contrib import messages
-
-
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import requests
 
 
 def register_user(request):
@@ -119,17 +167,33 @@ def login_user(request):
 
         users = db.collection("Users").where("email", "==", email).get()
 
+        user_data = None
         for user in users:
             data = user.to_dict()
+            print("LOGIN: user_email ->", data["email"])
             if data["password"] == password:
-                request.session["user_id"] = data["id"]
-                request.session["user_email"] = data["email"]
-                request.session["user_name"] = data.get("name", "")
-                return redirect('/home/')
+                user_data = data
+                break
 
-        
+        if user_data:
+            request.session["user_id"] = user_data.get("id", "")
+            request.session["user_email"] = user_data.get("email", "")
+            request.session["user_name"] = user_data.get("name", "")
+            request.session["user_role"] = user_data.get("role", "user")
+
+            # Role'a göre yönlendirme
+            if user_data.get("role") == "admin":
+                return redirect('/adminpanel/')
+            elif user_data.get("role") == "petshop":
+                return redirect('/petshop/')
+            elif user_data.get("role") == "vet":
+                return redirect('/vetpanel/')
+            else:
+                return redirect('/home/')  # veya /dashboard/ da olabilir
+
+        # Hatalı giriş
         messages.error(request, "E-posta veya şifre yanlış.")
-        return redirect('/login/')  # eğer yanlışsa tekrar girişe yönlendir
+        return redirect('/login/')
 
     return redirect('/login/')
 
@@ -378,6 +442,18 @@ def edit_profile_view(request):
     return redirect('/dashboard/')
 
 
+# web/api/views.py
+from django.http import JsonResponse
+from socialpet_backend.models import Vet
+from math import radians, sin, cos, sqrt, atan2
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371  # km cinsinden
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+    a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1-a))
+    return R * c
 
 
 

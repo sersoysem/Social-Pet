@@ -1,132 +1,824 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Hayvanlarım - SocialPet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f9f9f9;
-      padding: 20px;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayvanlarım - SocialPet</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ff6b35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ultra Modern CSS Variables */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+            --success-gradient: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+            --warning-gradient: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+            --danger-gradient: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+            
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --text-muted: #a0a0a0;
+            --text-light: #2d3436;
+            
+            --bg-primary: #ffffff;
+            --bg-dark: #1a1a2e;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+            --bg-particles: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 40% 80%, rgba(245, 245, 245, 0.6) 0%, transparent 50%);
+            
+            --shadow-glass: 0 8px 32px 0 rgba(255, 107, 53, 0.37);
+            --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+            --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-4: 0 14px 28px rgba(255, 107, 53, 0.25), 0 10px 10px rgba(255, 107, 53, 0.22);
+            --shadow-elevation-5: 0 19px 38px rgba(255, 107, 53, 0.30), 0 15px 12px rgba(255, 107, 53, 0.22);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            --radius-full: 50px;
+            
+            --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    h1 {
-      color: #FF6B35;
-      text-align: center;
-      margin-bottom: 30px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .pet-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      padding: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      transition: transform 0.2s ease;
-    }
+        body {
+            font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    .pet-card:hover {
-      transform: translateY(-5px);
-    }
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-particles);
+            animation: particleFloat 15s ease-in-out infinite;
+            z-index: -1;
+        }
 
-    .pet-img {
-      border-radius: 12px;
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
 
-    .pet-info {
-      flex: 1;
-    }
+        /* Floating Geometric Shapes */
+        .geometric-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-    .pet-info p {
-      margin: 6px 0;
-      color: #444;
-    }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
 
-    .pet-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+        .shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dee2e6 0%, #adb5bd 100%);
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
 
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+        .shape:nth-child(2) {
+            top: 70%;
+            right: 10%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+            transform: rotate(45deg);
+            animation-delay: -5s;
+        }
 
-    .btn-edit {
-      background-color: #00BFA6;
-      color: white;
-    }
+        .shape:nth-child(3) {
+            top: 40%;
+            left: 80%;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+            border-radius: 30%;
+            animation-delay: -10s;
+        }
 
-    .btn-edit:hover {
-      background-color: #009e8a;
-    }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(-10px) rotate(270deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
 
-    .btn-delete {
-      background-color: #FF4444;
-      color: white;
-    }
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-top: 0;
+            position: relative;
+            z-index: 1;
+            animation: slideInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    .btn-delete:hover {
-      background-color: #cc0000;
-    }
-  </style>
+        /* Header Section - Sticky at top */
+        .header {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+            padding: 2rem 3rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-glass);
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            overflow: hidden;
+            animation: slideInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background: var(--primary-gradient); }
+            33% { background: var(--accent-gradient); }
+            66% { background: var(--warning-gradient); }
+        }
+
+        /* Back Button inside Header */
+        .header-back-button {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .btn-header-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-header-back::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-header-back:hover::before {
+            left: 100%;
+        }
+
+        .btn-header-back:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: var(--shadow-elevation-3);
+        }
+
+        .btn-header-back i {
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-header-back:hover i {
+            color: white;
+            background: none;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .paw-icon {
+            font-size: 3rem;
+            background: var(--warning-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Pets Grid */
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pet-card {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: var(--transition-bounce);
+            cursor: pointer;
+            box-shadow: var(--shadow-glass);
+            position: relative;
+            transform-style: preserve-3d;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .pet-card:nth-child(1) { animation-delay: 0.1s; }
+        .pet-card:nth-child(2) { animation-delay: 0.2s; }
+        .pet-card:nth-child(3) { animation-delay: 0.3s; }
+        .pet-card:nth-child(4) { animation-delay: 0.4s; }
+        .pet-card:nth-child(5) { animation-delay: 0.5s; }
+        .pet-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .pet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, transparent 50%, rgba(255, 107, 53, 0.05) 100%);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: 1;
+        }
+
+        .pet-card:hover::before {
+            opacity: 1;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg) scale(1.02);
+            box-shadow: var(--shadow-elevation-5);
+            border-color: rgba(255, 107, 53, 0.4);
+        }
+
+        .pet-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+            position: relative;
+            z-index: 2;
+        }
+
+        .pet-card:hover .pet-img {
+            transform: scale(1.05);
+        }
+
+        .pet-info {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pet-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .pet-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+            transition: var(--transition-smooth);
+        }
+
+        .pet-detail:hover {
+            background: rgba(255, 107, 53, 0.05);
+            margin: 0.25rem -1rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .pet-detail:last-child {
+            border-bottom: none;
+        }
+
+        .pet-detail i {
+            font-size: 1.1rem;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .pet-detail span {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .pet-detail strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Pet Actions */
+        .pet-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 107, 53, 0.05);
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-edit {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: var(--shadow-elevation-2);
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-elevation-4);
+        }
+
+        .btn-delete {
+            background: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
+            border: 1px solid rgba(244, 67, 54, 0.2);
+            box-shadow: var(--shadow-elevation-1);
+        }
+
+        .btn-delete:hover {
+            background: var(--danger-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-elevation-4);
+        }
+
+        /* Add Pet Button */
+        .add-pet-container {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .btn-add {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.25rem 2.5rem;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition-bounce);
+            box-shadow: var(--shadow-elevation-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-add:hover::before {
+            left: 100%;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-elevation-5);
+        }
+
+        .btn-add i {
+            font-size: 1.2rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: 6rem 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-glass);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            background: var(--warning-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .empty-state h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Content with top margin for fixed header */
+        .content-section {
+            margin-top: 220px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+                padding-top: 0;
+            }
+
+            .header {
+                padding: 1.5rem 2rem;
+            }
+
+            .header-back-button {
+                left: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .pets-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .content-section {
+                margin-top: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+                padding-top: 0;
+            }
+
+            .header {
+                padding: 1.5rem 1rem;
+                border-radius: 0;
+                position: relative;
+                top: 0;
+                margin-bottom: 1rem;
+            }
+
+            .header-back-button {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .pets-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .pet-info {
+                padding: 1.5rem;
+            }
+
+            .pet-actions {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 0.8rem;
+            }
+
+            .empty-state {
+                padding: 4rem 2rem;
+            }
+
+            .empty-state i {
+                font-size: 4rem;
+            }
+
+            .empty-state h3 {
+                font-size: 1.5rem;
+            }
+
+            .content-section {
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-header-back {
+                padding: 0.7rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .pet-img {
+                height: 200px;
+            }
+
+            .pet-info {
+                padding: 1rem;
+            }
+
+            .pet-actions {
+                padding: 1rem;
+            }
+
+            .btn-add {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <h1><i class="fas fa-paw"></i> Hayvanlarım</h1>
-
-  {% for pet in pets %}
-    <div class="pet-card">
-      <img src="{{ pet.imageUrl }}" alt="Foto" class="pet-img">
-      <div class="pet-info">
-        <h3>{{ pet.name }}</h3>
-        <p><strong>Tür:</strong> {{ pet.category }}</p>
-        <p><strong>Cins:</strong> {{ pet.breed }}</p>
-        <p><strong>Yaş:</strong> {{ pet.age }}</p>
-        <p><strong>Aile:</strong> {{ pet.uname }} | {{ pet.email }}</p>
-      </div>
-      <div class="pet-actions">
-        <a href="/edit-pet/{{ pet.id }}" class="btn btn-edit"><i class="fas fa-edit"></i> Düzenle</a>
-        <form action="/delete-pet/" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="pet_id" value="{{ pet.doc_id }}">
-          <button type="submit" class="btn btn-delete"><i class="fas fa-trash"></i> Sil</button>
-        </form>
-      </div>
+    <!-- Floating Geometric Shapes -->
+    <div class="geometric-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
-  {% empty %}
-    <p style="text-align:center; color: #888; font-size: 1.1rem;">Henüz hiç hayvan eklemediniz.</p>
-  {% endfor %}
 
-  <!-- Yeni Pet Ekle Butonu -->
-  <div style="text-align: center; margin-top: 40px;">
-    <a href="/pet-profile/" style="background-color: #27AE60; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.15); transition: 0.3s;">
-      + Yeni Pet Ekle
-    </a>
-  </div>
+    <div class="container">
+        <div class="header">
+            <!-- Back Button inside Header -->
+            <div class="header-back-button">
+                <a href="/dashboard/" class="btn-header-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Geri Dön
+                </a>
+            </div>
+            
+            <h1 class="page-title">
+                <i class="fas fa-paw paw-icon"></i>
+                Evcil Hayvanlarım
+            </h1>
+            <p class="page-subtitle">Dostlarınızı yönetin, bilgilerini düzenleyin</p>
+        </div>
 
-  <!-- Geri Dön Butonu -->
-  <div style="position: absolute; top: 20px; left: 20px;">
-    <a href="/dashboard/" style="background-color: #FF6B35; color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: background-color 0.3s;">
-      ← Geri Dön
-    </a>
-  </div>
+        <div class="content-section">
+            {% if pets %}
+                <div class="pets-grid">
+                    {% for pet in pets %}
+                        <div class="pet-card">
+                            <img src="{{ pet.imageUrl }}" alt="{{ pet.name }}" class="pet-img">
+                            <div class="pet-info">
+                                <h3 class="pet-name">{{ pet.name }}</h3>
+                                <div class="pet-detail">
+                                    <i class="fas fa-paw"></i>
+                                    <span><strong>Tür:</strong> {{ pet.category }}</span>
+                                </div>
+                                <div class="pet-detail">
+                                    <i class="fas fa-dna"></i>
+                                    <span><strong>Cins:</strong> {{ pet.breed }}</span>
+                                </div>
+                                <div class="pet-detail">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    <span><strong>Yaş:</strong> {{ pet.age }} yıl</span>
+                                </div>
+                                <div class="pet-detail">
+                                    <i class="fas fa-user"></i>
+                                    <span><strong>Aile:</strong> {{ pet.uname }}</span>
+                                </div>
+                                <div class="pet-detail">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>{{ pet.email }}</span>
+                                </div>
+                            </div>
+                            <div class="pet-actions">
+                                <a href="/edit-pet/{{ pet.id }}" class="btn btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                    Düzenle
+                                </a>
+                                <form action="/delete-pet/" method="POST" style="flex: 1;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="pet_id" value="{{ pet.doc_id }}">
+                                    <button type="submit" class="btn btn-delete" onclick="return confirm('Bu hayvanı silmek istediğinizden emin misiniz?')">
+                                        <i class="fas fa-trash"></i>
+                                        Sil
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-paw"></i>
+                    <h3>Henüz evcil hayvan yok</h3>
+                    <p>İlk evcil hayvanınızı ekleyerek başlayın!</p>
+                </div>
+            {% endif %}
 
-
+            <div class="add-pet-container">
+                <a href="/pet-profile/" class="btn-add">
+                    <i class="fas fa-plus-circle"></i>
+                    Yeni Pet Ekle
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

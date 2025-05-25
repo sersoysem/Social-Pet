@@ -174,134 +174,242 @@
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.6);
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     z-index: 9999;
+    animation: fadeInBg 0.3s ease;
+    backdrop-filter: blur(4px);
+    padding-left: 15%;
 }
+
+@keyframes fadeInBg {
+    from { background: rgba(0,0,0,0.0); backdrop-filter: blur(0px); }
+    to { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+}
+
 .modal-content-box {
-    background: #fff;
-    border-radius: 16px;
-    max-width: 600px;
-    width: 90%;
-    padding: 30px;
+    background: linear-gradient(135deg, #fff 0%, #fefefe 100%);
+    border-radius: 24px;
+    width: 500px;
+    height: 600px;
+    padding: 32px 24px 24px 24px;
     position: relative;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 20px 60px rgba(255,107,53,0.15), 0 8px 32px rgba(0,0,0,0.1);
+    animation: modalPop 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+    border: 1px solid rgba(255,107,53,0.1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
+
+@keyframes modalPop {
+    0% { opacity: 0; transform: scale(0.8) translateY(60px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .modal-close {
     position: absolute;
-    top: 15px;
+    top: 16px;
     right: 20px;
     font-size: 24px;
-    color: #666;
+    color: #ff6b35;
     cursor: pointer;
-    font-weight: bold;
-    background: #f8f9fa;
+    font-weight: 300;
+    background: rgba(255,107,53,0.1);
     width: 40px;
     height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    border: none;
+    line-height: 1;
+    z-index: 10;
 }
+
 .modal-close:hover {
-    background: #e53935;
+    background: #ff6b35;
     color: white;
-    transform: scale(1.1);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
 }
+
+.modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.modal-title {
+    color: #ff6b35;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+    font-size: 24px;
+    text-align: center;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.modal-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b35, #ff8c5a);
+    border-radius: 2px;
+}
+
+.modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #ff6b35;
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #e55a2b;
+}
+
 .event-details {
-    margin: 25px 0;
-    background: #f8f9fa;
+    margin: 20px 0;
+    background: rgba(255,107,53,0.05);
     padding: 20px;
     border-radius: 12px;
+    border: 1px solid rgba(255,107,53,0.1);
 }
+
 .event-details p {
-    margin: 15px 0;
-    color: #555;
-    font-size: 16px;
+    margin: 12px 0;
+    color: #444;
+    font-size: 15px;
     display: flex;
     align-items: center;
+    gap: 12px;
 }
+
 .event-details i {
-    width: 30px;
-    color: #FF6B35;
-    font-size: 18px;
-    margin-right: 10px;
-}
-.event-description {
-    margin-top: 25px;
-    padding-top: 25px;
-    border-top: 2px solid #eee;
-}
-.event-description h3 {
-    color: #333;
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-.event-description p {
-    color: #666;
-    line-height: 1.6;
+    width: 20px;
+    color: #ff6b35;
     font-size: 16px;
+    text-align: center;
 }
+
+.event-description {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(255,107,53,0.1);
+}
+
+.event-description h3 {
+    color: #ff6b35;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.event-description p {
+    color: #555;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
 .event-stats {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
-    padding: 15px;
-    background: #fff3e6;
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(255,107,53,0.08);
     border-radius: 10px;
-    border: 1px solid #ffe5d0;
+    border: 1px solid rgba(255,107,53,0.15);
 }
+
 .event-stats .stat-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #FF6B35;
+    color: #ff6b35;
     font-weight: 600;
+    font-size: 14px;
 }
+
 .event-stats .stat-item i {
-    font-size: 18px;
+    font-size: 16px;
 }
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-@media (max-width: 768px) {
-    .calendar-day {
-        height: 100px;
-    }
-    .calendar-header h2 {
-        font-size: 20px;
-    }
-    .calendar-nav-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-}
-.calendar-day.past-event:hover {
-    background: #fbe4e4;
-}
-.calendar-day.future-event:hover {
-    background: #dffae0;
-}
+
 .event-expired-warning {
-    animation: pulseFade 1s ease-in-out infinite alternate;
+    background: rgba(229, 57, 53, 0.1);
+    color: #e53935;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(229, 57, 53, 0.2);
+    animation: pulseFade 2s ease-in-out infinite alternate;
 }
 
 @keyframes pulseFade {
-    0% { background-color: #ffe5e5; }
-    100% { background-color: #ffd6d6; }
+    0% { background-color: rgba(229, 57, 53, 0.08); }
+    100% { background-color: rgba(229, 57, 53, 0.15); }
 }
 
+.event-expired-warning i {
+    color: #e53935;
+    font-size: 18px;
+}
+
+@media (max-width: 600px) {
+    .modal-backdrop {
+        padding-left: 5%;
+        justify-content: center;
+    }
+    .modal-content-box {
+        width: 90vw;
+        height: 80vh;
+        padding: 24px 16px 16px 16px;
+        margin: 0;
+    }
+    .modal-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-backdrop {
+        padding-left: 8%;
+    }
+    .modal-content-box {
+        width: 450px;
+        height: 550px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-backdrop {
+        padding-left: 20%;
+    }
+}
 </style>
 
 <div class="calendar-container">
@@ -328,11 +436,11 @@
 <div id="eventModal" class="modal-backdrop" style="display: none;">
     <div class="modal-content-box" onclick="event.stopPropagation()">
         <span class="modal-close" onclick="closeEventModal()">&times;</span>
-        <div class="modal-text">
-            <div class="event-expired-warning" style="color: #e53935; font-weight: bold; background: #ffe9e9; padding: 10px 16px; border-radius: 10px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-exclamation-triangle" style="color: #e53935;"></i> Bu etkinliğin süresi geçmiştir.
+        <h2 id="eventTitle" class="modal-title">Etkinlik Başlığı</h2>
+        <div class="modal-content">
+            <div class="event-expired-warning">
+                <i class="fas fa-exclamation-triangle"></i> Bu etkinliğin süresi geçmiştir.
             </div>              
-            <h2 id="eventTitle">Etkinlik Başlığı</h2>
             <div class="event-details">
                 <p><i class="fas fa-calendar"></i> <span id="eventDate"></span></p>
                 <p><i class="fas fa-clock"></i> <span id="eventTime"></span></p>

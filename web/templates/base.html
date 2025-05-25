@@ -6,36 +6,35 @@
     <title>{% block title %}Social Pet{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
-    <link rel="stylesheet" href="style.css">
-    {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="/static/style.css">
+    {% block extra_css %}{% endblock %}
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-<!-- Navbar -->
-{% block navbar %}
-<nav class="navbar">
-    <div class="nav-left">
-        <a href="/home" class="logo">
-            <i class="fas fa-paw"></i>
-            <span>Social Pet</span>
-        </a>
-    </div>
-    <div class="nav-right">
-        <div class="nav-item">
-            <a href="/matches" class="nav-link{% if request.path == '/matches' %} active{% endif %}">
-                <i class="fas fa-comments"></i>
-                <span>Mesajlar</span>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/home" class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Social Pet</span>
             </a>
         </div>
+        <div class="nav-right">
+            <div class="nav-item">
+                <a href="/matches" class="nav-link{% if request.path == '/matches' %} active{% endif %}">
+                    <i class="fas fa-comments"></i>
+                    <span>Mesajlar</span>
+                </a>
+            </div>
 
-        <!-- Yeni Eklenen Favorilerim Kısmı -->
-        <div class="nav-item">
-            <a href="{% url 'favorites' %}" class="nav-link{% if request.path == '/favorites/' %} active{% endif %}">
-                <i class="fas fa-heart"></i>
-                <span>Favorilerim</span>
-            </a>
-        </div>
+            <div class="nav-item">
+                <a href="{% url 'favorites' %}" class="nav-link{% if request.path == '/favorites/' %} active{% endif %}">
+                    <i class="fas fa-heart"></i>
+                    <span>Favorilerim</span>
+                </a>
+            </div>
 
-        <div class="nav-item">
+            <div class="nav-item">
                 <a href="{% url 'cart' %}" class="nav-link{% if request.path == '/cart/' %} active{% endif %}">
                     <div class="cart-icon-wrapper">
                         <i class="fas fa-shopping-cart"></i>
@@ -44,32 +43,28 @@
                     <span>Sepetim</span>
                 </a>
             </div>
-        <div class="nav-item dropdown">
-            <a href="#" class="nav-link" onclick="toggleDropdown(event)">
-                <img src="{{ user_pp }}" alt="Profil" class="profile-pic">
-                <span>{{ name }}</span>
-
-            </a>
-            <div class="dropdown-content" id="profileDropdown">
-                <a href="/dashboard">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Bilgilerim
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link" onclick="toggleDropdown(event)">
+                    <img src="{{ user_pp }}" alt="Profil" class="profile-pic">
+                    <span>{{ name }}</span>
                 </a>
-                <a href="/api/logout/" class="logout">
-                    <i class="fas fa-sign-out-alt"></i>
-
-
-                    Çıkış Yap
-                </a>
+                <div class="dropdown-content" id="profileDropdown">
+                    <a href="/dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Bilgilerim
+                    </a>
+                    <a href="/api/logout/" class="logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Çıkış Yap
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
-{% endblock %}
-<!-- Main Content -->
+    </nav>
+
+    <!-- Main Content -->
     <div class="container">
-        <!-- Aside Menu -->
-        {% block sidebar %}
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="menu-section">
                 <h3>Kategoriler</h3>
@@ -101,13 +96,35 @@
                 </ul>
             </div>
         </aside>
-        {% endblock %}
 
         <!-- Main Content Area -->
         <main class="main-content">
             {% block content %}{% endblock %}
         </main>
     </div>
-    <script src="/static/js/navbar.js"></script>
+
+    <!-- Common JavaScript -->
+    {% block scripts %}
+    <script>
+        function toggleDropdown(event) {
+            event.preventDefault();
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.nav-link')) {
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+    {% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html> 

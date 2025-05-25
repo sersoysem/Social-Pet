@@ -1,0 +1,1523 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}Anlaşmalı Veterinerler - Social Pet{% endblock %}
+
+{% block styles %}
+<style>
+    .vet-container {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #F5F5F5;
+        min-height: 100vh;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        padding: 2rem 0;
+    }
+
+    .page-header h1 {
+        color: #1e293b;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42, #ffa726);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .page-header p {
+        color: #64748b;
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 500;
+    }
+
+    .vet-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .vet-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        border: 1px solid #e2e8f0;
+        backdrop-filter: blur(10px);
+    }
+
+    .vet-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        border-color: #ffe8e0;
+    }
+
+    .vet-card-header {
+        position: relative;
+        padding: 2rem 2rem 1rem 2rem;
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+        color: white;
+    }
+
+    .vet-card:nth-child(2) .vet-card-header { background: linear-gradient(135deg, #ff8c42 0%, #ffa726 100%); }
+    .vet-card:nth-child(3) .vet-card-header { background: linear-gradient(135deg, #ffa726 0%, #ffb74d 100%); }
+    .vet-card:nth-child(4) .vet-card-header { background: linear-gradient(135deg, #ffb74d 0%, #ffcc02 100%); }
+    .vet-card:nth-child(5) .vet-card-header { background: linear-gradient(135deg, #ff7043 0%, #ff8a65 100%); }
+    .vet-card:nth-child(6) .vet-card-header { background: linear-gradient(135deg, #ff9800 0%, #ffab40 100%); }
+
+    .vet-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255,255,255,0.3);
+        position: absolute;
+        top: 12px;
+        right: 2rem;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .vet-main-info {
+        padding-right: 140px;
+    }
+
+    .vet-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .verified-badge {
+        background: rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.9);
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .vet-specialty {
+        font-size: 1.1rem;
+        font-weight: 500;
+        opacity: 0.95;
+        margin-bottom: 0.5rem;
+    }
+
+    .rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stars {
+        font-size: 1.2rem;
+        color: #fbbf24;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .review-count {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .vet-body {
+        padding: 2rem;
+    }
+
+    .vet-details {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .vet-detail {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border-left: 4px solid #ff6b35;
+        transition: all 0.2s ease;
+    }
+
+    .vet-detail:hover {
+        background: #f1f5f9;
+        transform: translateX(5px);
+    }
+
+    .vet-detail-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .vet-detail-content {
+        flex: 1;
+    }
+
+    .vet-detail-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.2rem;
+    }
+
+    .vet-detail-value {
+        font-size: 1rem;
+        color: #1e293b;
+        font-weight: 500;
+    }
+
+    .vet-actions {
+        display: flex;
+        justify-content: center;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .contact-btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .contact-btn:active {
+        transform: translateY(0);
+    }
+
+    .contact-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .contact-btn:hover::before {
+        left: 100%;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+    }
+
+    .appointment-modal {
+        background: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: scale(0.9) translateY(20px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-overlay.show .appointment-modal {
+        transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px 20px 0 0;
+        text-align: center;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .modal-header p {
+        font-size: 1rem;
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .appointment-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .appointment-btn:hover {
+        background: linear-gradient(135deg, #ff5722, #ff6b35);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+    }
+
+    .appointment-btn:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        grid-column: 1 / -1;
+        padding: 4rem 2rem;
+        color: #64748b;
+        font-size: 1.2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+        .vet-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .vet-container {
+            padding: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .vet-card-header {
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+        }
+
+        .vet-image {
+            width: 80px;
+            height: 80px;
+            right: 1.5rem;
+            top: -40px;
+        }
+
+        .vet-main-info {
+            padding-right: 100px;
+        }
+
+        .vet-body {
+            padding: 1.5rem;
+        }
+
+        .appointment-modal {
+            width: 95%;
+            margin: 1rem;
+        }
+
+        .modal-header, .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .vet-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .vet-card:nth-child(1) { animation-delay: 0.1s; }
+    .vet-card:nth-child(2) { animation-delay: 0.2s; }
+    .vet-card:nth-child(3) { animation-delay: 0.3s; }
+    .vet-card:nth-child(4) { animation-delay: 0.4s; }
+    .vet-card:nth-child(5) { animation-delay: 0.5s; }
+    .vet-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Upcoming Appointments Styles */
+    .appointments-section {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+        display: none;
+    }
+
+    .appointments-section.show {
+        display: block;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .appointments-header {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .appointments-header h2 {
+        color: #1e293b;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .appointment-count {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .appointments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .appointment-card {
+        background: linear-gradient(135deg, #f8fafc, #ffffff);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border-color: #ff6b35;
+    }
+
+    .appointment-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    }
+
+    .appointment-delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+        opacity: 0.8;
+        z-index: 10;
+    }
+
+    .appointment-delete-btn:hover {
+        background: #dc2626;
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .appointment-header {
+        flex: 0 0 auto;
+        margin-bottom: 0.8rem;
+        text-align: center;
+    }
+
+    .appointment-vet {
+        width: 100%;
+    }
+
+    .appointment-vet-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    .appointment-specialty {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .appointment-date-time {
+        background: rgba(255, 107, 53, 0.1);
+        padding: 0.6rem;
+        border-radius: 8px;
+        text-align: center;
+        margin: 0.8rem 0;
+        flex: 0 0 auto;
+    }
+
+    .appointment-date {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #ff6b35;
+        margin-bottom: 0.2rem;
+    }
+
+    .appointment-time {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .appointment-pet-name {
+        text-align: center;
+        padding: 0.6rem;
+        margin: 0.1rem 0;
+        background: rgba(255, 107, 53, 0.05);
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #ff6b35;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        flex: 0 0 auto;
+    }
+
+    .appointment-pet-name i {
+        font-size: 0.8rem;
+        color: #ff6b35;
+    }
+
+    .appointment-details {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .appointment-detail {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem;
+        background: rgba(255, 107, 53, 0.05);
+        border-radius: 6px;
+    }
+
+    .appointment-detail-icon {
+        width: 16px;
+        height: 16px;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.6rem;
+        flex-shrink: 0;
+    }
+
+    .appointment-detail-text {
+        color: #64748b;
+        font-weight: 500;
+        line-height: 1.2;
+        font-size: 0.75rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+    }
+
+    .appointment-reason {
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        background: #f8fafc;
+        border-radius: 6px;
+        border-left: 2px solid #ff6b35;
+        font-size: 0.7rem;
+        flex: 0 0 auto;
+    }
+
+    .appointment-reason strong {
+        color: #374151;
+    }
+
+    .appointment-reason span {
+        color: #64748b;
+    }
+
+    .appointment-actions {
+        display: flex;
+        gap: 0.4rem;
+        flex: 0 0 auto;
+    }
+
+    .appointment-btn-small {
+        padding: 0.3rem 0.4rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        flex: 1;
+    }
+
+    .edit-appointment-btn {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+    }
+
+    .edit-appointment-btn:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        transform: translateY(-1px);
+    }
+
+    .cancel-appointment-btn {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+
+    .cancel-appointment-btn:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-1px);
+    }
+
+    .no-appointments {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+        grid-column: 1 / -1;
+    }
+
+    .no-appointments-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+        .appointments-section {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .appointments-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .appointment-card {
+            padding: 0.8rem;
+        }
+
+        .appointment-vet-name {
+            font-size: 0.9rem;
+        }
+
+        .appointment-btn-small {
+            padding: 0.3rem 0.4rem;
+            font-size: 0.65rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .appointments-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+<div class="vet-container">
+    <div class="page-header" style="margin-top: -5.5rem;">
+        <h1>Anlaşmalı Veterinerlerimiz</h1>
+        <p>Evcil dostunuz için en iyi veterinerlerimizle tanışın. Uzman kadromuz ve modern kliniklerimizle yanınızdayız.</p>
+    </div>
+
+    <!-- Upcoming Appointments Section -->
+    <div class="appointments-section" id="appointmentsSection" style="margin-top: -4rem;">
+        <div class="appointments-header">
+            <h2>Gelecek Randevularım</h2>
+            <span class="appointment-count" id="appointmentCount">0</span>
+        </div>
+        <div class="appointments-grid" id="appointmentsGrid">
+            <div class="no-appointments" id="noAppointments">
+                <div class="no-appointments-icon">📅</div>
+                <p>Henüz randevunuz bulunmamaktadır.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="vet-grid" style="margin-top: 2rem;">
+        {% for vet in vets %}
+        <div class="vet-card">
+            <div class="vet-card-header">
+                {% if vet.image %}
+                    <img src="{{ vet.image }}" alt="{{ vet.name }}" class="vet-image">
+                {% else %}
+                    <div class="vet-image">👨‍⚕️</div>
+                {% endif %}
+                
+                <div class="vet-main-info">
+                <div class="vet-name">
+                        {{ vet.name }}
+                        <span class="verified-badge">
+                            <i class="fas fa-check-circle"></i> Verified
+                        </span>
+                </div>
+                    <div class="vet-specialty">{{ vet.specialization }}</div>
+                <div class="rating">
+                        <span class="stars" data-rating="{{ vet.rating|default:'0' }}">
+                            ☆☆☆☆☆
+                        </span>
+                        <span class="review-count">({{ vet.rating|default:"0" }} rating)</span>
+                </div>
+                </div>
+                </div>
+
+            <div class="vet-body">
+                <div class="vet-details">
+                    <div class="vet-detail">
+                        <div class="vet-detail-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="vet-detail-content">
+                            <div class="vet-detail-label">Adres</div>
+                            <div class="vet-detail-value">{{ vet.address }}</div>
+            </div>
+        </div>
+
+                    {% if vet.clinic %}
+                    <div class="vet-detail">
+                        <div class="vet-detail-icon">
+                            <i class="fas fa-hospital"></i>
+                </div>
+                        <div class="vet-detail-content">
+                            <div class="vet-detail-label">Klinik</div>
+                            <div class="vet-detail-value">{{ vet.clinic }}</div>
+                </div>
+                </div>
+                    {% endif %}
+
+                    {% if vet.experience %}
+                    <div class="vet-detail">
+                        <div class="vet-detail-icon">
+                            <i class="fas fa-user-md"></i>
+                </div>
+                        <div class="vet-detail-content">
+                            <div class="vet-detail-label">Deneyim</div>
+                            <div class="vet-detail-value">{{ vet.experience }}</div>
+            </div>
+        </div>
+                    {% endif %}
+
+                    <div class="vet-detail">
+                        <div class="vet-detail-icon">
+                            <i class="fas fa-phone"></i>
+                </div>
+                        <div class="vet-detail-content">
+                            <div class="vet-detail-label">Telefon</div>
+                            <div class="vet-detail-value">{{ vet.phone }}</div>
+                </div>
+                </div>
+                </div>
+
+                <div class="vet-actions">
+                    <button class="contact-btn" 
+                            data-vet-name="{{ vet.name }}" 
+                            data-vet-id="{{ vet.doc_id }}"
+                            data-vet-clinic="{{ vet.clinic|default:'Klinik Bilgisi Yok' }}"
+                            data-vet-phone="{{ vet.phone }}"
+                            data-vet-specialization="{{ vet.specialization|default:'Genel Veteriner' }}"
+                            data-vet-image="{{ vet.image|default:'' }}">
+                        <i class="fas fa-calendar-alt"></i>
+                        Randevu Al
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🏥</div>
+            <p>Henüz anlaşmalı veteriner bulunmamaktadır.</p>
+        </div>
+        {% endfor %}
+        </div>
+
+    <!-- Randevu Modal -->
+    <div class="modal-overlay" id="appointmentModal">
+        <div class="appointment-modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeAppointmentModal()">&times;</button>
+                <h2 id="modalVetName">Dr. Veteriner</h2>
+                <p>ile randevu almak için bilgilerinizi doldurun</p>
+                </div>
+            <div class="modal-body">
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label class="form-label">Telefon Numarası *</label>
+                        <input type="tel" class="form-input" id="patientPhone" required placeholder="0555 123 45 67">
+                </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Randevu Tarihi *</label>
+                            <input type="date" class="form-input" id="appointmentDate" required>
+                </div>
+                        <div class="form-group">
+                            <label class="form-label">Randevu Saati *</label>
+                            <select class="form-select" id="appointmentTime" required>
+                                <option value="">Saat seçin</option>
+                                <option value="09:00">09:00</option>
+                                <option value="09:30">09:30</option>
+                                <option value="10:00">10:00</option>
+                                <option value="10:30">10:30</option>
+                                <option value="11:00">11:00</option>
+                                <option value="11:30">11:30</option>
+                                <option value="14:00">14:00</option>
+                                <option value="14:30">14:30</option>
+                                <option value="15:00">15:00</option>
+                                <option value="15:30">15:30</option>
+                                <option value="16:00">16:00</option>
+                                <option value="16:30">16:30</option>
+                                <option value="17:00">17:00</option>
+                                <option value="17:30">17:30</option>
+                            </select>
+                </div>
+            </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Evcil Hayvan Türü *</label>
+                        <select class="form-select" id="petType" required>
+                            <option value="">Tür seçin</option>
+                            <option value="Köpek">Köpek</option>
+                            <option value="Kedi">Kedi</option>
+                            <option value="Kuş">Kuş</option>
+                            <option value="Hamster">Hamster</option>
+                            <option value="Diğer">Diğer</option>
+                        </select>
+        </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Evcil Hayvan Irkı</label>
+                        <select class="form-select" id="petBreed" disabled>
+                            <option value="">Önce tür seçin</option>
+                        </select>
+                </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Evcil Hayvan Adı</label>
+                        <input type="text" class="form-input" id="petName" placeholder="Evcil hayvanınızın adı">
+                </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Randevu Konusu</label>
+                        <textarea class="form-textarea" id="appointmentReason" placeholder="Randevu sebebinizi kısaca açıklayın..."></textarea>
+                </div>
+
+                    <button type="submit" class="appointment-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        Randevu Oluştur
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{{ appointments|json_script:"appointments-data" }}
+<script>
+const djangoAppointments = JSON.parse(document.getElementById('appointments-data').textContent);
+let selectedVetData = null; // Seçilen veteriner verilerini saklamak için
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Hayvan ırklarını tanımla
+    const petBreeds = {
+        'Köpek': [
+            'Golden Retriever', 'Labrador Retriever', 'German Shepherd', 'Bulldog',
+            'Poodle', 'Beagle', 'Rottweiler', 'Yorkshire Terrier', 'Boxer',
+            'Dachshund', 'Siberian Husky', 'Great Dane', 'Chihuahua',
+            'Shih Tzu', 'Boston Terrier', 'Kangal', 'Akbash', 'Cocker Spaniel',
+            'Border Collie', 'Jack Russell Terrier', 'Maltese Terrier', 'Diğer'
+        ],
+        'Kedi': [
+            'British Shorthair', 'Scottish Fold', 'Persian', 'Maine Coon',
+            'Ragdoll', 'Siamese', 'Bengal', 'Russian Blue', 'Abyssinian',
+            'Sphynx', 'Munchkin', 'Turkish Angora', 'Van Kedisi', 'Tekir',
+            'Tricolor', 'Siyah', 'Beyaz', 'Gri', 'Sarman', 'Diğer'
+        ],
+        'Kuş': [
+            'Muhabbet Kuşu', 'Kanarya', 'Sultan Papağanı', 'Cennet Papağanı',
+            'Jako Papağanı', 'Forpus', 'Love Bird', 'Finch', 'Bülbül',
+            'Güvercin', 'Ispinoz', 'Saka', 'Diğer'
+        ],
+        'Hamster': [
+            'Syrian Hamster', 'Dwarf Hamster', 'Roborovski', 'Chinese Hamster',
+            'European Hamster', 'Diğer'
+        ],
+        'Diğer': [
+            'Belirtilmemiş'
+        ]
+    };
+
+    // Rating yıldızlarını düzenle
+    document.querySelectorAll('.stars').forEach(starElement => {
+        const rating = parseFloat(starElement.getAttribute('data-rating') || '0');
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars += '★';
+            } else if (i - 0.5 <= rating) {
+                stars += '★'; // Yarım yıldız için tam yıldız göster
+            } else {
+                stars += '☆';
+            }
+        }
+        starElement.textContent = stars;
+    });
+
+    // Randevu butonlarına tıklama olayı ekle
+    document.querySelectorAll('.contact-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const vetData = {
+                name: this.getAttribute('data-vet-name'),
+                id: this.getAttribute('data-vet-id'),
+                clinic: this.getAttribute('data-vet-clinic'),
+                phone: this.getAttribute('data-vet-phone'),
+                specialization: this.getAttribute('data-vet-specialization'),
+                image: this.getAttribute('data-vet-image')
+            };
+            openAppointmentModal(vetData);
+        });
+    });
+
+    // Hayvan türü seçimi değiştiğinde ırkları güncelle
+    document.getElementById('petType').addEventListener('change', function() {
+        const selectedType = this.value;
+        const breedSelect = document.getElementById('petBreed');
+        
+        // Irk seçimini temizle
+        breedSelect.innerHTML = '';
+        
+        if (selectedType && petBreeds[selectedType]) {
+            // Irk seçimini aktif et
+            breedSelect.disabled = false;
+            
+            // İlk seçenek
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Irk seçin';
+            breedSelect.appendChild(defaultOption);
+            
+            // Seçilen türe ait ırkları ekle
+            petBreeds[selectedType].forEach(breed => {
+                const option = document.createElement('option');
+                option.value = breed;
+                option.textContent = breed;
+                breedSelect.appendChild(option);
+            });
+        } else {
+            // Irk seçimini deaktif et
+            breedSelect.disabled = true;
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Önce tür seçin';
+            breedSelect.appendChild(defaultOption);
+        }
+    });
+
+    // Minimum tarih olarak bugünü ayarla
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('appointmentDate').setAttribute('min', today);
+
+    // Form gönderme olayı
+    document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitAppointment();
+    });
+
+    // Modal dışına tıklayınca kapatma
+    document.getElementById('appointmentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAppointmentModal();
+        }
+    });
+
+    // ESC tuşu ile kapatma
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAppointmentModal();
+        }
+    });
+
+    // Sayfa yüklendiğinde mevcut randevuları göster
+    loadAndDisplayAppointments();
+});
+
+// Randevu yönetimi fonksiyonları - Firebase verilerini kullan
+function getAppointments() {
+    return djangoAppointments.map(apt => ({
+        id: apt.doc_id,
+        vetName: apt.vetName,
+        vetSpecialty: 'Veteriner Doktor', // Firebase'de specialty yok, default kullan
+        patientPhone: apt.userEmail, // Telefon yerine email göster
+        appointmentDate: apt.date ? formatDateForJS(apt.date) : '',
+        appointmentTime: apt.time,
+        petType: apt.petType,
+        petBreed: apt.petBreed,
+        petName: apt.petName,
+        appointmentReason: apt.reason,
+        createdAt: new Date().toISOString()
+    }));
+}
+
+function formatDateForJS(dateStr) {
+    // "26.05.2025" -> "2025-05-26" formatına çevir
+    if (!dateStr) return '';
+    const parts = dateStr.split('.');
+    if (parts.length === 3) {
+        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+    return dateStr;
+}
+
+function deleteAppointment(appointmentId) {
+    if (confirm('Bu randevuyu silmek istediğinizden emin misiniz?')) {
+        // AJAX ile Django backend'e silme isteği gönder
+        fetch('/api/delete_appointment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                appointment_id: appointmentId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Randevu başarıyla silindi!');
+                // Sayfayı yenile (güncel randevuları görmek için)
+                window.location.reload();
+            } else {
+                alert('Randevu silinirken hata: ' + (data.error || 'Bilinmeyen hata'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Randevu silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+        });
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return date.toLocaleDateString('tr-TR', options);
+}
+
+function formatDateShort(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', { 
+        day: '2-digit', 
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function openAppointmentModal(vetData) {
+    document.getElementById('modalVetName').textContent = vetData.name;
+    const modal = document.getElementById('appointmentModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    document.body.style.overflow = 'hidden';
+    selectedVetData = vetData;
+}
+
+function closeAppointmentModal() {
+    const modal = document.getElementById('appointmentModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        resetForm();
+    }, 300);
+}
+
+function resetForm() {
+    document.getElementById('appointmentForm').reset();
+    resetAppointmentForm();
+}
+
+function submitAppointment() {
+    const form = document.getElementById('appointmentForm');
+    
+    // Seçilen veterinerin bilgilerini al
+    if (!selectedVetData) {
+        alert('Veteriner bilgisi bulunamadı. Lütfen sayfayı yenileyin.');
+        return;
+    }
+    
+    // Form verilerini topla
+    const appointmentData = {
+        vetName: selectedVetData.name,
+        vetId: selectedVetData.id,
+        vetClinic: selectedVetData.clinic,
+        vetPhone: selectedVetData.phone,
+        vetSpecialization: selectedVetData.specialization,
+        vetImage: selectedVetData.image,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        appointmentTime: document.getElementById('appointmentTime').value,
+        petType: document.getElementById('petType').value,
+        petBreed: document.getElementById('petBreed').value,
+        petName: document.getElementById('petName').value,
+        appointmentReason: document.getElementById('appointmentReason').value
+    };
+
+    // Form validasyonu
+    if (!document.getElementById('patientPhone').value || !appointmentData.appointmentDate || 
+        !appointmentData.appointmentTime || !appointmentData.petType) {
+        alert('Lütfen zorunlu alanları doldurun.');
+        return;
+    }
+
+    // Buton durumunu değiştir
+    const submitBtn = document.querySelector('.appointment-btn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Randevu Oluşturuluyor...';
+
+    // AJAX ile Django backend'e gönder
+    fetch('/api/save_appointment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Başarı mesajı
+            alert(`Randevu talebiniz başarıyla alındı!\n\nDoktor: ${appointmentData.vetName}\nTarih: ${appointmentData.appointmentDate}\nSaat: ${appointmentData.appointmentTime}\nEvcil Hayvan: ${appointmentData.petType}${appointmentData.petBreed ? ' - ' + appointmentData.petBreed : ''}\n\nEn kısa sürede sizi arayarak randevunuzu onaylayacağız.`);
+            
+            // Formu sıfırla ve modalı kapat
+            closeAppointmentModal();
+            
+            // Sayfayı yenile (yeni randevu görünsün)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            alert('Randevu oluşturulurken hata: ' + (data.error || 'Bilinmeyen hata'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Randevu oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+    })
+    .finally(() => {
+        // Buton durumunu eski haline getir
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    });
+}
+
+function loadAndDisplayAppointments() {
+    const appointments = getAppointments();
+    
+    // Gelecek tarihteki randevuları filtrele ve sırala
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const upcomingAppointments = appointments
+        .filter(apt => {
+            const appointmentDate = new Date(apt.appointmentDate);
+            return appointmentDate >= today;
+        })
+        .sort((a, b) => {
+            const dateA = new Date(`${a.appointmentDate} ${a.appointmentTime}`);
+            const dateB = new Date(`${b.appointmentDate} ${b.appointmentTime}`);
+            return dateA - dateB;
+        });
+
+    displayAppointments(upcomingAppointments);
+}
+
+function displayAppointments(appointments) {
+    const appointmentsSection = document.getElementById('appointmentsSection');
+    const appointmentsGrid = document.getElementById('appointmentsGrid');
+    const appointmentCount = document.getElementById('appointmentCount');
+    const noAppointments = document.getElementById('noAppointments');
+
+    appointmentCount.textContent = appointments.length;
+
+    if (appointments.length === 0) {
+        appointmentsSection.classList.remove('show');
+        noAppointments.style.display = 'block';
+        return;
+    }
+
+    appointmentsSection.classList.add('show');
+    noAppointments.style.display = 'none';
+
+    appointmentsGrid.innerHTML = appointments.map(apt => `
+        <div class="appointment-card">
+            <button class="appointment-delete-btn" onclick="deleteAppointment('${apt.id}')" title="Randevuyu Sil">
+                <i class="fas fa-trash"></i>
+            </button>
+            
+            <div class="appointment-header">
+                <div class="appointment-vet">
+                    <div class="appointment-vet-name">
+                        <i class="fas fa-user-md"></i>
+                        ${apt.vetName}
+                    </div>
+                    <div class="appointment-specialty">${apt.vetSpecialty || 'Veteriner Doktor'}</div>
+                </div>
+            </div>
+            
+            <div class="appointment-date-time">
+                <div class="appointment-date">${formatDateShort(apt.appointmentDate)}</div>
+                <div class="appointment-time">${apt.appointmentTime}</div>
+            </div>
+            
+            ${apt.petName ? `
+            <div class="appointment-pet-name">
+                <i class="fas fa-heart"></i>
+                ${apt.petName}
+            </div>
+            ` : ''}
+
+            ${apt.appointmentReason ? `
+            <div class="appointment-reason">
+                <strong>Konu:</strong> <span>${apt.appointmentReason}</span>
+            </div>
+            ` : ''}
+
+            <div class="appointment-actions">
+                <button class="appointment-btn-small edit-appointment-btn" onclick="editAppointment('${apt.id}')">
+                    <i class="fas fa-edit"></i>
+                    Düzenle
+                </button>
+                <button class="appointment-btn-small cancel-appointment-btn" onclick="cancelAppointment('${apt.id}')">
+                    <i class="fas fa-times"></i>
+                    İptal
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Randevu düzenleme ve iptal fonksiyonları
+function editAppointment(appointmentId) {
+    const appointments = getAppointments();
+    const appointment = appointments.find(apt => apt.id === appointmentId);
+    
+    if (!appointment) {
+        alert('Randevu bulunamadı.');
+        return;
+    }
+    
+    // Veteriner verilerini eski randevudan al
+    const vetData = {
+        name: appointment.vetName,
+        id: appointment.id || '',
+        clinic: appointment.vetClinic || 'Klinik Bilgisi Yok',
+        phone: appointment.vetPhone || '',
+        specialization: appointment.vetSpecialty || 'Genel Veteriner',
+        image: appointment.vetImage || ''
+    };
+    
+    // Modal'ı aç ve form alanlarını doldur
+    openAppointmentModal(vetData);
+    
+    // Form alanlarını doldur
+    setTimeout(() => {
+        document.getElementById('patientPhone').value = appointment.patientPhone;
+        document.getElementById('appointmentDate').value = appointment.appointmentDate;
+        document.getElementById('appointmentTime').value = appointment.appointmentTime;
+        document.getElementById('petType').value = appointment.petType;
+        
+        // Hayvan türü değişimi olayını tetikle (ırk seçeneklerini yüklemek için)
+        document.getElementById('petType').dispatchEvent(new Event('change'));
+        
+        setTimeout(() => {
+            if (appointment.petBreed) {
+                document.getElementById('petBreed').value = appointment.petBreed;
+            }
+            document.getElementById('petName').value = appointment.petName || '';
+            document.getElementById('appointmentReason').value = appointment.appointmentReason || '';
+        }, 100);
+        
+        // Form submit butonunu düzenle moduna çevir
+        const submitBtn = document.querySelector('.appointment-btn');
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> Randevuyu Güncelle';
+        submitBtn.setAttribute('data-edit-id', appointmentId);
+        
+        // Form submit olayını güncelle
+        const form = document.getElementById('appointmentForm');
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            updateAppointment(appointmentId);
+        };
+    }, 100);
+}
+
+function updateAppointment(appointmentId) {
+    const appointments = getAppointments();
+    const appointmentIndex = appointments.findIndex(apt => apt.id === appointmentId);
+    
+    if (appointmentIndex === -1) {
+        alert('Randevu bulunamadı.');
+        return;
+    }
+    
+    // Seçilen veterinerin uzmanlık alanını bul
+    const vetName = document.getElementById('modalVetName').textContent;
+    let vetSpecialty = appointments[appointmentIndex].vetSpecialty;
+    
+    // Güncellenmiş form verilerini topla
+    const updatedData = {
+        id: appointmentId,
+        vetName: vetName,
+        vetSpecialty: vetSpecialty,
+        patientPhone: document.getElementById('patientPhone').value,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        appointmentTime: document.getElementById('appointmentTime').value,
+        petType: document.getElementById('petType').value,
+        petBreed: document.getElementById('petBreed').value,
+        petName: document.getElementById('petName').value,
+        appointmentReason: document.getElementById('appointmentReason').value,
+        createdAt: appointments[appointmentIndex].createdAt,
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Form validasyonu
+    if (!updatedData.patientPhone || !updatedData.appointmentDate || 
+        !updatedData.appointmentTime || !updatedData.petType) {
+        alert('Lütfen zorunlu alanları doldurun.');
+        return;
+    }
+    
+    // TODO: AJAX ile Django backend'e güncelleme isteği gönder
+    alert('Randevu güncelleme sistemi henüz Firebase entegrasyonu için güncellenmelidir.');
+    
+    // Modal'ı kapat ve formu sıfırla
+    closeAppointmentModal();
+    resetAppointmentForm();
+}
+
+function cancelAppointment(appointmentId) {
+    if (confirm('Bu randevuyu iptal etmek istediğinizden emin misiniz?')) {
+        deleteAppointment(appointmentId);
+        loadAndDisplayAppointments();
+        alert('Randevunuz başarıyla iptal edildi.');
+    }
+}
+
+function resetAppointmentForm() {
+    const form = document.getElementById('appointmentForm');
+    const submitBtn = document.querySelector('.appointment-btn');
+    
+    // Form'u normal moduna çevir
+    submitBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Randevu Oluştur';
+    submitBtn.removeAttribute('data-edit-id');
+    
+    // Normal submit olayını geri yükle
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        submitAppointment();
+    };
+}
+</script>
+{% endblock %}
+

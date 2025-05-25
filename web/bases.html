@@ -36,14 +36,14 @@
         </div>
 
         <div class="nav-item">
-                <a href="{% url 'cart' %}" class="nav-link{% if request.path == '/cart/' %} active{% endif %}">
-                    <div class="cart-icon-wrapper">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </div>
-                    <span>Sepetim</span>
-                </a>
-            </div>
+            <a href="{% url 'cart' %}" class="nav-link{% if request.path == '/cart/' %} active{% endif %}">
+                <div class="cart-icon-wrapper">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <span>Sepetim</span>
+            </a>
+        </div>
         <div class="nav-item dropdown">
             <a href="#" class="nav-link" onclick="toggleDropdown(event)">
                 <img src="{{ user_pp }}" alt="Profil" class="profile-pic">
@@ -108,6 +108,5 @@
             {% block content %}{% endblock %}
         </main>
     </div>
-    <script src="/static/js/navbar.js"></script>
 </body>
 </html> 

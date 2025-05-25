@@ -6,10 +6,276 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Social Pet{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23FF6B35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Pet Data -->
+    <script type="application/json" id="pets-data">{{ pets_json|safe }}</script>
+
+    <!-- Firebase Config -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhy2KxD0WaLiLVMVLN830QTcgOR5l28bo",
+            authDomain: "socialpet-b392b.firebaseapp.com",
+            projectId: "socialpet-b392b",
+            storageBucket: "socialpet-b392b.firebasestorage.app",
+            messagingSenderId: "317058416219",
+            appId: "1:317058416219:web:93bf1d65c6ced400ef097e",
+            measurementId: "G-SD9WXFLMVK"
+        };
+
+        // Global Firebase variables
+        let db = null;
+        let firebaseInitialized = false;
+
+        // Initialize Firebase with error handling
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            
+            // Firebase settings for better connection
+            db.settings({
+                experimentalForceLongPolling: true, // Bağlantı sorunları için
+                merge: true
+            });
+            
+            firebaseInitialized = true;
+            console.log('🔥 Firebase başarıyla başlatıldı');
+        } catch (error) {
+            console.error('❌ Firebase başlatma hatası:', error);
+            firebaseInitialized = false;
+        }
+        
+        // Kullanıcı email'ini al
+        const currentUserEmail = "{{ email }}";
+        console.log('🔥 Firebase başlatıldı, kullanıcı:', currentUserEmail);
+        
+        // Test için manuel modal tetikleme fonksiyonu
+        function testMatchModal() {
+            console.log('🧪 Test modal tetikleniyor...');
+            const testMatchData = {
+                pet_name: 'Test Pet',
+                pet_image: 'https://via.placeholder.com/120x120?text=Test+Pet',
+                owner_name: 'Test Kullanıcı',
+                owner_email: 'test@example.com'
+            };
+            showMatchModal(testMatchData);
+        }
+        
+        // Sayfa yüklendiğinde test butonu ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sadana sayfada çalışsın
+            if (document.querySelector('.card-container')) {
+                initializeCards();
+            }
+        });
+        
+        // Real-time eşleşme dinleme - Güvenli başlatma
+        function startMatchListener() {
+            if (!firebaseInitialized || !db) {
+                console.error('❌ Firebase başlatılmamış, listener başlatılamıyor');
+                return;
+            }
+
+            if (!currentUserEmail || currentUserEmail === "Giriş yapılmamış") {
+                console.log('⚠️ Kullanıcı giriş yapmamış, eşleşme dinleme başlatılmıyor');
+                return;
+            }
+
+            try {
+                console.log('👂 Eşleşme dinleme başlatılıyor...');
+                console.log('📧 Kullanıcı email:', currentUserEmail);
+                
+                const matchesRef = db.collection('matches').where('users', 'array-contains', currentUserEmail);
+                
+                // Mevcut match'leri takip et
+                let processedMatches = new Set();
+                
+                // İlk yükleme - mevcut match'leri al
+                matchesRef.get().then((snapshot) => {
+                    snapshot.forEach((doc) => {
+                        processedMatches.add(doc.id);
+                    });
+                    console.log('📋 Sayfa yüklendiğinde mevcut match sayısı:', processedMatches.size);
+                    
+                    // Real-time dinleme başlat
+                    matchesRef.onSnapshot((snapshot) => {
+                        console.log('🔄 matches snapshot güncellendi');
+                        console.log('📊 Toplam match sayısı:', snapshot.size);
+                        console.log('📝 Değişiklik sayısı:', snapshot.docChanges().length);
+                        
+                        snapshot.docChanges().forEach((change) => {
+                            const matchId = change.doc.id;
+                            console.log('📝 Değişiklik:', change.type, 'Match ID:', matchId);
+                            
+                            if (change.type === 'added') {
+                                // Eğer bu match daha önce işlenmişse atla
+                                if (processedMatches.has(matchId)) {
+                                    console.log('⏭️ Bu match zaten işlendi, atlanıyor');
+                                    return;
+                                }
+                                
+                                // Yeni match'i işlenmiş olarak işaretle
+                                processedMatches.add(matchId);
+                                
+                                const matchData = change.doc.data();
+                                
+                                console.log('🎉 YENİ MATCH ALGILANDI!');
+                                console.log('📋 Match Data:', matchData);
+                                console.log('👥 Users:', matchData.users);
+                                console.log('🐾 Pets:', matchData.pets);
+                                
+                                // Karşı tarafın bilgilerini bul
+                                const otherUserEmail = matchData.users ? matchData.users.find(email => email !== currentUserEmail) : null;
+                                const otherPet = matchData.pets ? matchData.pets.find(pet => pet.owner !== currentUserEmail) : null;
+                                
+                                console.log('👤 Karşı kullanıcı email:', otherUserEmail);
+                                console.log('🐾 Karşı pet:', otherPet);
+                                
+                                if (otherPet && otherUserEmail) {
+                                    // Kullanıcı adını Users koleksiyonundan al
+                                    getUserName(otherUserEmail).then(userName => {
+                                        const matchModalData = {
+                                            pet_name: otherPet.name || 'İsimsiz Pet',
+                                            pet_image: otherPet.imageUrl || 'https://via.placeholder.com/120x120?text=Pet',
+                                            owner_name: userName,
+                                            owner_email: otherUserEmail
+                                        };
+                                        
+                                        console.log('🎭 Modal gösterilecek data:', matchModalData);
+                                        
+                                        // Modal'ı hemen göster
+                                        showMatchModal(matchModalData);
+                                    }).catch(error => {
+                                        console.error('❌ Kullanıcı adı alınamadı:', error);
+                                        // Fallback: email kullan
+                                        const matchModalData = {
+                                            pet_name: otherPet.name || 'İsimsiz Pet',
+                                            pet_image: otherPet.imageUrl || 'https://via.placeholder.com/120x120?text=Pet',
+                                            owner_name: otherUserEmail,
+                                            owner_email: otherUserEmail
+                                        };
+                                        showMatchModal(matchModalData);
+                                    });
+                                } else {
+                                    console.error('❌ Karşı taraf bilgileri eksik!');
+                                    console.error('otherPet:', otherPet);
+                                    console.error('otherUserEmail:', otherUserEmail);
+                                }
+                            }
+                        });
+                    }, (error) => {
+                        console.error('❌ Real-time listener hatası:', error);
+                        console.log('🔄 Firebase bağlantısı yeniden denenecek...');
+                    });
+                }).catch((error) => {
+                    console.error('❌ İlk matchleri alma hatası:', error);
+                });
+            } catch (error) {
+                console.error('❌ Match listener başlatma hatası:', error);
+            }
+        }
+        
+        // Firebase hazır olduğunda listener'ı başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            if (firebaseInitialized && db) {
+                setTimeout(startMatchListener, 1000);
+            } else {
+                console.error('❌ Firebase başlatılamadı, listener başlatılmıyor');
+            }
+        });
+        
+        // Kullanıcı adını önce Users koleksiyonundan, bulamazsa Pets koleksiyonundaki uname'den al
+        async function getUserName(email) {
+            try {
+                // 1. Önce Users koleksiyonundan gerçek adını al
+                const usersQuery = await db.collection('Users').where('email', '==', email).limit(1).get();
+                
+                if (!usersQuery.empty) {
+                    const userDoc = usersQuery.docs[0];
+                    const userData = userDoc.data();
+                    const userName = userData.name;
+                    if (userName && userName.trim()) {
+                        console.log('✅ Users koleksiyonundan kullanıcı adı alındı:', userName);
+                        return userName;
+                    }
+                }
+                
+                console.log('⚠️ Users koleksiyonunda bulunamadı, Pets koleksiyonuna bakılıyor:', email);
+                
+                // 2. Users'ta bulunamadıysa Pets koleksiyonundan uname al
+                const petsQuery = await db.collection('Pets').where('email', '==', email).limit(1).get();
+                
+                if (!petsQuery.empty) {
+                    const petDoc = petsQuery.docs[0];
+                    const petData = petDoc.data();
+                    const uname = petData.uname;
+                    if (uname && uname.trim()) {
+                        console.log('✅ Pets koleksiyonundan uname alındı:', uname);
+                        return uname;
+                    }
+                }
+                
+                console.log('⚠️ Hiçbir koleksiyonda kullanıcı adı bulunamadı, email kullanılıyor:', email);
+                return email;
+                
+            } catch (error) {
+                console.error('❌ getUserName hatası:', error);
+                return email;
+            }
+        }
+    </script>
+
     <style>
+        /* Ultra Modern CSS Variables */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            --accent-gradient: linear-gradient(135deg, #ff8a00 0%, #e65100 100%);
+            --success-gradient: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+            --warning-gradient: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+            --danger-gradient: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-glass: 0 2px 8px 0 rgba(255, 107, 53, 0.15);
+            
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --text-muted: #a0a0a0;
+            --text-light: #2d3436;
+            
+            --bg-primary: #ffffff;
+            --bg-dark: #1a1a2e;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f5f5f5 100%);
+            --bg-particles: radial-gradient(circle at 20% 50%, rgba(248, 249, 250, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(233, 236, 239, 0.6) 0%, transparent 50%),
+                            radial-gradient(circle at 40% 80%, rgba(245, 245, 245, 0.6) 0%, transparent 50%);
+            
+            --shadow-elevation-1: 0 1px 3px rgba(255, 107, 53, 0.12), 0 1px 2px rgba(255, 107, 53, 0.24);
+            --shadow-elevation-2: 0 3px 6px rgba(255, 107, 53, 0.16), 0 3px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-3: 0 10px 20px rgba(255, 107, 53, 0.19), 0 6px 6px rgba(255, 107, 53, 0.23);
+            --shadow-elevation-4: 0 14px 28px rgba(255, 107, 53, 0.25), 0 10px 10px rgba(255, 107, 53, 0.22);
+            --shadow-elevation-5: 0 19px 38px rgba(255, 107, 53, 0.30), 0 15px 12px rgba(255, 107, 53, 0.22);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            --radius-full: 50px;
+            
+            --transition-quick: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
         /* Reset and Base Styles */
         * {
             margin: 0;
@@ -18,55 +284,141 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-particles);
+            animation: particleFloat 15s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        /* Floating Geometric Shapes */
+        .geometric-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dee2e6 0%, #adb5bd 100%);
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            top: 70%;
+            right: 10%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+            transform: rotate(45deg);
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            top: 40%;
+            left: 80%;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+            border-radius: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(-10px) rotate(270deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
 
         /* Navbar Styles */
         .navbar {
-            background-color: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-glass);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
+            animation: slideInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .nav-left .logo {
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: #333;
+            color: var(--text-primary);
             gap: 10px;
-            transition: all 0.3s ease;
+            transition: var(--transition-bounce);
         }
 
         .nav-left .logo:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+            transform: scale(1.05) translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
         }
 
         .nav-left .logo i {
             font-size: 2rem;
-            color: #FF6B35;
-            transition: all 0.3s ease;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition-bounce);
         }
 
         .nav-left .logo:hover i {
-            transform: rotate(15deg);
+            transform: rotate(15deg) scale(1.1);
         }
 
         .nav-left .logo span {
             font-size: 1.5rem;
-            font-weight: bold;
-            color: #FF6B35;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-right {
@@ -80,17 +432,41 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
-            color: #666;
-            transition: color 0.3s;
+            color: var(--text-secondary);
+            transition: var(--transition-bounce);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item .nav-link:hover::before {
+            left: 100%;
         }
 
         .nav-item .nav-link:hover {
-            color: #FF6B35;
+            color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevation-2);
+            background: rgba(255, 107, 53, 0.1);
         }
 
         .nav-item .nav-link.active {
-            color: #FF6B35;
-            font-weight: bold;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-elevation-3);
         }
 
         .nav-item .profile-pic {
@@ -98,6 +474,14 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            transition: var(--transition-bounce);
+        }
+
+        .nav-item .profile-pic:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 107, 53, 0.6);
+            box-shadow: var(--shadow-elevation-3);
         }
 
         /* Dropdown Menu Styles */
@@ -110,44 +494,71 @@
             display: none;
             position: absolute;
             right: 0;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            min-width: 180px;
+            box-shadow: var(--shadow-glass);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-xl);
             z-index: 1000;
             margin-top: 10px;
+            overflow: hidden;
         }
 
         .dropdown-content.show {
             display: block;
+            animation: slideInDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .dropdown-content a {
-            color: #333;
+            color: var(--text-primary);
             padding: 12px 16px;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: background-color 0.3s;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .dropdown-content a:hover::before {
+            left: 100%;
         }
 
         .dropdown-content a:hover {
-            background-color: #f8f9fa;
-            color: #FF6B35;
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--text-primary);
+            transform: translateX(5px);
         }
 
         .dropdown-content a i {
             width: 20px;
             text-align: center;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .dropdown-content a.logout {
-            color: #ff0000;
+            color: #d32f2f;
         }
 
         .dropdown-content a.logout:hover {
-            background-color: #FF6B35;
+            background: var(--danger-gradient);
             color: white;
         }
 
@@ -155,36 +566,50 @@
         .container {
             display: flex;
             margin-top: 72px;
-            /* Navbar height */
             min-height: calc(100vh - 72px);
         }
 
         /* Sidebar Styles */
         .sidebar {
             width: 280px;
-            background-color: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 107, 53, 0.2);
             padding: 2rem;
             position: fixed;
             left: 0;
             top: 72px;
             bottom: 0;
             overflow-y: auto;
-            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-            margin-top: -10px;
-            /* Navbar height */
+            box-shadow: var(--shadow-glass);
+            animation: slideInLeft 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
         }
 
         .menu-section {
             margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out backwards;
         }
 
+        .menu-section:nth-child(1) { animation-delay: 0.3s; }
+        .menu-section:nth-child(2) { animation-delay: 0.4s; }
+        .menu-section:nth-child(3) { animation-delay: 0.5s; }
+        .menu-section:nth-child(4) { animation-delay: 0.6s; }
+        .menu-section:nth-child(5) { animation-delay: 0.7s; }
+
         .menu-section h3 {
-            color: #666;
+            color: var(--text-primary);
             font-size: 0.9rem;
             text-transform: uppercase;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.2);
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .menu-list {
@@ -199,21 +624,58 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 0.75rem;
+            padding: 0.75rem 1rem;
             text-decoration: none;
-            color: #333;
-            border-radius: 8px;
-            transition: all 0.3s;
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+
+        .menu-list a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .menu-list a:hover::before {
+            left: 100%;
         }
 
         .menu-list a:hover {
-            background-color: #f8f9fa;
-            color: #FF6B35;
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--text-primary);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-elevation-2);
+        }
+
+        .menu-list a.active {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-elevation-3);
         }
 
         .menu-list i {
             width: 20px;
             text-align: center;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-list a.active i {
+            color: white !important;
+            background: none;
+            -webkit-text-fill-color: white;
         }
 
         /* Main Content Area */
@@ -224,6 +686,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: slideInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s both;
         }
 
         /* Tinder Card Styles */
@@ -233,78 +696,154 @@
             max-width: 400px;
             height: 600px;
             margin: 0 auto;
+            perspective: 1000px;
         }
 
         .card {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-glass);
             overflow: hidden;
             cursor: grab;
-            transition: transform 0.3s ease;
+            transition: var(--transition-bounce);
+            animation: cardAppear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-elevation-5);
+        }
+
+        .card:active {
+            cursor: grabbing;
         }
 
         .card img {
             width: 100%;
             height: 60%;
             object-fit: cover;
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
         }
 
         .card-info {
             padding: 20px;
-            background: white;
+            background: var(--glass-bg);
+            height: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .card-info h2 {
             margin: 0 0 15px 0;
-            color: #333;
+            color: var(--text-primary);
             font-size: 24px;
-            font-weight: 600;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .card-info p {
-            margin: 8px 0;
-            color: #666;
-            font-size: 16px;
+            margin: 5px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
             line-height: 1.4;
+            font-weight: 500;
         }
 
         .card-info strong {
-            color: #FF6B35;
+            background: var(--accent-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 600;
         }
 
         .card-actions {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 30px;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
         }
 
         .action-button {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: none;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            box-shadow: var(--shadow-glass);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .action-button:hover::before {
+            opacity: 1;
         }
 
         .action-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: var(--shadow-elevation-4);
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
         }
 
         .action-button i {
-            font-size: 24px;
+            font-size: 28px;
+            z-index: 1;
+        }
+
+        .dislike-btn {
+            border-color: rgba(17, 82, 26, 0.3);
+        }
+
+        .dislike-btn:hover {
+            border-color: #11521a;
+            background: rgba(17, 82, 26, 0.1);
         }
 
         .dislike-btn i {
             color: #11521a;
+        }
+
+        .like-btn {
+            border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .like-btn:hover {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
         }
 
         .like-btn i {
@@ -323,41 +862,7 @@
             transform: translateX(-150%) rotate(-30deg);
         }
 
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 240px;
-            }
-
-            .main-content {
-                margin-left: 240px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .nav-right span {
-                display: none;
-            }
-
-            .nav-right {
-                gap: 1rem;
-            }
-        }
-
-        /* Add custom icon styles */
+        /* Custom icon styles */
         .custom-hamster-icon {
             width: 20px;
             height: 20px;
@@ -373,19 +878,16 @@
             filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(346deg) brightness(118%) contrast(119%);
         }
 
-        .menu-list a.active,
-        .menu-list a:active {
-            background-color: #ffe5d0;
-            color: #FF6B35;
-            font-weight: bold;
-        }
-
         .hamster-icon-normal {
             display: inline-block;
+            filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(346deg) brightness(118%) contrast(119%);
+            transition: var(--transition-smooth);
         }
 
         .hamster-icon-hover {
             display: none;
+            filter: brightness(0) invert(1);
+            transition: var(--transition-smooth);
         }
 
         .menu-list a.active .hamster-icon-normal,
@@ -398,14 +900,34 @@
             display: inline-block;
         }
 
+        /* Hamster link aktif durumunda beyaz icon */
+        .menu-list a.active .hamster-icon-normal {
+            filter: brightness(0) invert(1);
+        }
+
+        .menu-list a.active .hamster-icon-hover {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Swipe Feedback - Sade ve Etkileyici */
         .swipe-feedback {
             position: fixed;
             transform: translate(-50%, -50%);
-            font-size: 100px;
+            font-size: 80px;
             z-index: 9999;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .swipe-feedback.show {
@@ -414,38 +936,440 @@
         }
 
         .swipe-feedback.heart {
-            color: #f80000;
-            top: 20%;
-            left: 40%;
+            color: #ff6b35;
+            top: 25%;
+            left: 75%;
+            box-shadow: 0 0 40px rgba(255, 107, 53, 0.3);
+            animation: heartGlow 0.6s ease-out;
         }
 
         .swipe-feedback.cross {
-            color: #000000;
-            top: 20%;
-            left: 75%;
+            color: #607d8b;
+            top: 25%;
+            left: 40%;
+            box-shadow: 0 0 40px rgba(96, 125, 139, 0.3);
+            animation: crossGlow 0.6s ease-out;
         }
 
+        @keyframes heartGlow {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.8);
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.3);
+                box-shadow: 0 0 60px rgba(255, 107, 53, 0.5);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 0 0 40px rgba(255, 107, 53, 0.3);
+            }
+        }
 
+        @keyframes crossGlow {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.8);
+                box-shadow: 0 0 20px rgba(96, 125, 139, 0.3);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.3);
+                box-shadow: 0 0 60px rgba(96, 125, 139, 0.5);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 0 0 40px rgba(96, 125, 139, 0.3);
+            }
+        }
 
+        /* Floating Icons - Aynı Boyut ve Sade Tasarım */
         .floating-icon {
             position: fixed;
-            font-size: 100px;
-            z-index: 9999;
+            font-size: 60px;
+            z-index: 9998;
             opacity: 0;
-            animation: floatIcon 1s ease-out forwards;
+            animation: cleanFloat 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             pointer-events: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes floatIcon {
+        .floating-icon.heart {
+            color: #ff6b35;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .floating-icon.cross {
+            color: #607d8b;
+            box-shadow: 0 0 30px rgba(96, 125, 139, 0.3);
+        }
+
+        @keyframes cleanFloat {
             0% {
                 opacity: 1;
-                transform: translateY(0) scale(1) rotate(0deg);
+                transform: translateY(0) scale(0.8) rotate(0deg);
             }
-
+            25% {
+                opacity: 1;
+                transform: translateY(-40px) scale(1) rotate(5deg);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translateY(-80px) scale(1.1) rotate(-3deg);
+            }
+            75% {
+                opacity: 0.6;
+                transform: translateY(-120px) scale(1) rotate(8deg);
+            }
             100% {
                 opacity: 0;
-                transform: translateY(-100px) scale(1.5) rotate(15deg);
+                transform: translateY(-160px) scale(0.9) rotate(15deg);
             }
+        }
+
+        /* Cart Icon */
+        .cart-icon-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: var(--shadow-elevation-2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes cardAppear {
+            from {
+                transform: scale(0.8) rotateY(90deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+
+            .main-content {
+                margin-left: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: var(--transition-smooth);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .nav-right span {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 1rem;
+            }
+
+            .card-container {
+                max-width: 350px;
+                height: 550px;
+            }
+
+            .card-actions {
+                gap: 20px;
+            }
+
+            .action-button {
+                width: 60px;
+                height: 60px;
+            }
+
+            .action-button i {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .card-container {
+                max-width: 300px;
+                height: 500px;
+            }
+
+            .card-info h2 {
+                font-size: 20px;
+            }
+
+            .card-info p {
+                font-size: 13px;
+            }
+        }
+
+        /* Match Modal Styles */
+        .match-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .match-modal.show {
+            opacity: 1;
+        }
+
+        .match-modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-elevation-5);
+            transform: scale(0.8);
+            transition: var(--transition-bounce);
+        }
+
+        .match-modal.show .match-modal-content {
+            transform: scale(1);
+        }
+
+        .match-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .match-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .match-pet-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .match-pet-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 107, 53, 0.3);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-elevation-3);
+            transition: var(--transition-bounce);
+        }
+
+        .match-pet-image:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 107, 53, 0.6);
+        }
+
+        .match-pet-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .match-owner-name {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .match-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .match-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .match-btn:hover::before {
+            left: 100%;
+        }
+
+        .match-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevation-3);
+        }
+
+        .match-btn:active {
+            transform: translateY(0);
+        }
+
+        .match-btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .match-btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .match-btn-secondary:hover {
+            border-color: rgba(255, 107, 53, 0.4);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* Loading state için ek stiller */
+        .match-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .match-btn .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .match-btn .fa-check {
+            color: white;
         }
     </style>
     {% load static %}
@@ -454,6 +1378,12 @@
 </head>
 
 <body>
+    <!-- Floating Geometric Shapes -->
+    <div class="geometric-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
     <!-- Navbar -->
     {% block navbar %}
@@ -466,7 +1396,7 @@
         </div>
         <div class="nav-right">
             <div class="nav-item">
-                <a href="/matches" class="nav-link{% if request.path == '/matches' %} active{% endif %}">
+                <a href="/chat" class="nav-link{% if request.path == '/matches' %} active{% endif %}">
                     <i class="fas fa-comments"></i>
                     <span>Mesajlar</span>
                 </a>
@@ -481,29 +1411,20 @@
             </div>
 
             <div class="nav-item">
-                <a href="/vet" class="nav-link{% if request.path == '/vet' %} active{% endif %}">
-                    <i class="fas fa-stethoscope"></i>
-                    <span>Veteriner</span>
+                <a href="{% url 'cart' %}" class="nav-link{% if request.path == '/cart/' %} active{% endif %}">
+                    <div class="cart-icon-wrapper">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                    <span>Sepetim</span>
                 </a>
             </div>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link" onclick="toggleDropdown(event)">
+                <a href="/dashboard" class="nav-link">
                     <img src="{{ user_pp }}" alt="Profil" class="profile-pic">
                     <span>{{ name }}</span>
 
                 </a>
-                <div class="dropdown-content" id="profileDropdown">
-                    <a href="/dashboard">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Bilgilerim
-                    </a>
-                    <a href="/api/logout/" class="logout">
-                        <i class="fas fa-sign-out-alt"></i>
-
-
-                        Çıkış Yap
-                    </a>
-                </div>
             </div>
         </div>
     </nav>
@@ -511,6 +1432,29 @@
 
     <!-- Ana içeriğin hemen üstüne ekle -->
     <div class="swipe-feedback" id="swipeFeedback"></div>
+
+    <!-- Match Modal -->
+    <div class="match-modal" id="matchModal">
+        <div class="match-modal-content">
+            <h2 class="match-title">🎉 Eşleşme!</h2>
+            <p class="match-subtitle">Tebrikler! Yeni bir arkadaş buldunuz!</p>
+            
+            <div class="match-pet-info">
+                <img id="matchPetImage" src="" alt="Pet" class="match-pet-image">
+                <h3 id="matchPetName" class="match-pet-name"></h3>
+                <p id="matchOwnerName" class="match-owner-name"></p>
+            </div>
+            
+            <div class="match-actions">
+                <button id="startChatBtn" class="match-btn match-btn-primary" onclick="startChat()">
+                    <i class="fas fa-comments"></i> Sohbet Başlat
+                </button>
+                <button class="match-btn match-btn-secondary" onclick="closeMatchModal()">
+                    <i class="fas fa-times"></i> Kapat
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="container">
@@ -557,12 +1501,27 @@
             </div>
 
             <div class="menu-section">
+                <h3>Veteriner</h3>
+                <ul class="menu-list">
+                    <li><a href="/partner_vets"><i class="fas fa-handshake"></i> Anlaşmalı Veterinerler</a></li>
+                    <li><a href="/nearby_vets"><i class="fas fa-map-marker-alt"></i> En Yakın Veterinerler</a></li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
                 <h3>Petshop</h3>
                 <ul class="menu-list">
-                    <li><a href="/shop/food" class="{% if request.resolver_match.url_name == 'shop_food' %}active{% endif %}"><i class="fas fa-bone"></i> Mama</a></li>
-                    <li><a href="/shop/toys" class="{% if request.resolver_match.url_name == 'shop_toys' %}active{% endif %}"><i class="fas fa-basketball-ball"></i> Oyuncaklar</a></li>
-                    <li><a href="/shop/accessories" class="{% if request.resolver_match.url_name == 'shop_accessories' %}active{% endif %}"><i class="fas fa-tshirt"></i> Aksesuarlar</a></li>
-                    <li><a href="/shop/health" class="{% if request.resolver_match.url_name == 'shop_health' %}active{% endif %}"><i class="fas fa-heartbeat"></i> Sağlık</a></li>
+                    <li><a href="{% url 'food' %}" class="{% if request.resolver_match.url_name == 'food' %}active{% endif %}"><i class="fas fa-bone"></i> Mama</a></li>
+                    <li><a href="{% url 'toys' %}" class="{% if request.resolver_match.url_name == 'toys' %}active{% endif %}"><i class="fas fa-basketball-ball"></i> Oyuncaklar</a></li>
+                    <li><a href="{% url 'accessories' %}" class="{% if request.resolver_match.url_name == 'accessories' %}active{% endif %}"><i class="fas fa-tshirt"></i> Aksesuarlar</a></li>
+                    <li><a href="{% url 'health' %}" class="{% if request.resolver_match.url_name == 'health' %}active{% endif %}"><i class="fas fa-heartbeat"></i> Sağlık</a></li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h3>Kayıp İlanları</h3>
+                <ul class="menu-list">
+                    <li><a href="{% url 'lost_pets' %}" class="{% if request.resolver_match.url_name == 'lost_pets' %}active{% endif %}"><i class="fas fa-search"></i> Kayıp Hayvanlar</a></li>
                 </ul>
             </div>
         </aside>
@@ -587,39 +1546,101 @@
         </main>
     </div>
 
-    {% block scripts %}
+{% block scripts %}
+    <script>
+    // Backend'den sepet sayısını al
+    async function getCartItems() {
+        try {
+            const response = await fetch('/cart/get/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+            const data = await response.json();
+            return data.items || [];
+        } catch (error) {
+            console.error('Sepet getirme hatası:', error);
+            return [];
+        }
+    }
+    
+    // Sepet sayacını güncelle
+    async function updateCartCount() {
+        try {
+            const response = await fetch('/cart/count/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+            const data = await response.json();
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = data.cart_count || 0;
+            }
+        } catch (error) {
+            console.error('Sepet sayacı güncellenirken hata:', error);
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = '0';
+            }
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartCount();
+        
+        // Her 30 saniyede bir sepet sayacını güncelle
+        setInterval(updateCartCount, 30000);
+    });
+    </script>
+{% endblock %}
 
     <script>
+            function toggleDropdown(event) {
+            event.preventDefault();
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.nav-link')) {
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+        
         function spawnFloatingIcon(type) {
             const icon = document.createElement('i');
             icon.classList.add('floating-icon', 'fas');
 
             if (type === 'like') {
-                icon.classList.add('fa-heart');
-                icon.style.color = '#ff0000';
-                // Kalp animasyonu için sağ tarafa konumlandır
-                const x = window.innerWidth * 0.7 + (Math.random() * 50);  // Ekranın sağ tarafında
-                const y = window.innerHeight / 4 + (Math.random() * 40 - 0);
-                icon.style.left = `${x}px`;
-                icon.style.top = `${y}px`;
+                icon.classList.add('fa-heart', 'heart');
+                // Sağ taraf için temiz ve tutarlı konumlandırma
+                const x = window.innerWidth * 0.65 + (Math.random() * 150);
+                const y = window.innerHeight * 0.25 + (Math.random() * 150);
+                icon.style.left = `${Math.min(x, window.innerWidth - 120)}px`;
+                icon.style.top = `${Math.max(y, 80)}px`;
             } else {
-                icon.classList.add('fa-times');
-                icon.style.color = '#11521a';
-                // Çarpı animasyonu için sol tarafa konumlandır
-                const x = window.innerWidth * 0.3 + (Math.random() * 50);  // Ekranın sol tarafında
-                const y = window.innerHeight / 4 + (Math.random() * 40 - 0);
-                icon.style.left = `${x}px`;
-                icon.style.top = `${y}px`;
+                icon.classList.add('fa-times', 'cross');
+                // Sol taraf için kartlara daha yakın konumlandırma
+                const x = window.innerWidth * 0.25 + (Math.random() * 150);
+                const y = window.innerHeight * 0.25 + (Math.random() * 150);
+                icon.style.left = `${Math.max(x, 40)}px`;
+                icon.style.top = `${Math.max(y, 80)}px`;
             }
 
             document.body.appendChild(icon);
-
-            // Animasyon tamamlandıktan sonra DOM'dan sil
             setTimeout(() => {
                 icon.remove();
-            }, 1000);
+            }, 1500);
         }
-
 
         function showSwipeFeedback(type) {
             const feedback = document.getElementById('swipeFeedback');
@@ -628,16 +1649,26 @@
 
             setTimeout(() => {
                 feedback.classList.remove('show');
-            }, 600);
+            }, 800);
         }
 
         function likeCard() {
             const card = document.querySelector('.card');
             if (!card) return;
 
+            // Mevcut pet bilgilerini al
+            const currentPet = pets[currentIndex];
+            if (!currentPet) return;
+
+            // Swipe feedback göster
+            showSwipeFeedback('like');
+
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => spawnFloatingIcon('like'), i * 100);
             }
+
+            // Firebase'e like kaydet
+            saveLikeDislike(currentPet.id, 'like');
 
             card.classList.add('like', 'removing');
             setTimeout(() => {
@@ -647,6 +1678,9 @@
                     const newCard = createCard(pets[currentIndex]);
                     document.querySelector('.card-container').appendChild(newCard);
                     setupCardDrag(newCard);
+                } else {
+                    // Tüm kartlar bitti
+                    document.querySelector('.card-container').innerHTML = '<div style="text-align: center; padding: 50px;"><h3>Gösterilecek hayvan kalmadı!</h3><p>Yeni hayvanlar için daha sonra tekrar kontrol edin.</p></div>';
                 }
             }, 500);
         }
@@ -655,9 +1689,19 @@
             const card = document.querySelector('.card');
             if (!card) return;
 
+            // Mevcut pet bilgilerini al
+            const currentPet = pets[currentIndex];
+            if (!currentPet) return;
+
+            // Swipe feedback göster
+            showSwipeFeedback('dislike');
+
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => spawnFloatingIcon('dislike'), i * 100);
             }
+
+            // Dislike'ı kaydetmiyoruz (React Native kodunda da kaydedilmiyor)
+            // Sadece kartı geç
 
             card.classList.add('dislike', 'removing');
             setTimeout(() => {
@@ -667,30 +1711,255 @@
                     const newCard = createCard(pets[currentIndex]);
                     document.querySelector('.card-container').appendChild(newCard);
                     setupCardDrag(newCard);
+                } else {
+                    // Tüm kartlar bitti
+                    document.querySelector('.card-container').innerHTML = '<div style="text-align: center; padding: 50px;"><h3>Gösterilecek hayvan kalmadı!</h3><p>Yeni hayvanlar için daha sonra tekrar kontrol edin.</p></div>';
                 }
             }, 500);
         }
 
+        // Firebase'e like/dislike kaydetme fonksiyonu
+        async function saveLikeDislike(targetPetId, action) {
+            // Sadece like işlemlerini kaydet
+            if (action !== 'like') {
+                console.log('⏭️ Dislike işlemi, kaydetmiyoruz');
+                return;
+            }
+            
+            console.log(`💖 Like kaydediliyor: Pet ID ${targetPetId}`);
+            
+            try {
+                const response = await fetch('/api/save-like-dislike/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        target_pet_id: targetPetId,
+                        action: action
+                    })
+                });
 
+                const data = await response.json();
+                console.log('📡 Backend yanıtı:', data);
+                
+                if (data.success && data.match) {
+                    // EŞLEŞME OLDU! Modal'ı hemen göster
+                    console.log('🎉 EŞLEŞME! Karşı taraf:', data.match_data);
+                    showMatchModal(data.match_data);
+                } else if (data.success) {
+                    console.log('✅ Like kaydedildi, henüz eşleşme yok');
+                    if (data.message) {
+                        console.log('💬 Mesaj:', data.message);
+                    }
+                } else {
+                    console.error('❌ Like kaydetme hatası:', data.error);
+                    alert('Hata: ' + data.error);
+                }
+            } catch (error) {
+                console.error('❌ Network hatası:', error);
+                alert('Bağlantı hatası: ' + error.message);
+            }
+        }
+
+        // Eşleşme modal'ını göster
+        function showMatchModal(matchData) {
+            console.log('🎭 showMatchModal çağrıldı:', matchData);
+            
+            try {
+                const modal = document.getElementById('matchModal');
+                const petImage = document.getElementById('matchPetImage');
+                const petName = document.getElementById('matchPetName');
+                const ownerName = document.getElementById('matchOwnerName');
+                const startChatBtn = document.getElementById('startChatBtn');
+
+                if (!modal) {
+                    console.error('❌ matchModal elementi bulunamadı!');
+                    // Fallback: alert ile bildir
+                    alert('🎉 Eşleşme! ' + (matchData.pet_name || 'Yeni bir pet') + ' ile eşleştiniz!');
+                    return;
+                }
+
+                if (!petImage || !petName || !ownerName || !startChatBtn) {
+                    console.error('❌ Modal içindeki elementler bulunamadı!');
+                    console.error('petImage:', petImage);
+                    console.error('petName:', petName);
+                    console.error('ownerName:', ownerName);
+                    console.error('startChatBtn:', startChatBtn);
+                    
+                    // Fallback: alert ile bildir
+                    alert('🎉 Eşleşme! ' + (matchData.pet_name || 'Yeni bir pet') + ' ile eşleştiniz!');
+                    return;
+                }
+
+                // Modal verilerini doldur
+                petImage.src = matchData.pet_image || 'https://via.placeholder.com/120x120?text=Pet';
+                petImage.onerror = function() {
+                    this.src = 'https://via.placeholder.com/120x120?text=Pet';
+                };
+                
+                petName.textContent = matchData.pet_name || 'İsimsiz Pet';
+                ownerName.textContent = matchData.owner_name || 'Bilinmeyen Kullanıcı';
+                
+                // Sohbet başlat butonuna email ekle
+                startChatBtn.setAttribute('data-email', matchData.owner_email);
+
+                console.log('✅ Modal verileri dolduruldu');
+                console.log('🖼️ Pet resmi:', petImage.src);
+                console.log('📛 Pet adı:', petName.textContent);
+                console.log('👤 Sahip adı:', ownerName.textContent);
+
+                // Modal'ı kesinlikle göster
+                modal.style.display = 'flex';
+                modal.style.visibility = 'visible';
+                modal.style.opacity = '1';
+                modal.style.zIndex = '10000';
+                
+                console.log('👁️ Modal display: flex yapıldı');
+                
+                // Animasyon için timeout
+                setTimeout(() => {
+                    modal.classList.add('show');
+                    console.log('✨ Modal show class eklendi');
+                }, 100);
+
+                // Test için otomatik kapanma (15 saniye sonra)
+                setTimeout(() => {
+                    console.log('⏰ 15 saniye doldu, modal otomatik kapatılıyor');
+                    closeMatchModal();
+                }, 15000);
+                
+                // Başarı bildirimi
+                console.log('🎉 Modal başarıyla gösterildi!');
+                
+            } catch (error) {
+                console.error('❌ Modal gösterme hatası:', error);
+                // Fallback: alert ile bildir
+                alert('🎉 Eşleşme! ' + (matchData.pet_name || 'Yeni bir pet') + ' ile eşleştiniz!');
+            }
+        }
+
+        // Modal kapatma
+        function closeMatchModal() {
+            const modal = document.getElementById('matchModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Sohbet başlat - Lost pets sayfasındaki gelişmiş versiyon
+        async function startChat() {
+            const email = document.getElementById('startChatBtn').getAttribute('data-email');
+            
+            if (!email) {
+                alert('Kullanıcı bilgisi bulunamadı.');
+                return;
+            }
+            
+            // Loading göster
+            const button = document.getElementById('startChatBtn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Bağlanıyor...';
+            button.style.pointerEvents = 'none';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch('/chat/start/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        target_user_email: email
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Başarı mesajı göster
+                    button.innerHTML = '<i class="fas fa-check"></i> Başarılı!';
+                    button.style.background = '#28a745';
+                    
+                    // Kısa bir süre sonra chat sayfasına yönlendir
+                    setTimeout(() => {
+                        window.location.href = `/chat/?chat_id=${data.chat_id}`;
+                    }, 1000);
+                } else {
+                    alert(data.error || 'Sohbet başlatılırken bir hata oluştu.');
+                    // Button'u eski haline getir
+                    button.innerHTML = originalText;
+                    button.style.pointerEvents = 'auto';
+                    button.disabled = false;
+                }
+            } catch (error) {
+                console.error('Sohbet başlatma hatası:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                // Button'u eski haline getir
+                button.innerHTML = originalText;
+                button.style.pointerEvents = 'auto';
+                button.disabled = false;
+            }
+            
+            closeMatchModal();
+        }
 
         // Backend'den gelen verileri kullan
-        let pets = {{ pets | safe }};
+        let pets = [];
+        const petsData = document.getElementById('pets-data');
+        if (petsData) {
+            try {
+                pets = JSON.parse(petsData.textContent);
+                console.log('🐾 Toplam pet sayısı:', pets.length);
+                if (pets.length > 0) {
+                    console.log('🐾 İlk pet:', pets[0]);
+                    console.log('🐾 Tüm petler:', pets);
+                } else {
+                    console.log('⚠️ Gösterilecek pet bulunamadı!');
+                    console.log('💡 Sebepleri:');
+                    console.log('   - Aynı kategoride petiniz yok olabilir');
+                    console.log('   - Tüm uygun petleri daha önce beğenmiş olabilirsiniz');
+                    console.log('   - Başka kullanıcıların aynı kategoride peti yok olabilir');
+                }
+            } catch(e) {
+                console.error('❌ Pet verileri parse edilemedi:', e);
+                pets = [];
+            }
+        } else {
+            console.error('❌ pets-data elementi bulunamadı!');
+        }
+        
         let currentIndex = 0;
         let isDragging = false;
         let startX = 0;
         let currentX = 0;
 
         function createCard(pet) {
+            console.log('🎴 Kart oluşturuluyor:', pet);
+            
             const card = document.createElement('div');
             card.className = 'card';
+            
+            // Pet verilerini kontrol et ve varsayılan değerler ata
+            const petName = pet.name || pet.uname || 'İsimsiz';
+            const petCategory = pet.category || 'Belirtilmemiş';
+            const petBreed = pet.breed || 'Belirtilmemiş';
+            const petAge = pet.age || 'Belirtilmemiş';
+            const petOwner = pet.uname || pet.email || 'Belirtilmemiş';
+            const petImage = pet.imageUrl || pet.pp || 'https://via.placeholder.com/400x300?text=Resim+Yok';
+            
             card.innerHTML = `
-                <img src="${pet.imageUrl}" alt="${pet.name}">
+                <img src="${petImage}" alt="${petName}" onerror="this.src='https://via.placeholder.com/400x300?text=Resim+Yok'">
                 <div class="card-info">
-                    <h2>${pet.name}</h2>
-                    <p><strong>Tür:</strong> ${pet.category}</p>
-                    <p><strong>Cins:</strong> ${pet.breed}</p>
-                    <p><strong>Yaş:</strong> ${pet.age}</p>
-                    <p><strong>Aile:</strong> ${pet.uname} | ${pet.email}</p>
+                    <h2>${petName}</h2>
+                    <p><strong>Tür:</strong> ${petCategory}</p>
+                    <p><strong>Cins:</strong> ${petBreed}</p>
+                    <p><strong>Yaş:</strong> ${petAge}</p>
+                    <p><strong>Sahip:</strong> ${petOwner}</p>
+                    <p><strong>Pet ID:</strong> ${pet.id}</p>
                 </div>
             `;
             return card;
@@ -703,10 +1972,29 @@
 
             container.innerHTML = '';
 
+            if (pets.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <h3>😔 Gösterilecek hayvan bulunamadı</h3>
+                        <p>Aşağıdaki sebeplerden biri olabilir:</p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li>Aynı kategoride petiniz yok</li>
+                            <li>Tüm uygun petleri daha önce beğendiniz</li>
+                            <li>Başka kullanıcıların aynı kategoride peti yok</li>
+                        </ul>
+                        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            🔄 Sayfayı Yenile
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
             if (currentIndex < pets.length) {
                 const card = createCard(pets[currentIndex]);
                 container.appendChild(card);
                 setupCardDrag(card);
+                console.log(`🎴 Kart ${currentIndex + 1}/${pets.length} gösteriliyor`);
             }
         }
 
@@ -765,8 +2053,5 @@
             }
         });
     </script>
-    <script src="{% static 'js/global.js' %}"></script>
-    {% endblock %}
 </body>
-
 </html>

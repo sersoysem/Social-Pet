@@ -1,0 +1,107 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}Yakınımdaki Veterinerler - Social Pet{% endblock %}
+
+{% block main_content %}
+<style>
+    .vet-btn{}
+    .gm-style-iw { font-size: 1rem; }
+</style>
+<div class="vet-container">
+    <div class="page-header">
+        <h1>Yakınımdaki Veterinerler</h1>
+        <p>Konumun algılanıyor, haritada sana en yakın veterinerleri gösteriyoruz.</p>
+        <div id="loading-vet">Konumunuz tespit ediliyor...</div>
+    </div>
+    <div id="map" style="width:1150px;height:600px;border-radius:18px;margin:0 auto; margin-top: 10px;"></div>
+</div>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7XDp-z-L2gdpOWUSyTWuXUf9Fh1a9vg8&libraries=places"></script>
+<script>
+let map, userMarker, service;
+let userLoc;
+
+function initMap(center) {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: center,
+        zoom: 15
+    });
+    userMarker = new google.maps.Marker({
+        position: center,
+        map,
+        title: "Senin Konumun",
+        icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+    });
+    searchNearbyVets(center);
+}
+
+function searchNearbyVets(location) {
+    const request = {
+        location: location,
+        radius: 5000,
+        keyword: 'veteriner'
+    };
+    service = new google.maps.places.PlacesService(map);
+    service.nearbySearch(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+            // En yakın veterineri bul
+            let minDist = Infinity;
+            let nearest = null;
+            results.forEach(place => {
+                if (!place.geometry || !place.geometry.location) return;
+                // Marker ekle
+                const marker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: place.name
+                });
+                // InfoWindow ekle: Yol tarifi linki
+                const destLat = place.geometry.location.lat();
+                const destLng = place.geometry.location.lng();
+                const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lng}&destination=${destLat},${destLng}&travelmode=driving`;
+                const content = `<strong>${place.name}</strong><br>${place.vicinity || ''}<br>
+                    <a href="${directionsUrl}" target="_blank">Yol Tarifi Al</a>`;
+                const infowindow = new google.maps.InfoWindow({ content: content });
+                marker.addListener("click", () => { infowindow.open(map, marker); });
+
+                // En yakın veteriner mi? Kontrol et
+                const dx = userLoc.lat - destLat;
+                const dy = userLoc.lng - destLng;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearest = { lat: destLat, lng: destLng, marker, place };
+                }
+            });
+
+            // Harita en yakın veterineri merkeze alsın ve infoWindow’u otomatik açsın
+            if (nearest) {
+                setTimeout(() => {
+                    map.panTo(nearest.marker.getPosition());
+                    google.maps.event.trigger(nearest.marker, 'click');
+                }, 800);
+            }
+            document.getElementById("loading-vet").style.display = "none";
+        } else {
+            document.getElementById("loading-vet").innerText = "Yakında veteriner bulunamadı.";
+        }
+    });
+}
+
+// Sayfa yüklenince otomatik konumu al
+window.onload = function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            initMap(userLoc);
+        }, function() {
+            document.getElementById("loading-vet").innerText = "Konum bilgisi alınamadı.";
+        });
+    } else {
+        document.getElementById("loading-vet").innerText = "Tarayıcınız konum bilgisini desteklemiyor.";
+    }
+};
+</script>
+{% endblock %}

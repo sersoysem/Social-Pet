@@ -1,0 +1,468 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ff6b35' d='M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56 50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z'/></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --primary-hover: #e85a2a;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 98vw;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tabs .nav-link {
+            color: #495057;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background: transparent;
+            border: none;
+        }
+
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            min-width: 900px;
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+            min-width: 1800px;
+            table-layout: auto;
+            white-space: nowrap;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table thead th,
+        .table tbody td {
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            white-space: normal;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            padding: 1.3rem 1.2rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody td {
+            padding: 1.2rem 1.2rem;
+            vertical-align: middle;
+            font-size: 1.01rem;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            margin: 0 0.2rem;
+        }
+
+        .truncate {
+            display: inline-block;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .alert-info {
+            background-color: #e8f4f8;
+            border-color: #b8e2f2;
+            color: #0c5460;
+        }
+
+        .table thead th,
+        .table tbody td {
+            text-align: center;
+            padding: 0.7rem 0.3rem;
+            font-size: 0.97rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .table th, .table td {
+            text-align: center;
+            padding: 1.1rem 1.2rem;
+            min-width: 110px; /* Her kolonun min genişliği olur */
+            max-width: 260px; /* Uzun metinleri kırpar, istersen artır/azalt */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .table thead th {
+            background-color: #f3f5f7;
+            color: #222;
+            font-weight: 700;
+            font-size: 1.09rem;
+            letter-spacing: 0.5px;
+        }
+
+
+        @media (max-width: 900px) {
+
+            .table th:nth-child(6),
+            .table td:nth-child(6) {
+                display: none;
+            }
+        }
+        @media (max-width: 1200px) {
+            .table th, .table td {
+                min-width: 160px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="page-title">
+                <i class="fas fa-paw"></i> 
+                Admin Panel
+            </h2>
+            <a href="/api/logout/" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                Çıkış Yap
+            </a>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            {% for col in collection_data_list %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter }}"
+                    data-bs-toggle="tab" data-bs-target="#tab-content-{{ forloop.counter }}" type="button" role="tab">
+                    <i class="fas fa-table me-2"></i>{{ col.name }}
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="table-responsive">
+            <div class="tab-content">
+                {% for col in collection_data_list %}
+                <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                    id="tab-content-{{ forloop.counter }}" role="tabpanel">
+                    {% if col.name == "Users" %}
+                    <a href="{% url 'add_user' %}" class="btn btn-add mb-3" style="color: white;">
+                        <i class="fas fa-plus me-2"></i>
+                        Yeni Kullanıcı Ekle
+                    </a>
+                    {% elif col.name == "Vets" %}
+                    <button type="button" class="btn btn-add mb-3" style="color: white;" data-bs-toggle="modal" data-bs-target="#addVetModal">
+                        <i class="fas fa-plus me-2"></i>
+                        Yeni Veteriner Ekle
+                    </button>
+                    {% endif %}
+                    {% if col.docs|length > 0 %}
+                    <div class="table-container">
+                        <div class="table-scroll">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        {% for key in col.headers %}
+                                        {% if key %}
+                                        <th>{{ key|title }}</th>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <th class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doc in col.docs %}
+                                    <tr>
+                                        {% for value in doc.fields %}
+                                        <td>
+                                            {% if value|stringformat:"s"|length > 30 %}
+                                            <span class="truncate" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="{{ value }}">
+                                                {{ value|stringformat:"s"|slice:":30" }}...
+                                            </span>
+                                            {% else %}
+                                            {{ value }}
+                                            {% endif %}
+
+                                        </td>
+                                        {% endfor %}
+                                        <td class="text-center">
+                                            {% if col.name == "Users" %}
+                                            <a href="{% url 'edit_user' doc.email %}"
+                                                class="btn btn-sm btn-primary btn-action">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% endif %}
+                                            <a href="{% url 'delete_document' col.name doc.doc_id %}"
+                                                onclick="return confirm('Silmek istediğine emin misin?');"
+                                                class="btn btn-sm btn-danger btn-action">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Henüz veri yok.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Veteriner Ekleme Modal -->
+    <div class="modal fade" id="addVetModal" tabindex="-1" aria-labelledby="addVetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: var(--primary-color); color: white;">
+                    <h5 class="modal-title" id="addVetModalLabel">
+                        <i class="fas fa-user-md me-2"></i>
+                        Yeni Veteriner Ekle
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addVetForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetName" class="form-label">Veteriner Adı <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="vetName" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetSpecialization" class="form-label">Uzmanlık Alanı</label>
+                                    <input type="text" class="form-control" id="vetSpecialization" name="specialization" placeholder="Örn: Cerrahi Uzmanı">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetPhone" class="form-label">Telefon <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" id="vetPhone" name="phone" required placeholder="0XXX XXX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetClinic" class="form-label">Klinik Adı</label>
+                                    <input type="text" class="form-control" id="vetClinic" name="clinic" placeholder="Örn: Pet Care Kliniği">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="vetAddress" class="form-label">Adres <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="vetAddress" name="address" rows="2" required placeholder="Tam adres bilgisi"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetExperience" class="form-label">Deneyim</label>
+                                    <input type="text" class="form-control" id="vetExperience" name="experience" placeholder="Örn: 5 yıl deneyim">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vetRating" class="form-label">Değerlendirme</label>
+                                    <select class="form-control" id="vetRating" name="rating">
+                                        <option value="">Seçiniz</option>
+                                        <option value="4.0">4.0</option>
+                                        <option value="4.1">4.1</option>
+                                        <option value="4.2">4.2</option>
+                                        <option value="4.3">4.3</option>
+                                        <option value="4.4">4.4</option>
+                                        <option value="4.5">4.5</option>
+                                        <option value="4.6">4.6</option>
+                                        <option value="4.7">4.7</option>
+                                        <option value="4.8">4.8</option>
+                                        <option value="4.9">4.9</option>
+                                        <option value="5.0">5.0</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="vetImage" class="form-label">Profil Fotoğrafı URL'si</label>
+                            <input type="url" class="form-control" id="vetImage" name="image" placeholder="https://example.com/veteriner-foto.jpg">
+                            <div class="form-text">Veterinerin profil fotoğrafı için URL giriniz (isteğe bağlı)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>İptal
+                    </button>
+                    <button type="button" class="btn btn-add" onclick="submitVetForm()">
+                        <i class="fas fa-save me-2"></i>Veteriner Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Veteriner Ekleme Fonksiyonu
+        function submitVetForm() {
+            const form = document.getElementById('addVetForm');
+            const formData = new FormData(form);
+            
+            // Form validasyonu
+            const name = document.getElementById('vetName').value.trim();
+            const phone = document.getElementById('vetPhone').value.trim();
+            const address = document.getElementById('vetAddress').value.trim();
+            
+            if (!name || !phone || !address) {
+                alert('Lütfen zorunlu alanları doldurunuz.');
+                return;
+            }
+            
+            // Telefon format kontrolü (basit)
+            const phoneRegex = /^[0-9\s\(\)\-\+]+$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Lütfen geçerli bir telefon numarası giriniz.');
+                return;
+            }
+            
+            // Buton durumunu değiştir
+            const submitBtn = event.target;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Ekleniyor...';
+            
+            // AJAX ile backend'e gönder
+            fetch('/adminpanel/add_vet/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Veteriner başarıyla eklendi!');
+                    // Modal'ı kapat
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addVetModal'));
+                    modal.hide();
+                    // Formu temizle
+                    form.reset();
+                    // Sayfayı yenile
+                    location.reload();
+                } else {
+                    alert('Hata: ' + (data.error || 'Bilinmeyen bir hata oluştu.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyiniz.');
+            })
+            .finally(() => {
+                // Butonu eski haline getir
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        }
+    </script>
+</body>
+
+</html>

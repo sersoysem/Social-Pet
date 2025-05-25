@@ -1,0 +1,696 @@
+  {% extends "home.html" %}
+  {% load static %}
+
+  {% block title %}Kayıp Hayvanlar{% endblock %}
+
+  <!-- Bootstrap ve FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  {% block main_content %}
+
+  {% block styles %}
+
+  <style>
+  .lost-pets-header {
+      text-align: center;
+      margin-bottom: 2rem;
+  }
+  .lost-pets-header h1 {
+      color: #FF6B35;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+  }
+  .lost-pets-header p {
+      color: #555;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+  }
+  .create-lost-pet-btn {
+      display: inline-block;
+      background: #FF6B35;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 25px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin-bottom: 1rem;
+  }
+  .create-lost-pet-btn:hover {
+      background: #e55a24;
+  }
+  .lost-pets-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+  }
+  .lost-pet-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s;
+  }
+  .lost-pet-card:hover {
+      box-shadow: 0 6px 24px rgba(255,107,53,0.15);
+  }
+  .lost-pet-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+  }
+  .lost-pet-info {
+      padding: 1.2rem;
+      width: 100%;
+  }
+  .lost-pet-info h2 {
+      color: #FF6B35;
+      margin-bottom: 0.5rem;
+  }
+  .lost-pet-info p {
+      margin: 0.2rem 0;
+      color: #444;
+      font-size: 1rem;
+  }
+  .contact-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background: #11521a;
+      color: #fff;
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+  }
+  .contact-btn:hover {
+      background: #0d3e15;
+  }
+  @media (max-width: 800px) {
+      .lost-pets-list {
+          flex-direction: column;
+          align-items: center;
+      }
+      .lost-pet-card {
+          width: 95%;
+      }
+  }
+  /* Modal Styles */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(30, 33, 44, 0.25);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-content {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(30,33,44,0.18), 0 1.5px 8px rgba(255,107,53,0.08);
+    padding: 2.2rem 2rem 1.5rem 2rem;
+    width: 95%;
+    max-width: 430px;
+    position: relative;
+    animation: modalFadeIn 0.35s cubic-bezier(.4,1.4,.6,1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalFadeIn {
+    from { transform: scale(0.95) translateY(40px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid #f2f2f2;
+    padding-bottom: 0.7rem;
+  }
+  .modal-header h2 {
+    color: #FF6B35;
+    font-size: 1.35rem;
+    margin: 0;
+    font-weight: 700;
+  }
+  .close-modal {
+    font-size: 2rem;
+    color: #FF6B35;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+    margin-left: 1rem;
+    line-height: 1;
+  }
+  .close-modal:hover {
+    color: #b13c0b;
+    background: #fff6ee;
+    border-radius: 50%;
+  }
+  .form-group {
+    margin-bottom: 1.1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .form-group label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: #444;
+    font-size: 1.05rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-size: 1.05rem;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+    background: #faf9f8;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border: 1.5px solid #FF6B35;
+    box-shadow: 0 0 0 2px #ffe3d6;
+  }
+  .image-upload-group input[type="file"] {
+    border: none;
+    padding: 0;
+  }
+  .image-upload-label {
+    font-weight: bold;
+    color: #FF6B35;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: left;
+  }
+  .image-upload-box {
+    width: 120px;
+    height: 120px;
+    background: #fff6ee;
+    border: 2.5px dashed #FF6B35;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .image-upload-box:hover {
+    border-color: #e55a24;
+  }
+  .image-upload-plus {
+    color: #FF6B35;
+    font-size: 3rem;
+    font-weight: bold;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .image-upload-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    position: absolute;
+    top: 0; left: 0;
+    display: block;
+  }
+  .image-remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #fff;
+    border: 1.5px solid #FF6B35;
+    color: #FF6B35;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 1px 4px rgba(255,107,53,0.08);
+  }
+  .image-remove-btn:hover {
+    background: #FF6B35;
+    color: #fff;
+  }
+  @media (max-width: 600px) {
+    .modal-content {
+      padding: 1.2rem 0.5rem 1rem 0.5rem;
+      max-height: 98vh;
+    }
+    .modal-header h2 {
+      font-size: 1.05rem;
+    }
+  }
+  .btn-primary {
+      background-color: #FF6B35;
+      border-color: #FF6B35;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+  }
+  .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+  }
+  .btn-primary:hover::before {
+      left: 100%;
+  }
+  .btn-primary:hover {
+      background-color: #e55a2b;
+      border-color: #e55a2b;
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+  }
+  .btn-primary:active {
+      transform: scale(0.95);
+  }
+  .btn-lg {
+      transition: all 0.3s ease;
+  }
+  .btn-lg:hover {
+      transform: scale(1.05);
+  }
+  .btn-lg:active {
+      transform: scale(0.95);
+  }
+  .btn-primary:focus, 
+  .btn-primary:active, 
+  .btn-primary:focus-visible {
+      background-color: #e55a2b;
+      border-color: #e55a2b;
+      box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.5);
+      outline: none;
+  }
+  .btn-fancy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    background: linear-gradient(90deg, #ff7e3f 0%, #ffb347 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2.2em;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.65em 1.8em;
+    box-shadow: 0 4px 18px rgba(255,107,53,0.13), 0 1.5px 8px rgba(255,107,53,0.08);
+    transition: background 0.25s, box-shadow 0.25s, transform 0.18s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-fancy .fa-plus-circle,
+  .btn-fancy .fa-envelope {
+    font-size: 1.2em;
+  }
+  .btn-fancy::before {
+    content: '';
+    position: absolute;
+    left: -60%;
+    top: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.01) 100%);
+    transform: skewX(-25deg);
+    transition: left 0.4s;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .btn-fancy:hover {
+    background: linear-gradient(90deg, #ff914d 0%, #ff6b35 100%);
+    box-shadow: 0 8px 32px rgba(255,107,53,0.18);
+    transform: translateY(-2px) scale(1.04);
+  }
+  .btn-fancy:hover::before {
+    left: 110%;
+  }
+  .btn-fancy:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(255,107,53,0.10);
+  }
+  </style>
+  {% endblock %}
+
+  <div class="lost-pets-header">
+      <h1><i class="fas fa-search"></i> Kayıp Hayvan İlanları</h1>
+      <p>Evcil hayvanınızı mı kaybettiniz? Buradan ilan oluşturabilir veya kayıp ilanlarını inceleyebilirsiniz.</p>
+      <a href="#" class="btn-fancy" id="openLostPetModal"><i class="fas fa-plus-circle"></i> İlan Oluştur</a>
+  </div>
+  <div class="lost-pets-list">
+      {% for pet in lost_pets %}
+      <!-- Örnek kartlar -->
+      <div class="lost-pet-card">
+          <img src="{{ pet.image_url }}" alt="Kayıp {{ pet.type }}">
+          <div class="lost-pet-info">
+              <h2>{{ pet.name }}</h2>
+              <p><strong>Tür:</strong> {{ pet.type }}</p>
+              <p><strong>Cins:</strong> {{ pet.breed }}</p>
+              <p><strong>Kaybolduğu Yer:</strong> {{ pet.town }}, {{ pet.city }}</p>
+              <p><strong>Tarih:</strong> {{ pet.date_display }}</p>
+              <p><strong>Açıklama:</strong> {{ pet.explain }}</p>
+              <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                  <a class="btn-fancy contact-btn" style="background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);" 
+                     onclick="startChat('{{ pet.user_email }}')" href="javascript:void(0)">
+                     <i class="fas fa-comment"></i> Mesaj At
+                  </a>
+              </div>
+          </div>
+      </div>
+      {% empty %}
+      <p>Henüz kayıp ilanı yok.</p>
+      {% endfor %}
+  </div>
+
+  <!-- Lost Pet Modal -->
+  <div id="lostPetModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Yeni Kayıp İlanı Oluştur</h2>
+        <span class="close-modal" id="closeLostPetModal" title="Kapat">&times;</span>
+      </div>
+      <form id="lostPetForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group image-upload-group">
+          <label for="petImage" class="image-upload-label">Profil Fotoğrafı</label>
+          <input type="file" id="petImage" name="image" accept="image/*" style="display:none;">
+          <label for="petImage" class="image-upload-box" id="imageUploadBox">
+            <span class="image-upload-plus" id="imageUploadPlus">+</span>
+            <img id="previewImage" src="#" alt="Önizleme" style="display:none;" />
+            <button type="button" class="image-remove-btn" id="imageRemoveBtn" style="display:none;" title="Resmi kaldır">&times;</button>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="petName">İsim</label>
+          <input type="text" id="petName" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="petType">Tür</label>
+          <select id="petType" name="type" required>
+            <option value="">Seçiniz</option>
+            <option value="Dogs">Köpek</option>
+            <option value="Cats">Kedi</option>
+            <option value="Birds">Kuş</option>
+            <option value="Hamsters">Hamster</option>
+            <option value="Fish">Balık</option>
+            <option value="Other">Diğer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="petBreed">Cins</label>
+          <select id="petBreed" name="breed" required>
+            <option value="">Önce tür seçiniz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="petCity">Şehir</label>
+          <select id="petCity" name="city" required>
+            <option value="">Seçiniz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="petTown">İlçe</label>
+          <select id="petTown" name="town" required>
+            <option value="">Önce şehir seçiniz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="petDate">Tarih</label>
+          <input type="date" id="petDate" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="petExplain">Açıklama</label>
+          <textarea id="petExplain" name="explain" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn-fancy w-100"><i class="fas fa-plus-circle"></i> İlanı Oluştur</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Message Modal -->
+  <div id="messageModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Mesaj Gönder</h2>
+        <span class="close-modal" id="closeMessageModal" title="Kapat">&times;</span>
+      </div>
+      <form id="messageForm" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="messageSubject">Konu</label>
+          <input type="text" id="messageSubject" name="subject" required>
+        </div>
+        <div class="form-group">
+          <label for="messageContent">Mesajınız</label>
+          <textarea id="messageContent" name="content" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-fancy w-100"><i class="fas fa-paper-plane"></i> Mesajı Gönder</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Şehir/İlçe (provinces) JS ---
+        const petCity = document.getElementById('petCity');
+        const petTown = document.getElementById('petTown');
+        let provinces = [];
+    
+        fetch('{% static "ilce.json" %}')
+          .then(res => res.json())
+          .then(json => {
+            provinces = json;
+            petCity.innerHTML = '<option value="">Şehir Seçiniz</option>';
+            provinces.forEach(province => {
+              const opt = document.createElement('option');
+              opt.value = province.text;
+              opt.textContent = province.text;
+              petCity.appendChild(opt);
+            });
+            petCity.addEventListener('change', function() {
+              petTown.innerHTML = '';
+              const selectedProvince = provinces.find(p => p.text === this.value);
+              if (selectedProvince && selectedProvince.districts.length > 0) {
+                selectedProvince.districts.forEach(district => {
+                  const opt = document.createElement('option');
+                  opt.value = district.text;
+                  opt.textContent = district.text;
+                  petTown.appendChild(opt);
+                });
+              } else {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'İlçe bulunamadı, elle yazınız';
+                petTown.appendChild(opt);
+              }
+            });
+          });
+    
+        // --- Modal aç/kapat ---
+        const openBtn = document.getElementById('openLostPetModal');
+        const modal = document.getElementById('lostPetModal');
+        const closeBtn = document.getElementById('closeLostPetModal');
+        if (openBtn && modal && closeBtn) {
+          openBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('active');
+          });
+          closeBtn.addEventListener('click', function() {
+            modal.classList.remove('active');
+          });
+          window.addEventListener('click', function(e) {
+            if (e.target === modal) modal.classList.remove('active');
+          });
+        }
+    
+        // --- Resim önizleme ve silme ---
+        const petImageInput = document.getElementById('petImage');
+        const previewImage = document.getElementById('previewImage');
+        const imageUploadPlus = document.getElementById('imageUploadPlus');
+        const imageRemoveBtn = document.getElementById('imageRemoveBtn');
+        if (petImageInput && previewImage && imageUploadPlus && imageRemoveBtn) {
+          petImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                imageUploadPlus.style.display = 'none';
+                imageRemoveBtn.style.display = 'flex';
+              }
+              reader.readAsDataURL(file);
+            } else {
+              previewImage.src = '#';
+              previewImage.style.display = 'none';
+              imageUploadPlus.style.display = 'block';
+              imageRemoveBtn.style.display = 'none';
+            }
+          });
+          imageRemoveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            petImageInput.value = '';
+            previewImage.src = '#';
+            previewImage.style.display = 'none';
+            imageUploadPlus.style.display = 'block';
+            imageRemoveBtn.style.display = 'none';
+          });
+        }
+    
+        // --- Hayvan tür/cins verileri ---
+        const breedsByType = {
+          Dogs: ["Golden Retriever", "Kangal", "Pomeranian", "Labrador", "Terrier", "Pug", "Diğer"],
+          Cats: ["Tekir", "British Shorthair", "Van Kedisi", "Scottish Fold", "Siyam", "Persian", "Diğer"],
+          Birds: ["Muhabbet Kuşu", "Papağan", "Kanarya", "Serçe", "Güvercin", "Diğer"],
+          Hamsters: ["Syrian", "Dwarf", "Roborovski", "Campbell", "Winter White", "Diğer"],
+          Fish: ["Japon Balığı", "Beta", "Lepistes", "Molly", "Koi", "Diğer"],
+          Other: ["Diğer"]
+        };
+        const petType = document.getElementById('petType');
+        const petBreed = document.getElementById('petBreed');
+        if (petType && petBreed) {
+          petType.addEventListener('change', function() {
+            const val = this.value;
+            petBreed.innerHTML = '';
+            if (val && breedsByType[val]) {
+              breedsByType[val].forEach(function(breed) {
+                const opt = document.createElement('option');
+                opt.value = breed;
+                opt.textContent = breed;
+                petBreed.appendChild(opt);
+              });
+            } else {
+              const opt = document.createElement('option');
+              opt.value = '';
+              opt.textContent = 'Önce tür seçiniz';
+              petBreed.appendChild(opt);
+            }
+          });
+        }
+    
+        // --- Message Modal functionality ---
+        const messageModal = document.getElementById('messageModal');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+        const messageForm = document.getElementById('messageForm');
+        document.querySelectorAll('.contact-btn[href="#"]').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (messageModal) messageModal.classList.add('active');
+          });
+        });
+        if (closeMessageModal && messageModal) {
+          closeMessageModal.addEventListener('click', function() {
+            messageModal.classList.remove('active');
+          });
+          window.addEventListener('click', function(e) {
+            if (e.target === messageModal) messageModal.classList.remove('active');
+          });
+        }
+        if (messageForm) {
+          messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+            fetch('/send-message/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+              },
+              body: JSON.stringify({
+                subject: subject,
+                content: content
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert('Mesajınız başarıyla gönderildi!');
+                messageModal.classList.remove('active');
+                messageForm.reset();
+              } else {
+                alert('Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            });
+          });
+        }
+    });
+    
+    // Chat başlatma fonksiyonu
+    function startChat(targetUserEmail) {
+        if (!targetUserEmail) {
+            alert('Kullanıcı bilgisi bulunamadı.');
+            return;
+        }
+        
+        // Loading göster
+        const button = event.target.closest('.contact-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Bağlanıyor...';
+        button.style.pointerEvents = 'none';
+        
+        fetch('/chat/start/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                target_user_email: targetUserEmail
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Chat sayfasına yönlendir
+                window.location.href = `/chat/?chat_id=${data.chat_id}`;
+            } else {
+                alert(data.error || 'Sohbet başlatılırken bir hata oluştu.');
+                // Button'u eski haline getir
+                button.innerHTML = originalText;
+                button.style.pointerEvents = 'auto';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            // Button'u eski haline getir
+            button.innerHTML = originalText;
+            button.style.pointerEvents = 'auto';
+        });
+    }
+  </script>
+{% endblock %}
