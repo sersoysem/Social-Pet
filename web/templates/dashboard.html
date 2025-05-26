@@ -868,65 +868,6 @@
       to { opacity: 1; }
     }
 
-    /* Global Logout Button - Always Visible */
-    .global-logout {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 1000;
-      animation: fadeInRight 0.8s ease-out 0.8s both;
-    }
-
-    .btn-global-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 1.8rem;
-      background: var(--bg-primary);
-      border: 1px solid rgba(255, 107, 53, 0.2);
-      border-radius: var(--radius-full);
-      color: var(--text-primary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition-bounce);
-      box-shadow: var(--shadow-glass);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-global-logout::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
-      transition: var(--transition-smooth);
-    }
-
-    .btn-global-logout:hover::before {
-      left: 100%;
-    }
-
-    .btn-global-logout:hover {
-      background: rgba(255, 82, 82, 0.1);
-      border-color: rgba(255, 82, 82, 0.4);
-      color: #d32f2f;
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-elevation-4);
-    }
-
-    .btn-global-logout i {
-      font-size: 1rem;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-global-logout:hover i {
-      transform: rotate(10deg);
-    }
-
     /* Empty State Enhanced */
     .empty-state-actions {
       display: flex;
@@ -942,19 +883,6 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
-    /* Responsive adjustments for global logout */
-    @media (max-width: 768px) {
-      .global-logout {
-        top: 1rem;
-        right: 1rem;
-      }
-
-      .btn-global-logout {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.85rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -969,13 +897,6 @@
   <div class="page-back-button">
     <a href="/home/" class="btn-page-back">
       <i class="fas fa-arrow-left"></i>
-    </a>
-  </div>
-
-  <!-- Global Logout Button - Always Visible -->
-  <div class="global-logout">
-    <a href="/api/logout" class="btn-global-logout">
-      <i class="fas fa-sign-out-alt"></i> Çıkış
     </a>
   </div>
 

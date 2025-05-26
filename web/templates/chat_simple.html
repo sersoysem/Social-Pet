@@ -572,12 +572,12 @@
                 let messagesHTML = "";
                 
                 messages.forEach(message => {
-                    const isMe = message.sender === window.currentUserEmail || (message.avatar && message.avatar.includes(window.currentUserEmail));
+                    const isMe = message.user._id === window.currentUserEmail;
                     const messageClass = isMe ? "msg me" : "msg";
                     
                     messagesHTML += `
                         <div class="${messageClass}">
-                            <img src="${message.avatar || 'https://i.pravatar.cc/150?u=' + message.sender}" class="msg-avatar">
+                            <img src="${message.user.avatar || 'https://i.pravatar.cc/150?u=' + message.user._id}" class="msg-avatar">
                             <div class="msg-content">${escapeHtml(message.text)}</div>
                         </div>
                     `;
