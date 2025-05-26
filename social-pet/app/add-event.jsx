@@ -92,13 +92,11 @@ export default function AddEventScreen() {
       if (user && user.primaryEmailAddress) {
         email = user.primaryEmailAddress.emailAddress;
         name = user.fullName || user.firstName || '';
-        console.log('👤 Clerk kullanıcısı tespit edildi:', { email, name });
       } 
       // Check Firebase Auth (fallback)
       else if (firebaseAuth.currentUser) {
         email = firebaseAuth.currentUser.email || '';
         name = firebaseAuth.currentUser.displayName || '';
-        console.log('🔥 Firebase Auth kullanıcısı tespit edildi:', { email, name });
       }
       // Check AsyncStorage for email/password login
       else {
@@ -108,7 +106,6 @@ export default function AddEventScreen() {
             const parsedUserData = JSON.parse(userData);
             email = parsedUserData.email || '';
             name = parsedUserData.name || '';
-            console.log('💾 AsyncStorage kullanıcısı tespit edildi:', { email, name, fullData: parsedUserData });
           }
         } catch (error) {
           console.error('❌ AsyncStorage kullanıcı bilgisi alınırken hata:', error);

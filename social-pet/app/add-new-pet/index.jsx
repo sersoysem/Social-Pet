@@ -102,7 +102,6 @@ export default function AddNewPet() {
       if (user && user.primaryEmailAddress) {
         email = user.primaryEmailAddress.emailAddress;
         name = user.fullName || user.firstName || '';
-        console.log('👤 Add-pet Clerk kullanıcısı tespit edildi:', { email, name });
       } 
       // Check AsyncStorage for email/password login
       else {
@@ -112,7 +111,6 @@ export default function AddNewPet() {
             const parsedUserData = JSON.parse(userData);
             email = parsedUserData.email || '';
             name = parsedUserData.name || '';
-            console.log('💾 Add-pet AsyncStorage kullanıcısı tespit edildi:', { email, name, fullData: parsedUserData });
           }
         } catch (error) {
           console.error('❌ Add-pet AsyncStorage kullanıcı bilgisi alınırken hata:', error);
@@ -122,7 +120,6 @@ export default function AddNewPet() {
       setCurrentUserEmail(email);
       setCurrentUserName(name);
       setCurrentUserAvatar(defaultAvatar);
-      console.log('✅ Add-pet final kullanıcı bilgileri:', { email, name, avatar: defaultAvatar });
     };
     
     getUserInfo();
@@ -132,7 +129,6 @@ export default function AddNewPet() {
     try {
       const snapshot = await getDocs(collection(db, 'Category'));
       if (snapshot.empty) {
-        console.log('⚠️ Firestore Category koleksiyonu boş');
         return;
       }
       const categories = [];
@@ -143,7 +139,6 @@ export default function AddNewPet() {
       });
       setCategoryList(categories);
     } catch (error) {
-      console.error('🔥 Kategori verisi çekilirken hata:', error);
       ToastAndroid.show('Kategoriler yüklenirken hata oluştu', ToastAndroid.SHORT);
     }
   };

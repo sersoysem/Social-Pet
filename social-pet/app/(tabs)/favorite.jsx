@@ -20,7 +20,6 @@ export default function Favorite() {
       try {
         // Önce Clerk'ten email'i kontrol et
         if (clerkUser?.primaryEmailAddress?.emailAddress) {
-          console.log("Clerk email bulundu:", clerkUser.primaryEmailAddress.emailAddress);
           setUserEmail(clerkUser.primaryEmailAddress.emailAddress);
           return;
         }
@@ -29,7 +28,6 @@ export default function Favorite() {
         const userData = await AsyncStorage.getItem('userData');
         if (userData) {
           const parsed = JSON.parse(userData);
-          console.log("AsyncStorage email bulundu:", parsed.email);
           if (parsed.email) {
             setUserEmail(parsed.email);
             return;
@@ -45,7 +43,6 @@ export default function Favorite() {
 
   useEffect(() => {
     if (userEmail) {
-      console.log("Favoriler için kullanılacak email:", userEmail);
       GetFavPetIds(userEmail);
     }
   }, [userEmail]);
@@ -53,9 +50,7 @@ export default function Favorite() {
   const GetFavPetIds = async (email) => {
     setLoader(true);
     try {
-      console.log("GetFavPetIds çağrıldı, email:", email);
       const result = await Shared.GetFavList(email);
-      console.log("GetFavList sonucu:", result);
       const favorites = Array.isArray(result?.favorites) ? result.favorites : [];
       setFavIds(favorites);
       setFavList(favorites);

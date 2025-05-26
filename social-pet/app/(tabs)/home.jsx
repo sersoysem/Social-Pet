@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import Header from '../../components/Home/Header';
+import Header from '../../components/Home/header';
 import Slider from '../../components/Home/Slider';
 import PetListByCategory from '../../components/Home/PetListByCategory';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';

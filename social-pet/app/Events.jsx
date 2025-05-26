@@ -21,7 +21,6 @@ function useEvents() {
         setLoading(true);
       }
       
-      console.log('📅 Events verisi çekiliyor...');
       const eventsCol = collection(db, 'Events');
       const eventSnapshot = await getDocs(eventsCol);
       const now = new Date();

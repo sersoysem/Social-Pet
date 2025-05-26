@@ -111,7 +111,6 @@ export default function LostPets() {
                 email = user.primaryEmailAddress.emailAddress;
                 name = user?.fullName || "";
                 avatar = user?.imageUrl || "";
-                console.log('👤 Lost-pets Clerk kullanıcısı tespit edildi:', { email, name });
             } else {
                 // AsyncStorage user (email/password login)
                 try {
@@ -121,7 +120,6 @@ export default function LostPets() {
                         email = parsed.email || '';
                         name = parsed.name || "";
                         avatar = parsed.imageUrl || "";
-                        console.log('💾 Lost-pets AsyncStorage kullanıcısı tespit edildi:', { email, name });
                     }
                 } catch (error) {
                     console.error('❌ Lost-pets AsyncStorage kullanıcı bilgisi alınırken hata:', error);

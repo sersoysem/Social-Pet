@@ -38,7 +38,6 @@ export default function EventDetail() {
         // Clerk user (Google login)
         email = user.primaryEmailAddress.emailAddress;
         name = user?.fullName || "";
-        console.log('👤 Event-detail Clerk kullanıcısı tespit edildi:', { email, name });
       } else {
         // AsyncStorage user (email/password login)
         try {
@@ -47,7 +46,6 @@ export default function EventDetail() {
             const parsed = JSON.parse(userData);
             email = parsed.email || '';
             name = parsed.name || "";
-            console.log('💾 Event-detail AsyncStorage kullanıcısı tespit edildi:', { email, name });
           }
         } catch (error) {
           console.error('❌ Event-detail AsyncStorage kullanıcı bilgisi alınırken hata:', error);
