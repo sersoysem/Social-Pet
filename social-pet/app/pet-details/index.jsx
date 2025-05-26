@@ -27,17 +27,20 @@ export default function PetDetails() {
 
   useEffect(() => {
     const getUserInfo = async () => {
+      // Sabit avatar linki
+      const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+      
       if (user?.primaryEmailAddress?.emailAddress) {
         setCurrentUserEmail(user.primaryEmailAddress.emailAddress);
         setCurrentUserName(user?.fullName || "");
-        setCurrentUserAvatar(user?.imageUrl || "");
+        setCurrentUserAvatar(defaultAvatar);
       } else {
         const userData = await AsyncStorage.getItem('userData');
         if (userData) {
           const parsed = JSON.parse(userData);
           setCurrentUserEmail(parsed.email);
           setCurrentUserName(parsed.name || "");
-          setCurrentUserAvatar(parsed.imageUrl || "");
+          setCurrentUserAvatar(defaultAvatar);
         }
       }
     };
@@ -67,6 +70,9 @@ export default function PetDetails() {
     }
     const chatId = getChatId(currentUserEmail, pet.email);
 
+    // Sabit avatar linki
+    const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+
     // Zaten bir chat var mı kontrol et
     const q = query(collection(db, 'Chat'), where('id', '==', chatId));
     const querySnapshot = await getDocs(q);
@@ -87,12 +93,12 @@ export default function PetDetails() {
         {
           email: currentUserEmail,
           name: currentUserName,
-          pp: currentUserAvatar
+          pp: defaultAvatar
         },
         {
           email: pet?.email,
           name: pet?.uname,
-          imageUrl: pet?.pp,
+          pp: defaultAvatar,
         }
       ],
       userIds: [currentUserEmail, pet?.email],

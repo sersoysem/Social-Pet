@@ -94,13 +94,14 @@ export default function AddNewPet() {
     const getUserInfo = async () => {
       let email = '';
       let name = '';
-      let avatar = '';
+      
+      // Sabit avatar linki
+      const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
       
       // Check Clerk user first (Google login)
       if (user && user.primaryEmailAddress) {
         email = user.primaryEmailAddress.emailAddress;
         name = user.fullName || user.firstName || '';
-        avatar = user.imageUrl || '';
         console.log('👤 Add-pet Clerk kullanıcısı tespit edildi:', { email, name });
       } 
       // Check AsyncStorage for email/password login
@@ -111,7 +112,6 @@ export default function AddNewPet() {
             const parsedUserData = JSON.parse(userData);
             email = parsedUserData.email || '';
             name = parsedUserData.name || '';
-            avatar = parsedUserData.imageUrl || '';
             console.log('💾 Add-pet AsyncStorage kullanıcısı tespit edildi:', { email, name, fullData: parsedUserData });
           }
         } catch (error) {
@@ -121,8 +121,8 @@ export default function AddNewPet() {
       
       setCurrentUserEmail(email);
       setCurrentUserName(name);
-      setCurrentUserAvatar(avatar);
-      console.log('✅ Add-pet final kullanıcı bilgileri:', { email, name, avatar });
+      setCurrentUserAvatar(defaultAvatar);
+      console.log('✅ Add-pet final kullanıcı bilgileri:', { email, name, avatar: defaultAvatar });
     };
     
     getUserInfo();
@@ -260,6 +260,10 @@ export default function AddNewPet() {
   const SaveFromData = async (imageURL, vaccinationCardURL, veterinaryReportURL) => {
     try {
       const docId = Date.now().toString();
+      
+      // PP değerini sabit Firebase Storage linki ile ayarla
+      const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+      
       const petData = {
         ...formData,
         imageUrl: imageURL,
@@ -269,7 +273,7 @@ export default function AddNewPet() {
         email: currentUserEmail || "Belirtilmemiş", 
         about: formData.about || "Belirtilmemiş",
         id: docId,
-        pp: currentUserAvatar || "Belirtilmemiş",
+        pp: defaultAvatar,
         createdAt: new Date(),
         category: selectedCategory,
         sex: gender,
@@ -279,7 +283,7 @@ export default function AddNewPet() {
       console.log('📝 Pet kaydediliyor:', {
         email: currentUserEmail,
         name: currentUserName,
-        avatar: currentUserAvatar,
+        avatar: defaultAvatar,
         petName: formData.name
       });
 

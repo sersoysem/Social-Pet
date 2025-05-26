@@ -254,6 +254,10 @@ export default function DiscoverScreen() {
     const handleStartChat = async () => {
         if (!matchModal) return;
         const otherEmail = matchModal.users.filter(u => u !== localUser.email)[0];
+        
+        // Sabit avatar linki
+        const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+        
         // Chat ID: iki email alfabetik sıralı birleştirilir
         const chatId = [localUser.email, otherEmail].sort().join('_');
         // Chat dokümanı var mı kontrol et
@@ -263,19 +267,19 @@ export default function DiscoverScreen() {
             // Karşı tarafın adını ve pp'sini Users'tan çek
             const userDoc = await getDoc(doc(db, 'Users', otherEmail));
             const otherName = userDoc.exists() ? userDoc.data().name || userDoc.data().uname || otherEmail : otherEmail;
-            const otherPp = userDoc.exists() ? userDoc.data().pp || userDoc.data().imageUrl || '' : '';
+            
             await setDoc(chatRef, {
                 id: chatId,
                 users: [
                     {
                         email: localUser.email,
                         name: localUser.name,
-                        pp: localUser.imageUrl
+                        pp: defaultAvatar
                     },
                     {
                         email: otherEmail,
                         name: otherName,
-                        pp: otherPp
+                        pp: defaultAvatar
                     }
                 ],
                 userIds: [localUser.email, otherEmail],

@@ -66,13 +66,17 @@ export default function Inbox() {
   const MapOtherUserList = () => {
     if (!currentUserEmail) return [];
     const list = [];
+    
+    // Sabit avatar linki
+    const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+    
     userList.forEach((record) => {
       const otherUser = record.users?.filter(u => u?.email !== currentUserEmail);
       if (otherUser && otherUser.length > 0) {
         list.push({
           docId: record.docId,
           name: otherUser[0].name,
-          pp: otherUser[0].pp || otherUser[0].imageUrl,
+          pp: defaultAvatar,
           email: otherUser[0].email,
           lastMessage: record.lastMessage,
           lastMessageTime: record.lastMessageTime?.toDate ? record.lastMessageTime.toDate() : record.lastMessageTime,

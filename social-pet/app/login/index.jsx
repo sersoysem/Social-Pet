@@ -174,6 +174,22 @@ export default function LoginScreen() {
                 E-posta ile Giriş Yap
               </Text>
             </Pressable>
+            
+            <View style={{ marginTop: 24, alignItems: 'center' }}>
+              <Text style={{ fontFamily: "outfit-medium", fontSize: 16, color: Colors.GRAY }}>
+                Hesabın yok mu?{' '}
+                <Text 
+                  onPress={() => router.push("/login/register")}
+                  style={{ 
+                    fontFamily: "outfit-bold", 
+                    color: '#FF6B35',
+                    textDecorationLine: 'underline'
+                  }}
+                >
+                  Hesap Oluştur
+                </Text>
+              </Text>
+            </View>
           </View>
         </View>
       </View>

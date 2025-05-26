@@ -98,7 +98,7 @@ export default function Profile() {
         marginVertical: 25,
       }}>
         <Image
-          source={{ uri: userData?.imageUrl || user?.imageUrl }}
+          source={{ uri: "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902" }}
           style={{
             width: 100,
             height: 100,

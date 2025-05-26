@@ -10,13 +10,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Kullanıcı adı ve fotoğrafı için fallback fonksiyonu
 async function getUserDisplayInfo(email) {
+  // Sabit avatar linki
+  const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+  
   // Önce Users koleksiyonunda ara
   const userDoc = await getDoc(doc(db, 'Users', email));
   if (userDoc.exists()) {
     const data = userDoc.data();
     return {
       name: data.name || data.uname || email.split('@')[0],
-      pp: data.pp || data.imageUrl || ''
+      pp: defaultAvatar
     };
   }
   // Yoksa, Pets koleksiyonunda bu email'e sahip ilk peti bul
@@ -26,13 +29,13 @@ async function getUserDisplayInfo(email) {
     const petData = petsSnap.docs[0].data();
     return {
       name: petData.uname || petData.name || email.split('@')[0],
-      pp: petData.pp || petData.imageUrl || ''
+      pp: defaultAvatar
     };
   }
   // Hiçbiri yoksa
   return {
     name: email.split('@')[0],
-    pp: ''
+    pp: defaultAvatar
   };
 }
 
@@ -48,17 +51,20 @@ export default function ChatScreen() {
   // Kullanıcı bilgisi
   useEffect(() => {
     const getUserInfo = async () => {
+      // Sabit avatar linki
+      const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
+      
       if (user?.primaryEmailAddress?.emailAddress) {
         setCurrentUserEmail(user.primaryEmailAddress.emailAddress);
         setCurrentUserName(user?.fullName || "");
-        setCurrentUserAvatar(user?.imageUrl || "");
+        setCurrentUserAvatar(defaultAvatar);
       } else {
         const userData = await AsyncStorage.getItem('userData');
         if (userData) {
           const parsed = JSON.parse(userData);
           setCurrentUserEmail(parsed.email);
           setCurrentUserName(parsed.name || "");
-          setCurrentUserAvatar(parsed.imageUrl || "");
+          setCurrentUserAvatar(defaultAvatar);
         }
       }
     };
