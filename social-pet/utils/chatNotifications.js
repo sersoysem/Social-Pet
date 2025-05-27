@@ -1,9 +1,6 @@
-import { sendLocalNotification } from '../../config/NotificationConfig';
+import { sendLocalNotification } from '../config/NotificationConfig';
 
-const onSend = async (newMessages = []) => {
-    // ... existing message sending code ...
-    
-    // Karşı tarafa bildirim gönder
+export const sendChatNotification = async (localUser, messageToSave, otherEmail, chatId) => {
     if (otherEmail) {
         try {
             await sendLocalNotification(

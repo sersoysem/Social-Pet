@@ -3,15 +3,14 @@
     "version": ">= 16.6.2"
   },
   "build": {
-    "preview": {
-      "distribution": "internal",
+    "production": {
       "android": {
         "buildType": "apk"
       }
     },
-    "production": {
+    "preview": {
       "android": {
-        "buildType": "aab"
+        "buildType": "apk"
       }
     }
   },

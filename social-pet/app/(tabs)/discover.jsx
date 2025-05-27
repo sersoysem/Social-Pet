@@ -35,6 +35,8 @@ export default function DiscoverScreen() {
     const [showX, setShowX] = useState(false);
     const heartScale = useRef(new Animated.Value(0)).current;
     const xScale = useRef(new Animated.Value(0)).current;
+    const lastTap = useRef(null);
+    const [isSwiping, setIsSwiping] = useState(false);
 
     // Kullanıcı bilgisini hem Clerk hem AsyncStorage'dan bul!
     useEffect(() => {
@@ -255,41 +257,57 @@ export default function DiscoverScreen() {
         if (!matchModal) return;
         const otherEmail = matchModal.users.filter(u => u !== localUser.email)[0];
         
+        if (!localUser?.email || !otherEmail) {
+            alert("Kullanıcı veya karşı tarafın maili eksik!");
+            return;
+        }
+
         // Sabit avatar linki
         const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/socialpet-b392b.firebasestorage.app/o/pp.jpg?alt=media&token=7d56de3b-741f-4bd7-882e-9cca500a9902";
         
         // Chat ID: iki email alfabetik sıralı birleştirilir
         const chatId = [localUser.email, otherEmail].sort().join('_');
-        // Chat dokümanı var mı kontrol et
-        const chatRef = doc(db, 'Chat', chatId);
-        const chatSnap = await getDoc(chatRef);
-        if (!chatSnap.exists()) {
-            // Karşı tarafın adını ve pp'sini Users'tan çek
-            const userDoc = await getDoc(doc(db, 'Users', otherEmail));
-            const otherName = userDoc.exists() ? userDoc.data().name || userDoc.data().uname || otherEmail : otherEmail;
-            
-            await setDoc(chatRef, {
-                id: chatId,
-                users: [
-                    {
-                        email: localUser.email,
-                        name: localUser.name,
-                        pp: defaultAvatar
-                    },
-                    {
-                        email: otherEmail,
-                        name: otherName,
-                        pp: defaultAvatar
-                    }
-                ],
-                userIds: [localUser.email, otherEmail],
-                lastMessage: "",
-                lastMessageTime: null,
-                lastMessageSeenBy: []
+
+        // Zaten bir chat var mı kontrol et
+        const q = query(collection(db, 'Chat'), where('id', '==', chatId));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            // Chat varsa oraya yönlendir
+            setMatchModal(null);
+            router.push({
+                pathname: '/chat',
+                params: { id: chatId }
             });
+            return;
         }
+
+        // Chat yoksa oluştur
+        await setDoc(doc(db, 'Chat', chatId), {
+            id: chatId,
+            users: [
+                {
+                    email: localUser.email,
+                    name: localUser.name,
+                    pp: defaultAvatar
+                },
+                {
+                    email: otherEmail,
+                    name: matchModal.pets[1].name,
+                    pp: defaultAvatar
+                }
+            ],
+            userIds: [localUser.email, otherEmail],
+            lastMessage: "",
+            lastMessageTime: null,
+            lastMessageSeenBy: []
+        });
+
         setMatchModal(null);
-        router.push({ pathname: '/chat', params: { id: chatId } });
+        router.push({
+            pathname: '/chat',
+            params: { id: chatId }
+        });
     };
 
     const handleSwipeAnimation = (direction) => {
@@ -326,6 +344,17 @@ export default function DiscoverScreen() {
                 setShowX(false);
             });
         }
+    };
+
+    // Swiper'ın dokunma olaylarını yönetmek için
+    const handleTouchStart = () => {
+        setIsSwiping(true);
+    };
+
+    const handleTouchEnd = () => {
+        setTimeout(() => {
+            setIsSwiping(false);
+        }, 100);
     };
 
     return (
@@ -397,7 +426,16 @@ export default function DiscoverScreen() {
                                     </View>
                                 </View>
                                 <View style={styles.cardContent}>
-                                    <Text style={styles.petName}>{pet.name}</Text>
+                                    <TouchableOpacity 
+                                        onPress={() => {
+                                            router.push({
+                                                pathname: '/pet-details',
+                                                params: { pet: JSON.stringify(pet) }
+                                            });
+                                        }}
+                                    >
+                                        <Text style={styles.petName}>{pet.name}</Text>
+                                    </TouchableOpacity>
                                     
                                     <View style={styles.infoContainer}>
                                         <View style={styles.infoRow}>
@@ -423,6 +461,8 @@ export default function DiscoverScreen() {
                                 </View>
                             </View>
                         )}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
                         onSwipedLeft={(cardIndex) => {
                             handleSwipeAnimation('left');
                             handleSwipe('left', pets[cardIndex]);
@@ -436,6 +476,10 @@ export default function DiscoverScreen() {
                         stackSize={3}
                         stackSeparation={15}
                         animateOverlayLabelsOpacity
+                        disableTopSwipe={true}
+                        disableBottomSwipe={true}
+                        disableLeftSwipe={false}
+                        disableRightSwipe={false}
                         overlayLabels={{
                             left: {
                                 title: 'PAS',
@@ -468,6 +512,22 @@ export default function DiscoverScreen() {
                                         justifyContent: 'flex-start',
                                         marginTop: 30,
                                         marginLeft: 30
+                                    }
+                                }
+                            },
+                            top: {
+                                title: 'DETAYLAR',
+                                style: {
+                                    label: {
+                                        backgroundColor: '#ff6b35',
+                                        color: 'white',
+                                        fontSize: 24
+                                    },
+                                    wrapper: {
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-start',
+                                        marginTop: 30
                                     }
                                 }
                             }

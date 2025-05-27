@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "social-pet",
+    "name": "Social Pet",
     "slug": "social-pet",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -51,10 +51,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": [
-            "./assets/notification-sound.wav"
-          ]
+          "color": "#ffffff"
         }
       ]
     ],
