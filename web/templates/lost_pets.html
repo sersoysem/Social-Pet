@@ -380,7 +380,7 @@
               <p><strong>Açıklama:</strong> {{ pet.explain }}</p>
               <div style="display: flex; gap: 10px; margin-top: 1rem;">
                   <a class="btn-fancy contact-btn" style="background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);" 
-                     onclick="startChat('{{ pet.user_email }}')" href="javascript:void(0)">
+                     onclick="startChatL('{{ pet.user_email }}')" href="javascript:void(0)">
                      <i class="fas fa-comment"></i> Mesaj At
                   </a>
               </div>
@@ -650,7 +650,7 @@
     });
     
     // Chat başlatma fonksiyonu
-    function startChat(targetUserEmail) {
+    function startChatL(targetUserEmail) {
         if (!targetUserEmail) {
             alert('Kullanıcı bilgisi bulunamadı.');
             return;
